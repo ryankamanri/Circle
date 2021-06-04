@@ -4,7 +4,7 @@ using MySql.Data.MySqlClient;
 
 namespace dotnet
 {
-    [Route("C/")]
+    [Route("MySql/")]
     [Controller]
     public class CookieController : Controller
     {
@@ -12,7 +12,7 @@ namespace dotnet
         [Route("Hello")]
         public string Hello()
         {
-            return "Hello";
+            return "MySql Hello";
         }
         [HttpGet]
         [Route("sql")]
