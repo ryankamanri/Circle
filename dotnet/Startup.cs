@@ -35,7 +35,8 @@ namespace dotnet
             //增加单例服务,数据库访问
             services.AddSingleton(new SQL(options =>
             {
-                options.Server = "127.0.0.1,3306";
+                options.Server = "47.108.205.96";
+                options.Port = "4306";
                 options.Database = "schema1";
                 options.Uid = "root";
                 options.Pwd = "123456";
