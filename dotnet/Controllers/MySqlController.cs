@@ -1,13 +1,22 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
+using dotnet.Model;
+using dotnet.Services;
+using System.Collections.Generic;
 
-namespace dotnet
+namespace dotnet.Controllers
 {
     [Route("MySql/")]
     [Controller]
-    public class CookieController : Controller
+    public class MySqlController : Controller
     {
+
+        private SQL _sql;
+        public MySqlController(SQL sql)
+        {
+            _sql = sql;
+        }
+
         [HttpGet]
         [Route("Hello")]
         public string Hello()
@@ -18,27 +27,17 @@ namespace dotnet
         [Route("sql")]
         public string SqlTest()
         {
+
             string result = "";
-            string server = "192.168.1.104,3306";
-            string database = "schema1";
-            string uid = "root";
-            string pwd = "123456";
-            string connstr = $"Server={server};Database={database};Uid={uid};Pwd={pwd};";
-            MySqlConnection mySqlConnection = new MySqlConnection(connstr);
-            try
-            {
-                mySqlConnection.Open();
-                MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-                mySqlCommand.CommandText = "select * from schema1.table1";
-                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-                while(mySqlDataReader.Read()) result += mySqlDataReader["name"];
-                return result;
-            }catch(Exception e)
-            {
-                mySqlConnection.Close();
-                return e.ToString();
-            }
+
+            IList<User> users = Model.User.GetList(_sql.Query("select * from users"));
             
+            foreach (var user in users)
+            {
+                result += $"{user.ToString()}\n";
+            }
+
+            return result;
         }
     }
 }
