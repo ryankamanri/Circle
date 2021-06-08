@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Security.Claims;
 using dotnet.Services;
+using dotnet.Model;
 namespace dotnet.Controllers
 {
     [Controller]
@@ -11,8 +12,10 @@ namespace dotnet.Controllers
     {
 
         private ICookie _cookie;
-        public ViewsController(ICookie cookie)
+        private SQL _sql;
+        public ViewsController(SQL sql,ICookie cookie)
         {
+            _sql = sql;
             _cookie = cookie;
         }
 
@@ -34,43 +37,55 @@ namespace dotnet.Controllers
 
         [HttpGet]
         [Route("LogIn")]
-        public void LogIn()
+        public IActionResult LogIn()
         {
-            //Claim类似于身份证的某条内容，一条内容对应一条Claim.例如：民族：汉、籍贯：浙江杭州 此处用的是学校的学生证
-            var schoolClaims = new List<Claim>()
-              {
-                  new Claim(ClaimTypes.Name,"李雷"),//姓名
-                  new Claim(ClaimTypes.SerialNumber,"0001"),//学号
-                  new Claim("Gender","男"),//性别
-              };
+            return View("LogIn");
+        }
 
-            //Claim类似于身份证的某条内容，一条内容对应一条Claim.例如：民族：汉、籍贯：浙江杭州 此处用的是社会上的驾照
-            var drivePass = new List<Claim>()
-             {
-                 new Claim(ClaimTypes.Name, "李雷"),//姓名
-                 new Claim(ClaimTypes.SerialNumber, "浙A00000"),//车牌号
-                 new Claim("Driver", "GoodJob"),//开车技术怎么样...随便写的
-             };
+        [HttpGet]
+        [Route("LogInSubmit")]
+        public IActionResult LogInSubmit()
+        {
 
-            //ClaimsIdentity 类似于身份证、学生证。它是有一条或者多条Claim组合而成。这样就是组成了一个学生证和驾照
-            var schoolIdentity = new ClaimsIdentity(schoolClaims, "school"); 
-            var govIdentity = new ClaimsIdentity(drivePass, "gov");
+            string account = "974481066@qq.com";
 
-            //claimsPrincipal相当于一个人，你可以指定这个人持有哪些ClaimsIdentity（证件）,我指定他持有schoolIdentity、govIdentity那么他就是
-            //在学校里是学生，在社会上是一名好司机
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(new[] { schoolIdentity, govIdentity });
+            string password = "123456";
+
+            IList<User> user = Model.User.GetList(_sql.Query($"select * from schema1.users where Account = '{account}'"));
+
+            if(user.Count == 0)
+                return new JsonResult("account not found");
+
+            if(user[0].Password != password)
+                return new JsonResult("password is error");
+
+            var userClaims = new List<Claim>()
+            {
+                new Claim("ID",user[0].ID.ToString()),
+                new Claim("Account",account)
+            };
+
+            var userIdentity = new ClaimsIdentity(userClaims,"user");
+
+            var userIdentities = new List<ClaimsIdentity>()
+            {
+                userIdentity
+            };
+
+            var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
             _cookie.SetCookie(HttpContext,claimsPrincipal);
 
-            
+            return RedirectToAction("Home");
         }
 
 
         [HttpGet]
-        [Route("LogOut")]
-        public void LogOut()
+        [Route("LogOutSubmit")]
+        public IActionResult LogOutSubmit()
         {
             _cookie.DeleteCookie(HttpContext);
+            return View("Index");
         }
 
         [HttpGet]

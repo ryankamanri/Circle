@@ -27,7 +27,6 @@ namespace dotnet.Services
         private MySqlConnection connection;
 
         
-
         
 
         /// <summary>

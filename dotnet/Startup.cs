@@ -27,7 +27,7 @@ namespace dotnet
             services.AddAuthentication("CookiesAuth").AddCookie("CookiesAuth",options => 
             {
                 options.Cookie.Name = "SystemLogInCookie";
-                options.LoginPath = "/";
+                options.LoginPath = "/LogIn";
             });
 
             services.AddScoped<ICookie, Cookie>();
@@ -35,12 +35,22 @@ namespace dotnet
             //增加单例服务,数据库访问
             services.AddSingleton(new SQL(options =>
             {
-                options.Server = "47.108.205.96";
-                options.Port = "4306";
+                options.Server = "127.0.0.1";
+                options.Port = "3306";
                 options.Database = "schema1";
                 options.Uid = "root";
                 options.Pwd = "123456";
             }));
+
+            //增加数据库上下文服务
+            services.AddSingleton(new DataBaseContext(new SQL(options =>
+            {
+                options.Server = "127.0.0.1";
+                options.Port = "3306";
+                options.Database = "schema1";
+                options.Uid = "root";
+                options.Pwd = "123456";
+            })));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

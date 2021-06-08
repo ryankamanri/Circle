@@ -12,9 +12,11 @@ namespace dotnet.Controllers
     {
 
         private SQL _sql;
-        public MySqlController(SQL sql)
+        private DataBaseContext _dbc;
+        public MySqlController(SQL sql,DataBaseContext dbc)
         {
             _sql = sql;
+            _dbc = dbc;
         }
 
         [HttpGet]
@@ -30,12 +32,24 @@ namespace dotnet.Controllers
 
             string result = "";
 
-            IList<User> users = Model.User.GetList(_sql.Query("select * from users"));
+            IList<Tag> tags = Model.Tag.GetList(_sql.Query("select * from tags"));
             
-            foreach (var user in users)
+            foreach (var tag in tags)
             {
-                result += $"{user.ToString()}\n";
+                result += $"{tag.ToString()}\n";
             }
+
+            return result;
+        }
+
+        [HttpGet]
+        [Route("dbc")]
+        public string DBCTest()
+        {
+            string result = "";
+
+           
+            
 
             return result;
         }
