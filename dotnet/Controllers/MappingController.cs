@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using dotnet.Model;
 using dotnet.Services;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace dotnet.Controllers
 {
@@ -13,10 +15,13 @@ namespace dotnet.Controllers
     {
         private DataBaseContext _dbc;
         private SQL _sql;
-        public MappingController(SQL sql,DataBaseContext dbc)
+
+        private ICookie _cookie;
+        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie)
         {
             _sql = sql;
             _dbc = dbc;
+            _cookie = cookie;
         }
 
         [HttpGet]
@@ -50,7 +55,6 @@ namespace dotnet.Controllers
             }
             
 
-            //IEnumerable<long> UserIDs =  _dbc.Users_SortedTags.FindAndIntersect(new List<long>(){3},ID_IDList.OutPutType.Key);
             IEnumerable<long> UserIDs =  _dbc.Users_SortedTags.FindAndIntersect(tagIDs,ID_IDList.OutPutType.Key);
 
 
@@ -67,9 +71,9 @@ namespace dotnet.Controllers
             result += $"{"匹配第一个用户的所有帖子"}\n";
 
             string account = "974481066@qq.com";
-            string password = "123456";
+            
 
-            long userID = Model.User.FindID(_sql,account,password);
+            long userID = Model.User.FindID(_sql,account);
 
             result += $"{userID}\n";
 
@@ -87,6 +91,45 @@ namespace dotnet.Controllers
                 result += $"{post._Post}\n";
             }
             return result;
+        }
+
+        [HttpGet]
+        [Route("connectTest")]
+        public async Task<string> ConnectTest()
+        {
+            string result = "";
+            int userID = default;
+            string tagContext = "第一个标签";
+
+            result += $"建立本用户的帖子与'第一个标签'标签的关系\n";
+
+            foreach(var c in _cookie.GetCookie(HttpContext).Claims)
+            {
+                if(c.Type == "ID") userID = Convert.ToInt32(c.Value); //从cookie中找到用户ID
+            }
+
+            User user = Model.User.Find(_sql,userID);//由用户ID在数据库中找到用户
+
+            result += $"用户 : {user.ToString()}\n";
+
+            long tagID = Tag.FindID(_sql,tagContext);//由标签内容找到标签ID
+
+            if (tagID == long.MinValue) return result;//表示没找到对应的标签
+
+            Tag tag = new Tag(tagID,tagContext);
+
+            result += $"帖子 : {tag.ToString()}";
+
+            await _dbc.Connect<User,Tag>(user,tag);//用户跟标签建立关系
+
+            return result;
+        }
+
+        [HttpGet]
+        [Route("operation")]
+        public async Task Operation()
+        {
+            
         }
     }
 }

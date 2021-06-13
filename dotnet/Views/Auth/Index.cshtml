@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+        * {
+            color: white;
+        }
+
+        .self-dropdown {
+            margin: 0;
+            position: absolute;
+            right: 1%;
+            top: 14.28%;
+            padding-left: 0;
+        }
+
+        .self-dropdown-item {
+            display: none;
+
+        }
+
+        .self-dropdown:hover .self-dropdown-item {
+            display: block;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .self-dropdown-block {
+            opacity: 0;
+            transition: background-color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            position: relative;
+            top: 56px;
+            border: 1px;
+            border-radius: 5px;
+        }
+
+        .self-dropdown:hover>.self-dropdown-block {
+            display: block;
+            background-color: #f1f1f1;
+            opacity: 1;
+        }
+
+        .self-dropdown-item:hover {
+            background-color: lightgray;
+            border-radius: 5px;
+        }
+
+        .self-dropdown li {
+            color: black;
+        }
+
+        .selfstyle-inline-block {
+            display: inline-block;
+        }
+
+        .selfstyle-blockstyle {
+
+            border-radius: 5px;
+        }
+
+        .selfstyle-boundary {
+            background-color: #e9e7ef;
+            width: 1px;
+            height: 90%;
+
+        }
+
+        .selfstyle-top {
+            vertical-align: top;
+        }
+
+        .selfstyle-translucent {
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        #posts>div {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body style="opacity: 0;height: 100%;margin: 0;background-image: url('/Images/1.jpg');
+    background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
+
+    <main style="height: 100%;">
+        <div class="container" style="height: 100%;">
+            <div class="jumbotron text-center selfstyle-translucent" style="
+            padding-right: 64px;
+            opacity: 0;
+            margin: 25% 0 25% 0        ">
+                <h1>校友互助云平台</h1>
+                <br><br>
+
+                <h5 style="letter-spacing: 10px;">一个简易,快捷,便利的互助平台</h5>
+            </div>
+
+            <hr style="background-color: white;">
+            <div style="height: 100%;padding-top: 100px;" id="posts">
+                <div class="col-md-11 selfstyle-inline-block selfstyle-top selfstyle-translucent">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <h4>在这里,你可以...</h4>
+                        <br>
+                    </div>
+                </div>
+                <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
+                <div class="col-md-4 selfstyle-inline-block selfstyle-top">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <h6>匹配到契合自己学校的学长或学姐,与他/她们展开深入交流</h6>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-7 selfstyle-inline-block selfstyle-top selfstyle-translucent">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <img src="/Images/IndexImage/1.jpg" alt="" srcset="" style="width: inherit;">
+                        <br>
+                    </div>
+                </div>
+                <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
+                <div class="col-md-7 selfstyle-inline-block selfstyle-top">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <img src="/Images/IndexImage/2.jpg" alt="" srcset="" style="width: inherit;">
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-4 selfstyle-inline-block selfstyle-top selfstyle-translucent">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <h6>如果你是毕业生,可以发布与你们单位相关的招聘信息</h6>
+                        <br>
+                    </div>
+                </div>
+                <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
+                <div class="col-md-4 selfstyle-inline-block selfstyle-top">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <h6>如果你是即将入学的准大学生,可以匹配到自己的师兄师姐咨询相关问题</h6>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-7 selfstyle-inline-block selfstyle-top selfstyle-translucent">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <img src="/Images/IndexImage/3.jpg" alt="" srcset="" style="width: inherit;">
+                        <br>
+                    </div>
+                </div>
+                <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
+                <div class="col-md-7 selfstyle-inline-block selfstyle-top">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <img src="/Images/IndexImage/4.jpg" alt="" srcset="" style="width: inherit;">
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-4 selfstyle-inline-block selfstyle-top selfstyle-translucent">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <h6>...</h6>
+                        <br>
+                    </div>
+                </div>
+                <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
+                <div class="col-md-7 selfstyle-inline-block selfstyle-top">
+                    <div class="col-md-11 m-auto selfstyle-blockstyle ">
+                        <br><br><br><br>
+                        <h6>...</h6>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <footer></footer>
+</body>
+
+</html>
+
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/js/site.js"></script>
+<script src="/js/My.js"></script>
+<script>
+
+    let critical = new Critical(0, 0, 2);
+
+    $(window).on("load", async(event) => {
+        $(".container>.jumbotron").animate({
+            paddingRight: "0px",
+            opacity: 1
+        }, 1000);
+
+        await Sleep(1000);
+
+        $("#posts>div").each(async (index, elem) => {
+
+            critical.GetData(1, async () => {
+                elem.style.position = "relative";
+
+                $(elem).animate({
+                    top: "-100px",
+                    opacity: 1
+                }, 1500);
+
+                await Sleep(500);
+
+            });
+
+        });
+    })
+
+
+    let visited = [false, false, false, false, false, false];
+
+    $(window).on("scroll", event => {
+        //console.log($(window).scrollTop());
+
+        if ($(window).scrollTop() >= 148 && visited[0] == false) {
+            critical.PutData(1, value => console.log(value));
+            visited[0] = true;
+        }
+        if ($(window).scrollTop() >= 484 && visited[1] == false && visited[0] == true) {
+            critical.PutData(2, value => console.log(value));
+            visited[1] = true;
+        }
+        if ($(window).scrollTop() >= 950 && visited[2] == false && visited[1] == true) {
+            critical.PutData(2, value => console.log(value));
+            visited[2] = true;
+        }
+        if ($(window).scrollTop() >= 1306 && visited[3] == false && visited[2] == true) {
+            critical.PutData(2, value => console.log(value));
+            visited[3] = true;
+        }
+        if ($(window).scrollTop() >= 1353 && visited[4] == false && visited[3] == true) {
+            critical.PutData(2, value => console.log(value));
+            visited[4] = true;
+        }
+        if ($(window).scrollTop() >= 1353 && visited[5] == false && visited[4] == true) {
+            critical.PutData(2, value => console.log(value));
+            console.log("stop");
+        }
+
+
+
+    });
+
+</script>

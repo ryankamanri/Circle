@@ -1,0 +1,37 @@
+@using dotnet.Model
+@using dotnet.Services
+@model User
+@inject ICookie icookie
+@inject SQL sql
+
+@{
+    Layout = "../Shared/_Layout.cshtml";
+    ViewBag.User_Account = Model.Account;
+    ViewData["Title"] = "Home";
+    ViewData["1"] = "View Data Test";
+    ViewData["2"] = "The Double Test";
+    ViewData["3"] = "The Triple Test";
+    ViewData["4"] = "Not Any More Test";
+}
+@functions{
+    public string msg = $"ID = ";
+}
+
+<div style="background-color: #cccccc;">
+    <h2>主视图</h2>
+    <h3>这里放登录后的主页面</h3>
+    <h3>@msg @Model.ID</h3>
+    <h3 id="test">{{msg}}</h3>
+    <div>@Html.Partial("_PartialView","1",ViewData)</div>
+    <div>@Html.Partial("_PartialView","2",ViewData)</div>
+    <div>@Html.Partial("_PartialView","3",ViewData)</div>
+    <div>@Html.Partial("_PartialView","4",ViewData)</div>
+</div>
+<script>
+    var vue = new Vue({
+        el:"#test",
+        data:{
+            msg:"ID = @Model.ID"
+        }
+    });
+</script>

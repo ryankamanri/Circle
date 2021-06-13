@@ -1,0 +1,131 @@
+@model dotnet.Model.User
+<header style="opacity: 1; position: fixed; width: -webkit-fill-available; top: 0px;">
+        <nav class="navbar navbar-expand-md navbar-light box-shadow">
+            <div class="container"><button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">Logo</a>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">主页</a>
+                            <!--<span class="sr-only">(current)</span></a>-->
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">帖子</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">私聊</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2 btn" type="search" placeholder="Search" aria-label="Search"
+                            style="border-color: lightgray;">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+
+
+                    <ul class="self-dropdown"> <img src="/Images/duckduckgo.jfif" class="drop"
+                            style="border-radius: 100px; height: 40px;width: 40px;float: right;">
+                        <div class="self-dropdown-block">
+                            <li class="self-dropdown-item">@Model.Account</li>
+                            <li class="self-dropdown-item">个人信息</li>
+                            <li class="self-dropdown-item">设置</li>
+                            <li class="self-dropdown-item" id="logout">注销</li>
+                        </div>
+
+                    </ul>
+                    <div style="width: 40px;height: 40px;"></div>
+
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <br><br>
+    <style>
+
+        .self-dropdown {
+            margin: 0;
+            position: absolute;
+            right: 1%;
+            top: 14.28%;
+            padding-left: 0;
+        }
+
+        .self-dropdown-item {
+            display: none;
+
+        }
+
+        .self-dropdown:hover .self-dropdown-item {
+            display: block;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .self-dropdown-block {
+            opacity: 0;
+            transition: background-color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            position: relative;
+            top: 56px;
+            border: 1px;
+            border-radius: 5px;
+        }
+
+        .self-dropdown:hover>.self-dropdown-block {
+            display: block;
+            background-color: #f1f1f1;
+            opacity: 1;
+        }
+
+        .self-dropdown-item:hover {
+            background-color: lightgray;
+            border-radius: 5px;
+        }
+
+        .self-dropdown li {
+            color: black;
+        }
+
+        .selfstyle-inline-block {
+            display: inline-block;
+        }
+
+        .selfstyle-blockstyle {
+
+            border-radius: 5px;
+        }
+
+        .selfstyle-boundary {
+            background-color: #e9e7ef;
+            width: 1px;
+            height: 90%;
+
+        }
+
+        .selfstyle-top {
+            vertical-align: top;
+        }
+
+        .selfstyle-translucent {
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        #posts>div {
+            opacity: 0;
+        }
+    </style>
+    <script>
+        $("#logout").on("click",() =>{
+            $.ajax({
+                url : "/LogOutSubmit",
+                type : "POST"
+            }).done(data => {
+                if(data == "logout succeed")
+                    window.location.href = "/";
+            })
+        });
+    </script>

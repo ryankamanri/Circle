@@ -5,16 +5,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <script src="/lib/vue/dist/vue.js"></script>
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/js/site.js"></script>
+    <script src="/js/My.js"></script>
 </head>
 
-<body style="background-color:#eeeeee">
-    <h1>布局页</h1>
-    <div>
-        <main>
-            @RenderBody()
-        </main>
-        <div>@Html.Partial("_PartialView")</div>
+<body>
+    @Html.Partial("Header")
+    <div style="background-color:#eeeeee; margin:auto" class="col-md-8">
+        <h1>布局页</h1>
+        <h2>你好,@ViewBag.User_Account</h2>
+        <div>
+            <main>
+                @RenderBody()
+            </main>
+
+        </div>
     </div>
 
 </body>

@@ -1,0 +1,247 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    font-family: DengXian;
+    background-color: mintcream;
+    opacity: 0;
+}
+
+header {
+    background-color: lightcyan;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    opacity: 1;
+    z-index:1;
+}
+
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+@font-face
+{
+    font-family:"等线";
+    font-style:normal;
+}
+
+/*special self sheetstyle*/
+.none-decoration a {
+    color: #17A2B8;
+    text-decoration: none !important;
+}
+.none-decoration input {
+    color: #17A2B8;
+    text-decoration: none !important;
+}
+.none-decoration button {
+    color: #17A2B8;
+    text-decoration: none !important;
+}
+
+.margin-center{
+    margin-left:auto;
+    margin-right:auto;
+}
+.width-control {
+    max-width: 900px;
+}
+
+/*sheetstyle for special area*/
+
+.container-main {
+    background-color: white;
+    box-shadow: 1px 1px 1px 1px lightgrey;
+    border-radius: 5px;
+    margin-top: 75px;
+}
+
+#file-upload-button {
+    color: #17A2B8;
+    border-radius: 5px;
+}
+
+form input,form a {
+    border-radius: 100px !important;
+}
+
+/*sheetstyle for a located special area*/
+
+.blogs-index-title a {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.blogs-index-summary {
+    color: gray;
+    font-size: 14px;
+    position: relative;
+    white-space: pre-line;
+    left: 5%;
+    width: 95%;
+    line-height: 22px;
+}
+
+.blogs-index-classifications {
+    margin-top: 5px;
+    position: relative;
+}
+.posts-index-title a{
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.posts-index-sender {
+    margin-top: 5px;
+    position: relative;
+    top: 35px;
+    left: 100%;
+}
+
+.posts-index-td-2 {
+    width: 20%;
+}
+
+.posts-details-raw {
+    white-space: pre-line;
+    
+}
+.search input[type=text] {
+    display: inline;
+    width: 30%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.search.btn.btn-info {
+    margin-top: 7px;
+    margin-bottom: 10px
+}
+
+.posts-index-cotitle, .blogs-index-postdatetime, .post-details-comments-content {
+    text-decoration: none;
+    font-size: 13px;
+    color: gray;
+    white-space: pre-line;
+    position: relative;
+    line-height: 18px;
+}
+
+/*marked*/
+
+pre {
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgba(221,160,221,0.3);
+    margin: 10px;
+}
+
+blockquote {
+    margin: 10px;
+    padding: 10px;
+    color: navy;
+    background-color: lightyellow;
+    border-radius: 5px;
+}
+
+code {
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: red;
+    background-color: rgba(221,160,221,0.3);
+}
+h1 {
+    padding-left: 5px;
+    margin-bottom:20px;
+    margin-top:20px;
+}
+
+h2 {
+    padding-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+h3 {
+    padding-left: 15px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+h4 {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+h5 {
+    padding-left: 25px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+h6 {
+    padding-left: 30px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+p {
+    margin-left: 10px;
+    margin-right: 10px;
+}

@@ -7,7 +7,7 @@
 - MySql.Data
 
 > 运行命令 `dotnet add package MySql.Data`
-> 之后运行 `dotnet.run`
+> 之后运行 `dotnet run`
 
 
 

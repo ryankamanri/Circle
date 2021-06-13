@@ -43,14 +43,7 @@ namespace dotnet
             }));
 
             //增加数据库上下文服务
-            services.AddSingleton(new DataBaseContext(new SQL(options =>
-            {
-                options.Server = "127.0.0.1";
-                options.Port = "3306";
-                options.Database = "schema1";
-                options.Uid = "root";
-                options.Pwd = "123456";
-            })));
+            services.AddSingleton<DataBaseContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
