@@ -1,5 +1,5 @@
 @model dotnet.Model.User
-<header style="opacity: 1; position: fixed; width: -webkit-fill-available; top: 0px;">
+<header style="opacity: 1; position: fixed; width: -webkit-fill-available; top: 0px; z-index:1">
         <nav class="navbar navbar-expand-md navbar-light box-shadow">
             <div class="container"><button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
@@ -30,7 +30,7 @@
 
                     <ul class="self-dropdown"> <img src="/Images/duckduckgo.jfif" class="drop"
                             style="border-radius: 100px; height: 40px;width: 40px;float: right;">
-                        <div class="self-dropdown-block">
+                        <div class="self-dropdown-block" style="float: right;transform:translate(25%, 0)">
                             <li class="self-dropdown-item">@Model.Account</li>
                             <li class="self-dropdown-item">个人信息</li>
                             <li class="self-dropdown-item">设置</li>

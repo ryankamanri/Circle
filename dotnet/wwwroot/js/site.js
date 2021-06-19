@@ -4,7 +4,7 @@
 // Write your Javascript code.
 
 function ShowBody(event) {
-    $("body").animate({
+    $("#body").animate({
         opacity: 1
     });
 

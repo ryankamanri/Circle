@@ -27,7 +27,7 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<AuthenticateResult> AuthenticateAsync()
         {
-            return AuthenticateResult.NoResult();
+            return await Task<AuthenticateResult>.Run(() => AuthenticateResult.NoResult());
         }
 
         /// <summary>

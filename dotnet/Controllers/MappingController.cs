@@ -26,10 +26,30 @@ namespace dotnet.Controllers
 
         [HttpGet]
         [Route("test")]
-        public string Test()
+        public async Task<string> Test()
         {
             string result = "";
 
+            //创建用户
+            //Model.User userTest = new User();
+            //保存到数据库
+            //await userTest.Save(_sql);
+
+            //查找并修改用户数据
+             //Model.User userTest = Model.User.Find(_sql,Model.User.FindID(_sql,"2168359585@qq.com"));
+             //userTest.Password = "456789";
+             //userTest.Modify(_sql);
+
+            //查找并删除用户
+            // Model.User userTest = Model.User.Find(_sql,Model.User.FindID(_sql,"2168359585@qq.com"));
+            // userTest.Remove(_sql);
+
+            //用户与id为1帖子建立关系
+            //await _dbc.Connect<Model.User,Tag>(userTest,Tag.Find(_sql,1));
+
+            //用户与id为1帖子解除关系
+
+            //await _dbc.DisConnect<Model.User,Tag>(userTest,Tag.Find(_sql,1));
 
              return result;
         }
@@ -41,11 +61,15 @@ namespace dotnet.Controllers
         {
             string result = "";
 
-            result += "匹配同时拥有第一个标签,考研的标签的所有用户\n";
 
             string tag1 = "第一个标签";
             string tag2 = "考研";
-            List<string> tags = new List<string>(){tag1,tag2};
+            string tag3 = "哲学";
+
+            result += $"匹配拥有'{tag1}','{tag2}','{tag3}'的标签的用户\n";
+
+            
+            List<string> tags = new List<string>(){tag1,tag2,tag3};
 
             List<long> tagIDs = Tag.FindIDs(_sql,tags);
 
@@ -55,41 +79,57 @@ namespace dotnet.Controllers
             }
             
 
-            IEnumerable<long> UserIDs =  _dbc.Users_SortedTags.FindAndIntersect(tagIDs,ID_IDList.OutPutType.Key);
+            //IEnumerable<long> UserIDs =  _dbc.Users_SortedTags.FindAndIntersect(tagIDs,ID_IDList.OutPutType.Key);
 
-
-            foreach(var ID in UserIDs)
+            Key_ListValue_Pairs<long,long> userIDs_tagsIDs = _dbc.Users_SortedTags.FindUnionStatistics(tagIDs,ID_IDList.OutPutType.Key);
+            //KeyValuePair<long,IList<long>> kp = new KeyValuePair<long, IList<long>>();
+            foreach(var userID_tagsID in userIDs_tagsIDs)
             {
-                result += $"用户的ID是{ID}\n";
-            }
-            IList<User> users =  Model.User.Finds(_sql,UserIDs);
-            foreach(var user in users)
-            {
-                result += $"{user.ToString()}\n";
+                var userID = userID_tagsID.Key;
+                IList<long> tagsID = userID_tagsID.Value;
+                result += $"用户的ID是{userID}\n";
+                User user = Model.User.Find(_sql,userID);
+                result += $"用户的信息是{user.ToString()}\n";
+
+                foreach(var tagID in tagsID)
+                {
+                    Tag tag = Tag.Find(_sql,tagID);
+
+                    result += $"用户的标签有{tag.ToString()}\n";
+                }
+
+
             }
 
-            result += $"{"匹配第一个用户的所有帖子"}\n";
 
-            string account = "974481066@qq.com";
+            // IList<User> users =  Model.User.Finds(_sql,UserIDs);
+            // foreach(var user in users)
+            // {
+            //     result += $"{user.ToString()}\n";
+            // }
+
+            // result += $"{"匹配第一个用户的所有帖子"}\n";
+
+            // string account = "974481066@qq.com";
             
 
-            long userID = Model.User.FindID(_sql,account);
+            // long userID = Model.User.FindID(_sql,account);
 
-            result += $"{userID}\n";
+            // result += $"{userID}\n";
 
-            List<long> PostIDs = _dbc.SortedUsers_Posts.Find(userID,ID_IDList.OutPutType.Value);
+            // List<long> PostIDs = _dbc.SortedUsers_Posts.Find(userID,ID_IDList.OutPutType.Value);
 
-            foreach(var tagID in PostIDs)
-            {
-                result += $"帖子的ID是{tagID}\n";
-            }
+            // foreach(var tagID in PostIDs)
+            // {
+            //     result += $"帖子的ID是{tagID}\n";
+            // }
 
-            IList<Post> posts = Model.Post.Finds(_sql,PostIDs);
+            // IList<Post> posts = Model.Post.Finds(_sql,PostIDs);
 
-            foreach(var post in posts)
-            {
-                result += $"{post._Post}\n";
-            }
+            // foreach(var post in posts)
+            // {
+            //     result += $"{post._Post}\n";
+            // }
             return result;
         }
 

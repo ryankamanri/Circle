@@ -22,10 +22,9 @@
     <h3>这里放登录后的主页面</h3>
     <h3>@msg @Model.ID</h3>
     <h3 id="test">{{msg}}</h3>
-    <div>@Html.Partial("_PartialView","1",ViewData)</div>
-    <div>@Html.Partial("_PartialView","2",ViewData)</div>
-    <div>@Html.Partial("_PartialView","3",ViewData)</div>
-    <div>@Html.Partial("_PartialView","4",ViewData)</div>
+    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The first title"},{"Content","the first content"}})</div>
+    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The second title"},{"Content","the second content"}})</div>
+    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The third title"},{"Content","the third content"}})</div>
 </div>
 <script>
     var vue = new Vue({
