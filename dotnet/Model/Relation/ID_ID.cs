@@ -3,8 +3,11 @@ using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 
 
-namespace dotnet.Model
+namespace dotnet.Model.Relation
 {
+    /// <summary>
+    /// 实体ID与实体ID的关系类,表示两个实体之间的关系
+    /// </summary>
     public class ID_ID : IEquatable<ID_ID>
     {
         public long ID { get; set; }

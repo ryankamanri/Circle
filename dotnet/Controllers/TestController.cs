@@ -1,22 +1,37 @@
 using System;
-using Microsoft.AspNetCore.Mvc;
-using dotnet.Model;
-using dotnet.Services;
+using System.Dynamic;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using dotnet.Model;
+using dotnet.Services.Database;
+using dotnet.Services.Extensions;
+
 
 namespace dotnet.Controllers
 {
-    [Route("MySql/")]
+    [Route("test/")]
     [Controller]
-    public class MySqlController : Controller
+    public class TestController : Controller
     {
 
         private SQL _sql;
         private DataBaseContext _dbc;
-        public MySqlController(SQL sql,DataBaseContext dbc)
+
+
+
+        public TestController(SQL sql,DataBaseContext dbc)
         {
             _sql = sql;
             _dbc = dbc;
+        }
+
+        [HttpGet]
+        [Route("email")]
+        public IActionResult SendEmail(string emailto,string title,string body)
+        {
+            EmailHelper.SendThread(emailto,title,body);
+            return new JsonResult("OK");
         }
 
         [HttpGet]
@@ -31,8 +46,9 @@ namespace dotnet.Controllers
         {
 
             string result = "";
+            Tag _tag = new Tag();
 
-            IList<Tag> tags = Model.Tag.GetList(_sql.Query("select * from tags"));
+            IList<Tag> tags = _tag.GetList(_sql.Query("select * from tags"));
             
             foreach (var tag in tags)
             {
@@ -48,9 +64,12 @@ namespace dotnet.Controllers
         {
             string result = "";
 
-           
-            
+            dynamic json = new ExpandoObject();
+            json.value = 10; 
 
+            result += $"{JsonConvert.SerializeObject(json)}";
+            
+            
             return result;
         }
     }

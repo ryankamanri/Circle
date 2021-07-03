@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using dotnet.Services.Extensions;
 
-namespace dotnet.Services
+namespace dotnet.Services.Cookie
 {
     public class Cookie : ICookie
     {

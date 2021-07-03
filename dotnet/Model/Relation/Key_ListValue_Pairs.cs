@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace dotnet.Model
+namespace dotnet.Model.Relation
 {
+    /// <summary>
+    /// 由KeyValuePair组成的list,同时具有list列表的所有功能,
+    /// dictionary字典的根据键查找值功能 KeyIndex()
+    /// </summary>
+    /// <typeparam name="TKey">键</typeparam>
+    /// <typeparam name="TValue">值</typeparam>
     public class Key_ListValue_Pairs<TKey,TValue> : List<KeyValuePair<TKey,List<TValue>>>
     {
         /// <summary>

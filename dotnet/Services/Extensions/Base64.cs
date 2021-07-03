@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-namespace dotnet.Services
+namespace dotnet.Services.Extensions
 {
     public static class Base64
     {

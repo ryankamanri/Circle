@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using dotnet.Model;
-using dotnet.Services;
+using dotnet.Services.Database;
+using dotnet.Services.Cookie;
 
 namespace dotnet.Controllers
 {
@@ -17,10 +18,13 @@ namespace dotnet.Controllers
 
         private ICookie _cookie;
         private SQL _sql;
+
+        private User _user;
         public HomeController(SQL sql,ICookie cookie)
         {
             _sql = sql;
             _cookie = cookie;
+            _user = new User();
         }
 
         [HttpGet]
@@ -31,7 +35,7 @@ namespace dotnet.Controllers
             foreach(var c in _cookie.GetCookie(HttpContext).Claims)
             {
                 if(c.Type.ToString() == "ID")
-                    return View(dotnet.Model.User.Find(_sql,Convert.ToInt64(c.Value)) );
+                    return View(_user.Select(_sql,Convert.ToInt64(c.Value)) );
             }
 
             return View(new User());

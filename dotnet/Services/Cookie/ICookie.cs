@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace dotnet.Services
+namespace dotnet.Services.Cookie
 {
     public interface ICookie
     {

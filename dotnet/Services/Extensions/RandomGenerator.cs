@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnet.Services
+namespace dotnet.Services.Extensions
 {
     public static class RandomGenerator
     {

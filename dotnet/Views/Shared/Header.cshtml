@@ -22,8 +22,18 @@
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2 btn" type="search" placeholder="Search" aria-label="Search"
-                            style="border-color: lightgray;">
+
+
+                        <div class="self-dropdown" style="position: relative;">
+                            <input id="search" class="form-control mr-sm-2 btn" type="text" placeholder="Search"
+                                aria-label="Search" style="border-color: lightgray;">
+                            <ul id="searchResult" class="self-dropdown-block"
+                                style="position:fixed;width:203.6px">
+
+                            </ul>
+                        </div>
+
+
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                     </form>
 
@@ -75,7 +85,7 @@
             border-radius: 5px;
         }
 
-        .self-dropdown:hover>.self-dropdown-block {
+        .self-dropdown:hover .self-dropdown-block {
             display: block;
             background-color: #f1f1f1;
             opacity: 1;
@@ -119,13 +129,57 @@
         }
     </style>
     <script>
-        $("#logout").on("click",() =>{
+        let count = 0;//统计一段时间要发送的ajax请求个数
+        $("#logout").on("click", () => {
             $.ajax({
-                url : "/LogOutSubmit",
-                type : "POST"
+                url: "/LogOutSubmit",
+                type: "POST"
             }).done(data => {
-                if(data == "logout succeed")
+                if (data == "logout succeed")
                     window.location.href = "/";
-            })
+            });
         });
+        $(document).ready(() => {
+            $("form #search").keyup(async() => { //这个事件一定要嵌套在ready()里面
+                count++;
+                await Sleep(500);
+                count--;
+                if(count > 0) return;
+                Search();
+            });
+        });
+        let resultList;
+        function Search() {
+            let search = $("#search").val();
+            console.log(search);
+            $.ajax({
+                url: "/map/Search",
+                type: "POST",
+                data: {
+                    "search": search
+                }
+            }).done((data) => {
+                if (data == "bad request") console.log(data);
+                if(data == "{\"result\" : []}") return;
+                resultList = JSON.parse(data)["result"];
+                for(let i in resultList)
+                {
+                    console.log(resultList[i].Tag);
+                }
+                AppendResults(resultList);
+            }).fail(() =>
+                alert("send failure")
+            )
+        }
+
+        function AppendResults(obj)
+        {
+            for(let i in obj)
+            {
+                let resultItem = $(`<li>${obj[i].Tag}</li>`);
+                resultItem.attr("class","self-dropdown-item");
+                $("#searchResult").append(resultItem);
+            }
+            
+        }
     </script>

@@ -2,8 +2,11 @@ using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace dotnet.Model
+namespace dotnet.Model.Relation
 {
+    /// <summary>
+    /// 实体之间关系类ID_ID的list集合
+    /// </summary>
     public class ID_IDList : List<ID_ID>
     {
         public enum OutPutType { Key, Value }
@@ -16,7 +19,7 @@ namespace dotnet.Model
             IsKey ? new ID_ID(0, input) : new ID_ID(input, 0);//如果输出的是key,则比较value是否相同,否则比较key
 
             int index =
-            IsKey ? BinarySearch(0, Count, id_id, new Model.ValueComparer()) : BinarySearch(0, Count, id_id, new Model.KeyComparer());
+            IsKey ? BinarySearch(0, Count, id_id, new ValueComparer()) : BinarySearch(0, Count, id_id, new KeyComparer());
 
             if (index < 0) return target;
             target.Add(IsKey ? this[index].ID : this[index].ID_2);

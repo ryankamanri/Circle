@@ -7,7 +7,12 @@
 - MySql.Data
 
 > 运行命令 `dotnet add package MySql.Data`
-> 之后运行 `dotnet run`
+
+- Newtonsoft.Json
+
+> 运行命令 `dotnet add package Newtonsoft.Json`
+
+之后运行 `dotnet run`
 
 
 

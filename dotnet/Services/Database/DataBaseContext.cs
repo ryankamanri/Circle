@@ -1,26 +1,38 @@
 using System;
 using System.Threading.Tasks;
-using dotnet.Services;
-using dotnet.Model;
 using System.Collections.Generic;
+using dotnet.Model.Relation;
+using dotnet.Services.Extensions;
+using dotnet.Model;
 
-namespace dotnet.Services
+
+namespace dotnet.Services.Database
 {
 
-    
+    /// <summary>
+    /// 数据库上下文类,用于暂存数据库的部分数据  
+    /// 所有对数据库关系的操作基于这个类进行
+    /// </summary>
     public class DataBaseContext
     {
         private SQL _sql;
 
-        private User _user;
+        private User user;
 
-        private Post _post;
+        private Post post;
 
-        private Tag _tag;
+        private Tag tag;
 
         private KeyComparer keyComparer;
 
         private ValueComparer valueComparer;
+
+        public Dictionary<string,List<Tag>> TagIndex {get;private set;}
+
+        /// <summary>
+        /// 按照key/value排序好的关系表
+        /// </summary>
+        /// <value></value>
 
         public ID_IDList SortedUsers_Posts {get;private set;}
 
@@ -40,12 +52,15 @@ namespace dotnet.Services
         {
             _sql = sql;
 
-            _user = new User();
-            _post = new Post();
-            _tag = new Tag();
+            user = new User();
+            post = new Post();
+            tag = new Tag();
 
             keyComparer = new KeyComparer();
             valueComparer = new ValueComparer();
+            
+            TagIndex = new Dictionary<string, List<Tag>>();
+            InitTagIndex();
 
             SortedUsers_Posts = ID_ID.GetList( _sql.Query("select * from schema1.users_posts"));
             SortedUsers_Tags = ID_ID.GetList(_sql.Query("select * from schema1.users_tags"));
@@ -79,9 +94,9 @@ namespace dotnet.Services
 
             Type t1Type = m1.GetType(),
             t2Type = m2.GetType(),
-            userType = _user.GetType(),
-            postType = _post.GetType(),
-            tagType = _tag.GetType();
+            userType = user.GetType(),
+            postType = post.GetType(),
+            tagType = tag.GetType();
 
             ID_ID newConnection = new ID_ID(m1.ID,m2.ID);
 
@@ -135,9 +150,9 @@ namespace dotnet.Services
 
             Type t1Type = m1.GetType(),
             t2Type = m2.GetType(),
-            userType = _user.GetType(),
-            postType = _post.GetType(),
-            tagType = _tag.GetType();
+            userType = user.GetType(),
+            postType = post.GetType(),
+            tagType = tag.GetType();
 
             ID_ID newConnection = new ID_ID(m1.ID,m2.ID);
 
@@ -174,6 +189,25 @@ namespace dotnet.Services
             }
             
             
+        }
+
+        /// <summary>
+        /// 标签索引初始化
+        /// </summary>
+        private void InitTagIndex()
+        {
+            IList<Tag> tags = tag.GetList(_sql.Query("select * from tags"));
+            foreach(var tag in tags)
+            {
+                List<string> subset = tag.GetContinuousSubset();
+                foreach(var subItem in subset)
+                {
+                    if(TagIndex.ContainsKey(subItem))
+                        TagIndex[subItem].Add(tag);
+                    
+                    else TagIndex.Add(subItem,new List<Tag>(){tag});
+                }
+            }
         }
 
     }

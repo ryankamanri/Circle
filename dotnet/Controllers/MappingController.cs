@@ -3,8 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using dotnet.Model;
-using dotnet.Services;
+using dotnet.Model.Relation;
+using dotnet.Services.Database;
+using dotnet.Services.Cookie;
+
 
 
 namespace dotnet.Controllers
@@ -56,22 +60,25 @@ namespace dotnet.Controllers
 
 
         [HttpGet]
-        [Route("search")]
-        public string Search()
+        [Route("sc")]
+        public string Sc()
         {
+
+            Tag _tag = new Tag();
+            User _user = new User();
             string result = "";
 
 
-            string tag1 = "第一个标签";
-            string tag2 = "考研";
-            string tag3 = "哲学";
+            Tag tag1 = new Tag("第一个标签");
+            Tag tag2 = new Tag("考研");
+            Tag tag3 = new Tag("哲学");
 
             result += $"匹配拥有'{tag1}','{tag2}','{tag3}'的标签的用户\n";
 
             
-            List<string> tags = new List<string>(){tag1,tag2,tag3};
+            List<Tag> tags = new List<Tag>(){tag1,tag2,tag3};
 
-            List<long> tagIDs = Tag.FindIDs(_sql,tags);
+            List<long> tagIDs = _tag.SelectIDs(_sql,tags);
 
             foreach(var ID in tagIDs)
             {
@@ -87,15 +94,23 @@ namespace dotnet.Controllers
             {
                 var userID = userID_tagsID.Key;
                 IList<long> tagsID = userID_tagsID.Value;
-                result += $"用户的ID是{userID}\n";
-                User user = Model.User.Find(_sql,userID);
+                IList<long> allTagsID = _dbc.SortedUsers_Tags.Find(userID,ID_IDList.OutPutType.Value);
+                result += $"\n用户的ID是{userID}\n";
+                User user = _user.Select(_sql,userID);
                 result += $"用户的信息是{user.ToString()}\n";
+
+                foreach(var tagID in allTagsID)
+                {
+                    _tag.Select(_sql,tagID);
+
+                    result += $"用户的标签有{_tag.ToString()}\n";
+                }
 
                 foreach(var tagID in tagsID)
                 {
-                    Tag tag = Tag.Find(_sql,tagID);
+                    _tag.Select(_sql,tagID);
 
-                    result += $"用户的标签有{tag.ToString()}\n";
+                    result += $"与该用户相同的标签有{_tag.ToString()}\n";
                 }
 
 
@@ -138,8 +153,9 @@ namespace dotnet.Controllers
         public async Task<string> ConnectTest()
         {
             string result = "";
+            User _user = new User();
             int userID = default;
-            string tagContext = "第一个标签";
+            Tag tag = new Tag("第一个标签");
 
             result += $"建立本用户的帖子与'第一个标签'标签的关系\n";
 
@@ -148,27 +164,47 @@ namespace dotnet.Controllers
                 if(c.Type == "ID") userID = Convert.ToInt32(c.Value); //从cookie中找到用户ID
             }
 
-            User user = Model.User.Find(_sql,userID);//由用户ID在数据库中找到用户
+            _user.Select(_sql,userID);//由用户ID在数据库中找到用户
 
-            result += $"用户 : {user.ToString()}\n";
+            result += $"用户 : {_user.ToString()}\n";
 
-            long tagID = Tag.FindID(_sql,tagContext);//由标签内容找到标签ID
+            long tagID = tag.SelectID(_sql,tag);//由标签内容找到标签ID
 
             if (tagID == long.MinValue) return result;//表示没找到对应的标签
 
-            Tag tag = new Tag(tagID,tagContext);
+            // Tag tag = new Tag(tagID,tagContext);
 
             result += $"帖子 : {tag.ToString()}";
 
-            await _dbc.Connect<User,Tag>(user,tag);//用户跟标签建立关系
+            await _dbc.Connect<User,Tag>(_user,tag);//用户跟标签建立关系
 
             return result;
         }
 
-        [HttpGet]
-        [Route("operation")]
-        public async Task Operation()
+        [HttpPost]
+        [Route("Search")]
+        public IActionResult Search()
         {
+            string search = "";
+            string result = "{\"result\" : [";
+            StringValues searchInfo = new StringValues();
+            if(HttpContext.Request.Form.TryGetValue("search",out searchInfo) == false) return new JsonResult("bad request");
+
+            search = searchInfo;
+            if(!_dbc.TagIndex.ContainsKey(search)) 
+            {
+                result += "]}";
+                return new JsonResult(result);
+            }
+            var tagList = _dbc.TagIndex[search];
+            for(int i = 0;i < tagList.Count - 1;i++)
+            {
+                result += $"{tagList[i].ToString()}";
+                result += ",";
+            }
+            result += $"{tagList[tagList.Count - 1].ToString()}";
+            result += "]}";
+            return new JsonResult(result);
             
         }
     }

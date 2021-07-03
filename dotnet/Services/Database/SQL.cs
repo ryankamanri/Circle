@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace dotnet.Services
+namespace dotnet.Services.Database
 {
+    /// <summary>
+    /// 数据库访问类
+    /// </summary>
     public class SQL
     {
         

@@ -132,3 +132,8 @@ function Critical(value,min,max)
         this.consumerSwitch[id] = false;
     }
 }
+
+module.exports
+{
+    Site,Sleep,Mutex,Critical
+};

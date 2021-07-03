@@ -10,28 +10,51 @@
 </head>
 <body>
     <div class="col-md-4" style="margin:auto;position:relative;top:50%;transform:translate(0,-50%);">
-        <h1>这里放登录框</h1>
-        <input type="text" id="account" class="form-control" placeholder="用户名">
+        <h1>这里放注册框</h1>
+        <input type="text" id="account" class="form-control" placeholder="用户名(邮箱)">
         <input type="password" id="password" class=" form-control" placeholder="密码">
-        <input type="button" id="login" value="提交" class="btn btn-primary">
+        <div class="input-group">
+            <input type="text" id="authcode" class="form-control" placeholder="验证码">
+            <input type="button" id="getauthcode" class="btn btn-primary" value="获取">
+        </div>
+        
+        <input type="button" id="signin" value="提交" class="btn btn-primary">
     </div>
 
 </body>
 <script>
-    $("#login").on("click",() => {
+    $("#getauthcode").on("click",() => 
+    {
+        let account = $("#account").val();
+        $.ajax({
+            url : "/GetAuthCode",
+            type : "POST",
+            data : {
+                User : [
+                    account
+                ]
+            }
+        }).done(data => {
+            alert(data);
+        });
+    });
+
+    $("#signin").on("click",() => {
         let account = $("#account").val();
         let password = $("#password").val();
+        let authCode = $("#authcode").val();
         $.ajax({
-            url : "/LogInSubmit",
+            url : "/SignInSubmit",
             type : "POST",
             data : {
                 User : [
                     account,
-                    password
+                    password,
+                    authCode
                 ]
             }
         }).done((data) => {
-            if(data == "login succeed") window.location.href = "/Home";
+            if(data == "signin succeed") window.location.href = "/Home";
             alert("send succeed\n" + data);
         }).fail(() =>
             alert("send failure")
