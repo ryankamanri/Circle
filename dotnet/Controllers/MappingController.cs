@@ -40,9 +40,13 @@ namespace dotnet.Controllers
             //await userTest.Save(_sql);
 
             //查找并修改用户数据
-             //Model.User userTest = Model.User.Find(_sql,Model.User.FindID(_sql,"2168359585@qq.com"));
-             //userTest.Password = "456789";
-             //userTest.Modify(_sql);
+            //Model.User userTest = Model.User.Find(_sql,Model.User.FindID(_sql,"2168359585@qq.com"));
+            User userTest = new User("2168359585@qq.com");
+            _dbc.SelectID(userTest);
+            userTest = _dbc.Select(userTest);
+            userTest.Password = "456789";
+            //userTest.Modify(_sql);
+            await _dbc.Update(userTest);
 
             //查找并删除用户
             // Model.User userTest = Model.User.Find(_sql,Model.User.FindID(_sql,"2168359585@qq.com"));
@@ -50,10 +54,10 @@ namespace dotnet.Controllers
 
             //用户与id为1帖子建立关系
             //await _dbc.Connect<Model.User,Tag>(userTest,Tag.Find(_sql,1));
-
+            await _dbc.Connect<Model.User,Tag>(userTest,_dbc.Select(new Tag(1)),relation => {});
             //用户与id为1帖子解除关系
 
-            //await _dbc.DisConnect<Model.User,Tag>(userTest,Tag.Find(_sql,1));
+            await _dbc.Disconnect<Model.User,Tag>(userTest,_dbc.Select(new Tag(1)));
 
              return result;
         }
@@ -72,45 +76,54 @@ namespace dotnet.Controllers
             Tag tag1 = new Tag("第一个标签");
             Tag tag2 = new Tag("考研");
             Tag tag3 = new Tag("哲学");
+            
 
             result += $"匹配拥有'{tag1}','{tag2}','{tag3}'的标签的用户\n";
 
             
-            List<Tag> tags = new List<Tag>(){tag1,tag2,tag3};
+            List<Tag> tags = _dbc.SelectIDs(new List<Tag>(){tag1,tag2,tag3});
 
-            List<long> tagIDs = _tag.SelectIDs(_sql,tags);
+            //List<long> tagIDs = _tag.SelectIDs(_sql,tags);
+            
 
-            foreach(var ID in tagIDs)
+            List<Tag> tagsWithID = _dbc.SelectIDs<Tag>(tags);
+            
+
+            foreach(var tagWithID in tagsWithID)
             {
-                result += $"标签的ID是{ID}\n";
+                result += $"标签的ID是{tagWithID.ID}\n";
             }
             
 
-            //IEnumerable<long> UserIDs =  _dbc.Users_SortedTags.FindAndIntersect(tagIDs,ID_IDList.OutPutType.Key);
+            
+            //Key_ListValue_Pairs<long,long> userIDs_tagsIDs = _dbc.Users_SortedTags.FindUnionStatistics(new List<long>(),ID_IDList.OutPutType.Key);
 
-            Key_ListValue_Pairs<long,long> userIDs_tagsIDs = _dbc.Users_SortedTags.FindUnionStatistics(tagIDs,ID_IDList.OutPutType.Key);
-            //KeyValuePair<long,IList<long>> kp = new KeyValuePair<long, IList<long>>();
-            foreach(var userID_tagsID in userIDs_tagsIDs)
+            Key_ListValue_Pairs<User,KeyValuePair<Tag,dynamic>> user_listTags = _dbc.MappingUnionStatistics(tags,new Model.User(),ID_IDList.OutPutType.Key);
+
+            foreach(var user_listTag in user_listTags)
             {
-                var userID = userID_tagsID.Key;
-                IList<long> tagsID = userID_tagsID.Value;
-                IList<long> allTagsID = _dbc.SortedUsers_Tags.Find(userID,ID_IDList.OutPutType.Value);
-                result += $"\n用户的ID是{userID}\n";
-                User user = _user.Select(_sql,userID);
-                result += $"用户的信息是{user.ToString()}\n";
+                var user = user_listTag.Key;
+                List<KeyValuePair<Tag,dynamic>> tagsOfAUser = user_listTag.Value;
+                //IList<Tag> allTagsOfAUser = _dbc.SortedUsers_Tags.Find(userID,ID_IDList.OutPutType.Value);
+                IDictionary<Tag,dynamic> allTagsOfAUser = _dbc.Mapping<User,Tag>(user,new Tag(),ID_IDList.OutPutType.Value);
+                result += $"\n用户的ID是{user.ID}\n";
+                //User user = _user.Select(_sql,userID);
+                _dbc.Select<User>(_user);
+                result += $"用户的信息是{_user.ToString()}\n";
 
-                foreach(var tagID in allTagsID)
+                foreach(var allTagOfAUser in allTagsOfAUser)
                 {
-                    _tag.Select(_sql,tagID);
+                    //_tag.Select(_sql,tagID);
+                    // _dbc.Select<Tag>(_tag);
 
-                    result += $"用户的标签有{_tag.ToString()}\n";
+                    result += $"用户的标签有{allTagOfAUser.Key.ToString()}\n";
                 }
 
-                foreach(var tagID in tagsID)
+                foreach(var tagOfAUser in tagsOfAUser)
                 {
-                    _tag.Select(_sql,tagID);
-
-                    result += $"与该用户相同的标签有{_tag.ToString()}\n";
+                    //_tag.Select(_sql,tagID);
+                    //_dbc.Select<Tag>(_tag);
+                    result += $"与该用户相同的标签有{tagOfAUser.Key.ToString()}\n";
                 }
 
 
@@ -153,7 +166,7 @@ namespace dotnet.Controllers
         public async Task<string> ConnectTest()
         {
             string result = "";
-            User _user = new User();
+            User user = new User();
             int userID = default;
             Tag tag = new Tag("第一个标签");
 
@@ -164,11 +177,14 @@ namespace dotnet.Controllers
                 if(c.Type == "ID") userID = Convert.ToInt32(c.Value); //从cookie中找到用户ID
             }
 
-            _user.Select(_sql,userID);//由用户ID在数据库中找到用户
+            //_user.Select(_sql,userID);//由用户ID在数据库中找到用户
 
-            result += $"用户 : {_user.ToString()}\n";
+            _dbc.SelectID<User>(user);
 
-            long tagID = tag.SelectID(_sql,tag);//由标签内容找到标签ID
+            result += $"用户 : {user.ToString()}\n";
+
+            //long tagID = tag.SelectID(_sql,tag);//由标签内容找到标签ID
+            long tagID = _dbc.SelectID<Tag>(tag);
 
             if (tagID == long.MinValue) return result;//表示没找到对应的标签
 
@@ -176,7 +192,7 @@ namespace dotnet.Controllers
 
             result += $"帖子 : {tag.ToString()}";
 
-            await _dbc.Connect<User,Tag>(_user,tag);//用户跟标签建立关系
+            await _dbc.Connect<User,Tag>(user,tag,relations=>{});//用户跟标签建立关系
 
             return result;
         }

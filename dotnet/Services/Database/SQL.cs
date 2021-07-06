@@ -87,7 +87,6 @@ namespace dotnet.Services.Database
             }
             catch (Exception e)
             {
-                connection.Close();
                 throw e;
             }
             
@@ -108,7 +107,6 @@ namespace dotnet.Services.Database
             }
             catch (Exception e)
             {
-                connection.Close();
                 throw e;
             }
         }

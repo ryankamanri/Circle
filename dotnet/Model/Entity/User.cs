@@ -1,6 +1,10 @@
-using MySql.Data.MySqlClient;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Dynamic;
+using Microsoft.Extensions.Primitives;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using dotnet.Services.Database;
 using dotnet.Services.Extensions;
 
@@ -9,44 +13,73 @@ namespace dotnet.Model
 {
     public class User : Entity<User>
     {
-        public long ID { get; set; }
+
         public string Account { get; set; }
         public string Password { get; set; }
 
-        public User(){}
+        private void Init()
+        {
+            TableName = "users";
+
+            Columns = "users.ID,Account,Password";
+
+            ColumnsWithoutID = "Account,Password";
+        }
+
+        public User()
+        {
+            Init();
+        }
+
+        public User(long ID)
+        {
+            this.ID = ID;
+            Init();
+        }
+
+        public User(string Account)
+        {
+            this.Account = Account;
+            Init();
+        }
 
         public User(string Account,string Password)
         {
-            this.ID = RandomGenerator.GenerateID();
             this.Account = Account;
             this.Password = Password;
+            Init();
         }
         public User(long ID,string account,string password)
         {
             this.ID = ID;
             this.Account = account;
             this.Password = password;
+            Init();
         }
+
+        
 
         public override string ToString()
         {
-            return $"{ID}  {Account}  {Password} ";
+            return $"{ID} , '{Account}' , '{Password}' ";
         }
 
-        public override async Task Insert(SQL sql)
+        public override string InsertString()
         {
-            await sql.Execute($"insert into users (ID,Account,Password) values({ID},'{Account}','{Password}')");
+            return $"'{Account}' , '{Password}'";
         }
 
-        public override async Task Delete(SQL sql)
+        public override string UpdateString()
         {
-            await sql.Execute($"delete from users where ID = {ID}");
+            return $" Account = '{Account}' , Password = '{Password}'";
         }
 
-        public override async Task Update(SQL sql)
+        public override string SelectString()
         {
-            await sql.Execute($"update users set Account = '{Account}',Password = '{Password}' where ID = {ID}");
+            return $" Account = '{Account}'";
         }
+
+
 
         public override IList<User> GetList(MySqlDataReader msdr)
         {
@@ -59,39 +92,18 @@ namespace dotnet.Model
             return users;
         }
 
-        public override User Select(SQL sql, long ID)
+        public override IDictionary<User,dynamic> GetRelationDictionary(MySqlDataReader msdr)
         {
-            IList<User> result = GetList(sql.Query($"select * from users where ID = '{ID}'"));
-            if(result.Count == 0) return null;
-            this.ID = result[0].ID;
-            this.Account = result[0].Account;
-            this.Password = result[0].Password;
-            return result[0];
-        }
-
-        public override long SelectID(SQL sql, User user)
-        {
-            IList<User> result = GetList(sql.Query($"select * from users where Account = '{user.Account}'"));
-            if(result.Count == 0) return long.MinValue;
-            this.ID = result[0].ID;
-            return result[0].ID;
-        }
-
-        public override IList<User> Selects(SQL sql ,IEnumerable<long> IDs)
-        {
-            IList<User> users = new List<User>();
-            User user;
-            foreach(var ID in IDs)
+            IDictionary<User,dynamic> User_Relations = new Dictionary<User,dynamic>();
+            while (msdr.Read())
             {
-                user = Select(sql,ID);
-                if(user != null) users.Add(user);
+                User_Relations.Add(new User((long)msdr["ID"], (string)msdr["Account"],(string)msdr["Password"]),
+                JsonConvert.DeserializeObject<ExpandoObject>((string)msdr["relations"]));
             }
-            return users;
+            msdr.Close();
+            return User_Relations;
         }
-        public override List<long> SelectIDs(SQL sql, List<User> users)
-        {
-            throw new System.NotImplementedException();
-        }
+
 
     }
 }

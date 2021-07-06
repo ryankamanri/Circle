@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Dynamic;
+using Newtonsoft.Json;
 using dotnet.Services.Database;
 using dotnet.Services.Extensions;
 
@@ -9,21 +11,40 @@ namespace dotnet.Model
 {
     public class Post : Entity<Post>
     {
-        public long ID { get; set; }
-        public string _Post { get; set; }
-        
 
-        public Post(){}
+
+        public string _Post { get; set; }
+
+        private void Init()
+        {
+            TableName  = "posts";
+
+            Columns = "posts.ID,post";
+
+            ColumnsWithoutID = "post";
+        }
+        
+        public Post()
+        {
+            Init();
+        }
+
+        public Post(long ID)
+        {
+            this.ID = ID;
+            Init();
+        }
 
         public Post(string post)
         {
-            this.ID = RandomGenerator.GenerateID();
             this._Post = post;
+            Init();
         }
         public Post(long ID,string post)
         {
             this.ID = ID;
             this._Post = post;
+            Init();
         }
 
         public override string ToString()
@@ -31,20 +52,22 @@ namespace dotnet.Model
             return $"{ID}  {_Post} ";
         }
 
-        public override async Task Insert(SQL sql)
+        public override string InsertString()
         {
-            await sql.Execute($"insert into posts (ID,post) values({ID},'{_Post}')");
+            return $"'{_Post}'";
         }
 
-        public override async Task Delete(SQL sql)
+        public override string UpdateString()
         {
-            await sql.Execute($"delete from posts where ID = {ID}");
+            return $"post = '{_Post}'";
         }
 
-        public override async Task Update(SQL sql)
+        public override string SelectString()
         {
-            await sql.Execute($"update posts set post = '{_Post}' where ID = {ID}");
+            return $"post = '{_Post}'";
         }
+
+ 
         public override IList<Post> GetList(MySqlDataReader msdr)
         {
             IList<Post> Posts = new List<Post>();
@@ -56,36 +79,19 @@ namespace dotnet.Model
             return Posts;
         }
 
-        public override Post Select(SQL sql, long ID)
+        public override IDictionary<Post,dynamic> GetRelationDictionary(MySqlDataReader msdr)
         {
-            IList<Post> result = GetList(sql.Query($"select * from posts where ID = '{ID}'"));
-            if(result.Count == 0) return null;
-            this.ID = result[0].ID;
-            this._Post = result[0]._Post;
-            return result[0];
-        }
-
-        public override IList<Post> Selects(SQL sql ,IEnumerable<long> IDs)
-        {
-            IList<Post> posts = new List<Post>();
-            Post post;
-            foreach(var ID in IDs)
+            IDictionary<Post,dynamic> Post_Relations = new Dictionary<Post,dynamic>();
+            while (msdr.Read())
             {
-                post = Select(sql,ID);
-                if(post != null) posts.Add(post);
+                Post_Relations.Add(new Post((long)msdr["ID"], (string)msdr["post"]),
+                JsonConvert.DeserializeObject<ExpandoObject>((string)msdr["relations"]));
             }
-            return posts;
+            msdr.Close();
+            return Post_Relations;
         }
 
-        public override long SelectID(SQL sql, Post entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override List<long> SelectIDs(SQL sql, List<Post> entities)
-        {
-            throw new System.NotImplementedException();
-        }
+    
 
     }
 }

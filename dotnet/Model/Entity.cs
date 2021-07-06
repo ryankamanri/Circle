@@ -7,26 +7,49 @@ namespace dotnet.Model
 {
     public abstract class Entity<T>
     {
+        
         /// <summary>
-        /// 将模型实体保存到数据库
+        /// 实体ID
         /// </summary>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        public abstract Task Insert(SQL sql);
+        /// <value></value>
+        public long ID { get; set; }
 
         /// <summary>
-        /// 将模型实体从数据库移除
+        /// 实体对应的数据库表名
         /// </summary>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        public abstract Task Delete(SQL sql);
+        /// <value></value>
+        public string TableName {get;protected set;}
 
         /// <summary>
-        /// 更新模型实体
+        /// 实体对应的数据库表所有列名
         /// </summary>
-        /// <param name="sql"></param>
+        /// <value></value>
+        public string Columns{get; protected set;}
+
+        /// <summary>
+        /// 实体对应的数据库表所有列名,不计入ID
+        /// </summary>
+        /// <value></value>
+        public string ColumnsWithoutID {get; protected set;}
+       
+        /// <summary>
+        /// 插入数据库时需要的字符串,包括除ID外所有属性的值,以逗号分隔
+        /// </summary>
         /// <returns></returns>
-        public abstract Task Update(SQL sql);
+        public abstract string InsertString();
+
+        /// <summary>
+        /// 更新数据库时需要的字符串,包括除ID外所有属性的列名和值,以逗号分隔
+        /// </summary>
+        /// <returns></returns>
+        public abstract string UpdateString();
+
+        /// <summary>
+        /// 查询数据库时需要的字符串,包括除ID外所有属性的列名和值,以and/or分隔
+        /// </summary>
+        /// <returns></returns>
+        public abstract string SelectString();
+
 
         /// <summary>
         /// 读取从数据库中获取的实体信息,形成一个list列表
@@ -35,35 +58,15 @@ namespace dotnet.Model
         /// <returns></returns>
         public abstract IList<T> GetList(MySqlDataReader msdr);
 
-        /// <summary>
-        /// 根据ID选择实体,并保存在实例中
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public abstract T Select(SQL sql,long id);
+        public abstract IDictionary<T,dynamic> GetRelationDictionary(MySqlDataReader msdr);
 
-        /// <summary>
-        /// 根据实体中的候选码选择ID,并保存在实例中
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        public abstract long SelectID(SQL sql,T entity);
 
-        /// <summary>
-        /// 根据提供的ID列表选择实体列表
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="IDs"></param>
-        /// <returns></returns>
-        public abstract IList<T> Selects(SQL sql,IEnumerable<long> IDs);
+        public override bool Equals(object obj)
+        {
+            dynamic Obj = obj;
+            return this.ID == Obj.ID;
+        }
 
-        /// <summary>
-        /// 根据提供的实体列表选择ID列表
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        public abstract List<long> SelectIDs(SQL sql,List<T> entities);
+
     }
 }

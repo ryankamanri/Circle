@@ -16,15 +16,15 @@ namespace dotnet.Controllers
     public class AuthController : Controller
     {
         private ICookie _cookie;
-        private SQL _sql;
+        private DataBaseContext _dbc;
 
         private User _user;
 
         //保存账号跟验证码
         private Dictionary<string,string> account_authCode;
-        public AuthController(SQL sql,ICookie cookie,Dictionary<string, string> account_authCode)
+        public AuthController(DataBaseContext dbc,ICookie cookie,Dictionary<string, string> account_authCode)
         {
-            _sql = sql;
+            _dbc = dbc;
             _cookie = cookie;
             _user = new User();
             this.account_authCode = account_authCode;
@@ -69,9 +69,6 @@ namespace dotnet.Controllers
                 //发送验证码
                 EmailHelper.SendThread(account,"验证码",authCode);
 
-                //向用户设置cookie
-                //HttpContext.Response.Cookies.Append("account",account);
-                //HttpContext.Response.Cookies.Append("authCode",authCode);
 
                 //向字典中添加或更新cookie内容
                 if(account_authCode.ContainsKey(account))
@@ -101,13 +98,15 @@ namespace dotnet.Controllers
 
             if(account_authCode[account] != authCode) return new JsonResult("auth code error");
 
-            if(_user.SelectID(_sql,new Model.User(account,"")) != long.MinValue) return new JsonResult("account exist");
+            if(_dbc.SelectID(new Model.User(account,"")) != long.MinValue) return new JsonResult("account exist");
+            
 
             //验证成功
 
             User newUser = new User(account,password);
 
-            await newUser.Insert(_sql);
+            //await newUser.Insert(_sql);
+            await _dbc.Insert<User>(newUser);
 
             var userClaims = new List<Claim>()
             {
@@ -141,27 +140,24 @@ namespace dotnet.Controllers
             account = authInfo[0];
             password = authInfo[1];
 
-            IList<User> user = _user.GetList(_sql.Query($"select * from users where Account = '{account}'"));
+            User user = _dbc.Select<User>(new User(account));
 
 
-            if(user.Count == 0)
+            if(user == default)
                 return new JsonResult("account not found");
 
-            if(user[0].Password != password)
+            if(user.Password != password)
                 return new JsonResult("password is error");
 
             var userClaims = new List<Claim>()
             {
-                new Claim("ID",user[0].ID.ToString()),
+                new Claim("ID",user.ID.ToString()),
                 new Claim("Account",account)
             };
 
             var userIdentity = new ClaimsIdentity(userClaims,"user");
 
-            var userIdentities = new List<ClaimsIdentity>()
-            {
-                userIdentity
-            };
+            var userIdentities = new List<ClaimsIdentity>(){userIdentity};
 
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 

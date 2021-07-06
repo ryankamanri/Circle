@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Dynamic;
+using Newtonsoft.Json;
 using dotnet.Services.Extensions;
 using dotnet.Services.Database;
 
@@ -10,43 +12,62 @@ namespace dotnet.Model
 {
     public class Tag : Entity<Tag>
     {
-        public long ID { get; set; }
+        
         public string _Tag { get; set; }
 
-        public Tag(){}
+        private void Init()
+        {
+            TableName = "tags";
+
+            Columns  = "tags.ID,tag";
+
+            ColumnsWithoutID = "tag";
+        }
+
+        public Tag()
+        {
+            Init();
+        }
+
+        public Tag(long ID)
+        {
+            this.ID = ID;
+            Init();
+        }
 
         public Tag(string tag)
         {
-            this.ID = RandomGenerator.GenerateID();
             this._Tag = tag;
+            Init();
         }
         public Tag(long ID,string tag)
         {
             this.ID = ID;
             this._Tag = tag;
+            Init();
         }
+
+
 
         public override string ToString()
         {
-            return $"{{ \"ID\" : {ID} , \"Tag\" : \"{_Tag}\" }}";
+            return $"{ID},'{_Tag}'";
         }
 
-
-        public override async Task Insert(SQL sql)
+        public override string InsertString()
         {
-            await sql.Execute($"insert into tags (ID,tag) values({ID},'{_Tag}')");
+            return $"'{_Tag}'";
         }
 
-        public override async Task Delete(SQL sql)
+        public override string UpdateString()
         {
-            await sql.Execute($"delete from tags where ID = {ID}");
+            return $"tag = '{_Tag}'";
         }
 
-        public override async Task Update(SQL sql)
+        public override string SelectString()
         {
-            await sql.Execute($"update tags set tag = '{_Tag}' where ID = {ID}");
+            return $"tag = '{_Tag}'";
         }
-
         
 
         public override IList<Tag> GetList(MySqlDataReader msdr)
@@ -60,46 +81,20 @@ namespace dotnet.Model
             return Tags;
         }
 
-        public override Tag Select(SQL sql, long ID)
+        public override IDictionary<Tag,dynamic> GetRelationDictionary(MySqlDataReader msdr)
         {
-            IList<Tag> result = GetList(sql.Query($"select * from tags where ID = '{ID}'"));
-            if(result.Count == 0) return null;
-            this.ID = result[0].ID;
-            this._Tag = result[0]._Tag;
-            return result[0];
-        }
-
-        public override long SelectID(SQL sql, Tag tag)
-        {
-            IList<Tag> result = GetList(sql.Query($"select * from tags where tag = '{tag._Tag}'"));
-            if(result.Count == 0) return long.MinValue;
-            this.ID = result[0].ID;
-            return result[0].ID;
-        }
-
-        public override IList<Tag> Selects(SQL sql ,IEnumerable<long> IDs)
-        {
-            IList<Tag> Tags = new List<Tag>();
-            Tag tag;
-            foreach(var ID in IDs)
+            IDictionary<Tag,dynamic> Tag_Relations = new Dictionary<Tag,dynamic>();
+            while (msdr.Read())
             {
-                tag = Select(sql,ID);
-                if(tag != null) Tags.Add(tag);
+
+                Tag_Relations.Add(new Tag((long)msdr["ID"], (string)msdr["tag"]),
+                JsonConvert.DeserializeObject<ExpandoObject>((string)msdr["relations"]));
             }
-            return Tags;
+            msdr.Close();
+            return Tag_Relations;
         }
 
-        public override List<long> SelectIDs(SQL sql ,List<Tag> tags)
-        {
-            List<long> IDs = new List<long>();
-            long ID;
-            foreach(var tag in tags)
-            {
-                ID = SelectID(sql,tag);
-                if(ID != long.MinValue) IDs.Add(SelectID(sql,tag));
-            }
-            return IDs;
-        }
+   
 
         /// <summary>
         /// 获取该标签的连续子集
