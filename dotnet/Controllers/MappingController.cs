@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using dotnet.Model;
 using dotnet.Model.Relation;
+using dotnet.Services;
 using dotnet.Services.Database;
 using dotnet.Services.Cookie;
 
@@ -19,6 +20,8 @@ namespace dotnet.Controllers
     {
         private DataBaseContext _dbc;
         private SQL _sql;
+
+        private TagService tagService;
 
         private ICookie _cookie;
         public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie)
@@ -207,12 +210,12 @@ namespace dotnet.Controllers
             if(HttpContext.Request.Form.TryGetValue("search",out searchInfo) == false) return new JsonResult("bad request");
 
             search = searchInfo;
-            if(!_dbc.TagIndex.ContainsKey(search)) 
+            if(!tagService.TagIndex.ContainsKey(search)) 
             {
                 result += "]}";
                 return new JsonResult(result);
             }
-            var tagList = _dbc.TagIndex[search];
+            var tagList = tagService.TagIndex[search];
             for(int i = 0;i < tagList.Count - 1;i++)
             {
                 result += $"{tagList[i].ToString()}";

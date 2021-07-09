@@ -34,7 +34,7 @@ namespace dotnet.Services.Database
 
         private ValueComparer valueComparer;
 
-        public Dictionary<string,List<Tag>> TagIndex {get;private set;}
+
         #endregion
         
 
@@ -53,29 +53,11 @@ namespace dotnet.Services.Database
             keyComparer = new KeyComparer();
             valueComparer = new ValueComparer();
             
-            TagIndex = new Dictionary<string, List<Tag>>();
-            InitTagIndex();
+            
         }
 
         
-        /// <summary>
-        /// 标签索引初始化
-        /// </summary>
-        private void InitTagIndex()
-        {
-            IList<Tag> tags = tag.GetList(_sql.Query("select * from tags"));
-            foreach(var tag in tags)
-            {
-                List<string> subset = tag.GetContinuousSubset();
-                foreach(var subItem in subset)
-                {
-                    if(TagIndex.ContainsKey(subItem))
-                        TagIndex[subItem].Add(tag);
-                    
-                    else TagIndex.Add(subItem,new List<Tag>(){tag});
-                }
-            }
-        }
+
 
 
         /// <summary>
@@ -91,6 +73,21 @@ namespace dotnet.Services.Database
             await _sql.Execute(SQLStatement);
         }
 
+        public async Task Inserts<TEntity>(IList<TEntity> tes)
+        {
+            if(tes.Count == 0) return;
+            dynamic Tes = tes;
+            string insertString = "",tableName = Tes[0].TableName,columnsWithoutID = Tes[0].ColumnsWithoutID;
+            for(int i = 1;i < Tes.Count - 1;i++)
+            {
+                insertString += $"({Tes[i].InsertString()})";
+                insertString += ",";
+            }
+            insertString += $"({Tes[Tes.Count - 1].InsertString()})";
+            string SQLStatement = $"insert into {tableName} ({columnsWithoutID}) values {insertString}";
+            await _sql.Execute(SQLStatement);
+        }
+
         /// <summary>
         /// 将模型实体从数据库移除
         /// </summary>
@@ -101,6 +98,25 @@ namespace dotnet.Services.Database
         {
             dynamic Te = te;
             string SQLStatement = $"delete from {Te.TableName} where ID = {Te.ID}";
+            await _sql.Execute(SQLStatement);
+        }
+
+        /// <summary>
+        /// 批量删除实体
+        /// </summary>
+        /// <param name="tes"></param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public async Task Deletes<TEntity>(IList<TEntity> tes)
+        {
+            dynamic Tes = tes;
+            string IDs = default;
+            for(int i = 0;i < Tes.Count - 1;i++)
+            {
+                IDs += $"{Tes[i].ID},";
+            }
+            IDs += $"{Tes[Tes.Count - 1].ID}";
+            string SQLStatement = $"delete from {Tes[0].TableName} where ID in ({IDs})";
             await _sql.Execute(SQLStatement);
         }
 
@@ -194,6 +210,31 @@ namespace dotnet.Services.Database
 
         
         /// <summary>
+        /// 选择全部实体
+        /// </summary>
+        /// <param name="exampleInstance"></param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public IList<TEntity> SelectAll<TEntity>(TEntity exampleInstance)
+        {
+            dynamic Te = exampleInstance;
+            string SQLStatement = $"select * from {Te.TableName}";
+            IList<TEntity> result = Te.GetList(_sql.Query(SQLStatement));
+            if(result.Count == 0) return default;
+            return result;
+        }
+
+
+        public ID_IDList SelectAllRelations<TKeyEntity,TValueEntity>(TKeyEntity keyExampleInstance,TValueEntity valueExampleInstance)
+        {
+            dynamic Tke = keyExampleInstance,Tve = valueExampleInstance;
+            string tableName = $"{Tke.TableName}_{Tve.TableName}";
+            string SQLStatement = $"select * from {tableName}";
+
+            return id_id.GetList(_sql.Query(SQLStatement));
+        }
+
+        /// <summary>
         /// 两个实体之间建立关系
         /// </summary>
         /// <param name="tke"></param>
@@ -243,7 +284,9 @@ namespace dotnet.Services.Database
         {
             dynamic Tke = tke,Tve = tve;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            string SQLStatement = $"select * from {tableName} where {tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            string SQLStatement = $"select * from {tableName} where {selectWay}";
 
             return id_id.GetList(_sql.Query(SQLStatement))[0].Relations;
         }
@@ -264,7 +307,10 @@ namespace dotnet.Services.Database
             ID_ID key_value = new ID_ID();
             SetRelations(key_value.Relations);
             string relationsJSON = JsonConvert.SerializeObject(key_value.Relations);
-            string SQLStatement = $"update {tableName} set relations = '{relationsJSON}' where {tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            string SQLStatement = $"update {tableName} set relations = '{relationsJSON}' where {selectWay}";
+
             await _sql.Execute(SQLStatement);
         }
 

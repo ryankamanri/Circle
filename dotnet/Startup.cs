@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using dotnet.Services;
 using dotnet.Services.Cookie;
 using dotnet.Services.Database;
 
@@ -49,6 +50,9 @@ namespace dotnet
 
             //增加数据库上下文服务
             services.AddSingleton<DataBaseContext>();
+
+            //增加标签索引,匹配服务
+            services.AddSingleton<TagService>();
 
             //配置跨域访问
             services.AddCors(options => 

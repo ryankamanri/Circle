@@ -140,8 +140,11 @@ namespace dotnet.Controllers
             account = authInfo[0];
             password = authInfo[1];
 
-            User user = _dbc.Select<User>(new User(account));
+            User user = new User(account);
 
+            _dbc.SelectID(user);
+
+            user = _dbc.Select(user);
 
             if(user == default)
                 return new JsonResult("account not found");

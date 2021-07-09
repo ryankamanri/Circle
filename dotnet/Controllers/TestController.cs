@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Model.Relation;
+using dotnet.Services;
 using dotnet.Services.Database;
 using dotnet.Services.Extensions;
 
@@ -19,12 +20,15 @@ namespace dotnet.Controllers
         private SQL _sql;
         private DataBaseContext _dbc;
 
+        private TagService _tagService;
 
 
-        public TestController(SQL sql,DataBaseContext dbc)
+
+        public TestController(SQL sql,DataBaseContext dbc,TagService tagService)
         {
             _sql = sql;
             _dbc = dbc;
+            _tagService = tagService;
         }
 
         [HttpGet]
@@ -47,37 +51,24 @@ namespace dotnet.Controllers
         {
 
             string result = "";
-            // User user = new User();
-            // user.Select(_sql,1);
-            
-            Tag tag = new Tag("dotnet");
-            //_dbc.Insert<Tag>(tag);
-            // _dbc.SelectID<Tag>(tag);
-            // tag._Tag = ".NET";
-            // _dbc.Update<Tag>(tag);
-            // _dbc.Delete<Tag>(tag);
 
             
+            Tag tag37 = new Tag(37);
+            Tag tag17 = new Tag(17);
 
-            //_dbc.SelectID<Post>(post);
+            _dbc.Select(tag37);
+            _dbc.Select(tag17);
+            _dbc.ChangeRelation(tag37,tag17,relation => 
+            {
+                relation.relation = 1;
+            });
 
-            //List<Tag> tags = new List<Tag>(){new Tag("第一个标签"),new Tag("哲学")};
+            dynamic relation = _dbc.SelectRelation(tag37,tag17);
 
-            //IList<Tag> tagsRes = _dbc.SelectIDs<Tag>(tags);
+            result += $"{JsonConvert.SerializeObject(relation)}";
+            
 
-            // var users = _dbc.Mapping<Tag,User>(
-            //     tag,new Model.User(),ID_IDList.OutPutType.Key);
-
-            // foreach(var user in users)
-            // {
-            //     result += $"{JsonConvert.SerializeObject(user)}";
-            // }
-
-            Post post = new Post("无了无了");
-            _dbc.SelectID(post);
-
-            User user = new User(1);
-            user = _dbc.Select(user);
+            
 
             //_dbc.Connect(user,post,relation => {});
 
@@ -85,17 +76,17 @@ namespace dotnet.Controllers
             // {
             //     relation.t1 = 1;
             // });
-            dynamic relation = _dbc.SelectRelation(user,post);
-            result += $"{JsonConvert.SerializeObject(relation)}";
-            IList<Post> posts = _dbc.MappingSelect(user,new Post(),ID_IDList.OutPutType.Value,selections => 
-            {
-                selections.t1 = 1;
-            });
+            // dynamic relation = _dbc.SelectRelation(user,post);
+            // result += $"{JsonConvert.SerializeObject(relation)}";
+            // IList<Post> posts = _dbc.MappingSelect(user,new Post(),ID_IDList.OutPutType.Value,selections => 
+            // {
+            //     selections.t1 = 1;
+            // });
             
-            foreach(var postResult in posts)
-            {
-                result += $"{postResult.ToString()}\n";
-            }
+            // foreach(var postResult in posts)
+            // {
+            //     result += $"{postResult.ToString()}\n";
+            // }
 
             return result;
         }
@@ -106,12 +97,16 @@ namespace dotnet.Controllers
         {
             string result = "";
 
-            dynamic json = new ExpandoObject();
-            json.value = 10; 
-
-            result += $"{JsonConvert.SerializeObject(json)}";
-            
-            
+            Tag 线性代数 = new Tag("线性代数");
+            Tag 概率论 = new Tag("概率论");
+            Tag 计算机 = new Tag("计算机");
+            _dbc.SelectID(线性代数);
+            _dbc.SelectID(概率论);
+            _dbc.SelectID(计算机);
+            double similarity = _tagService.CalculateSimilarity(线性代数,线性代数);
+            result += $"{similarity}\n";
+            similarity = _tagService.CalculateSimilarity(概率论,计算机);
+            result += $"{similarity}\n";
             return result;
         }
     }

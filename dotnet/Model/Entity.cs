@@ -67,6 +67,11 @@ namespace dotnet.Model
             return this.ID == Obj.ID;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
 
     }
 }
