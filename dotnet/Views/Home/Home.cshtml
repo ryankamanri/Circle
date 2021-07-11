@@ -1,18 +1,20 @@
+@using System.Dynamic
 @using dotnet.Model
+@using dotnet.Model.Relation
 @using dotnet.Services.Cookie
 @using dotnet.Services.Database
 @model User
-@inject ICookie icookie
-@inject SQL sql
+@inject ICookie _cookie
+@inject DataBaseContext _dbc
 
 @{
     Layout = "../Shared/_Layout.cshtml";
     ViewBag.User_Account = Model.Account;
-    ViewData["Title"] = "Home";
-    ViewData["1"] = "View Data Test";
-    ViewData["2"] = "The Double Test";
-    ViewData["3"] = "The Triple Test";
-    ViewData["4"] = "Not Any More Test";
+    IList<Tag> mySelfTags = _dbc.MappingSelect<User,Tag>(Model,new Tag(),ID_IDList.OutPutType.Value,
+        selection => selection.Type = new List<string>(){"Self"});
+    IList<Tag> myInterestedTags = _dbc.MappingSelect<User,Tag>(Model,new Tag(),ID_IDList.OutPutType.Value,
+        selection => selection.Type = new List<string>(){"Interested"});
+    IList<Tag> allTags = _dbc.SelectAll<Tag>(new Tag());
 }
 @functions{
     public string msg = $"ID = ";
@@ -22,16 +24,36 @@
     <h2>主视图</h2>
     <h3>这里放登录后的主页面</h3>
     <h3>@msg @Model.ID</h3>
-    <h3 id="test">{{msg}}</h3>
-    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The first title"},{"Content","the first content"}})</div>
-    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The second title"},{"Content","the second content"}})</div>
-    <div>@Html.Partial("_PartialView",new Dictionary<string,string>(){{"Title","The third title"},{"Content","the third content"}})</div>
-</div>
-<script>
-    var vue = new Vue({
-        el:"#test",
-        data:{
-            msg:"ID = @Model.ID"
+    <div class="col-md-6">
+        <h3>我的个人标签 : </h3>
+        <div id="mySelfTags" class="tagbox" style="min-height: 50px;">
+            @foreach (var tag in mySelfTags)
+            {
+                @await Html.PartialAsync("Tag",tag);
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3>我的兴趣标签 : </h3>
+        <div id="myInterestedTags" class="tagbox" style="min-height: 50px;">
+            @foreach (var tag in myInterestedTags)
+            {
+                @await Html.PartialAsync("Tag",tag);
+            }
+        </div>
+    </div>
+    
+    <h3>标签库 : </h3>
+    <div class="tagbox" style="
+            min-height: 100px;
+            background-color: blanchedalmond;">
+        @foreach (var tag in allTags)
+        {
+            @await Html.PartialAsync("Tag",tag);
         }
-    });
-</script>
+    </div>
+
+</div>
+
+<script src="/js/Home/Home.js"></script>
+

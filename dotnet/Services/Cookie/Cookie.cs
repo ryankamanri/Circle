@@ -8,6 +8,16 @@ using dotnet.Services.Extensions;
 
 namespace dotnet.Services.Cookie
 {
+
+    public interface ICookie
+    {
+        void SetCookie(HttpContext httpContext,ClaimsPrincipal claimsPrincipal);
+
+        void DeleteCookie(HttpContext httpContext);
+
+        ClaimsPrincipal GetCookie(HttpContext httpContext);
+    }
+    
     public class Cookie : ICookie
     {
 
@@ -22,8 +32,10 @@ namespace dotnet.Services.Cookie
 
         public ClaimsPrincipal GetCookie(HttpContext httpContext)
         {
+            AuthenticationTicket ticket;
             string content = httpContext.Request.Cookies[_cookieName];
-            AuthenticationTicket ticket = Scheme.Deserialize(Base64.DecodeBase64(content));
+            if(content == default || content == "") return new ClaimsPrincipal();
+            ticket = Scheme.Deserialize(Base64.DecodeBase64(content));
             return ticket.Principal;
         }
 

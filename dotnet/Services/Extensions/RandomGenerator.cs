@@ -12,7 +12,12 @@ namespace dotnet.Services.Extensions
         //生成五位数的验证码
         public static int GenerateAuthCode()
         {
-            return ((int)((DateTime.Now.Ticks % 90000) + 10000));
+            return ((new Random().Next() % 90000) + 10000);
+        }
+
+        public static int Generate_0_255()
+        {
+            return new Random().Next() % 256;
         }
     }
 }

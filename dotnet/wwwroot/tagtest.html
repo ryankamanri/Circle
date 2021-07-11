@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .ID{
+            display: none;
+        }
+        .tag{
+            width: 70px;
+            height: 30px;
+            text-align: center;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 100px;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0.8;
+        }
+        ._Tag{
+            color: black;
+            position: relative;
+            top: 50%;
+            transform: translate(0,-50%);
+        }
+
+        .tag:hover{
+            cursor: pointer;
+            opacity: 1;
+            
+        }
+
+
+        .dropbox{
+            width: 100px;
+            height: 100px;
+            background-color: blanchedalmond;
+            position: fixed;
+            top: 50%;
+        }
+    </style>
+</head>
+<body style="height: 100%;">
+    <div class="tag" id="tag_1" draggable="true" style="background-color: aquamarine;">
+        <div class="ID">1</div>
+        <div class="_Tag">标签</div>
+    </div>
+
+    <div class="dropbox">
+        
+    </div>
+</body>
+<script>
+    let tags = document.querySelectorAll(".tag");
+    tags.forEach(tag => {
+        tag.addEventListener("dragstart", event => {
+            event.dataTransfer.setData("id",event.target.id);
+            
+        });
+    });
+    let dropbox = document.querySelector(".dropbox");
+    dropbox.addEventListener("dragover", event => event.preventDefault());
+    dropbox.addEventListener("drop", event =>
+    {
+        let id = event.dataTransfer.getData("id");
+        dropbox.appendChild(document.getElementById(id));
+    });
+</script>
+</html>

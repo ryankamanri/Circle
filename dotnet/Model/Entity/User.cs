@@ -13,7 +13,6 @@ namespace dotnet.Model
 {
     public class User : Entity<User>
     {
-
         public string Account { get; set; }
         public string Password { get; set; }
 

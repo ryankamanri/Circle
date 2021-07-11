@@ -105,8 +105,8 @@ namespace dotnet.Controllers
 
             User newUser = new User(account,password);
 
-            //await newUser.Insert(_sql);
             await _dbc.Insert<User>(newUser);
+            _dbc.SelectID<User>(newUser);
 
             var userClaims = new List<Claim>()
             {
@@ -120,7 +120,6 @@ namespace dotnet.Controllers
             {
                 userIdentity
             };
-
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
             _cookie.SetCookie(HttpContext,claimsPrincipal);

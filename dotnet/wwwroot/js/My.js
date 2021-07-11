@@ -54,6 +54,7 @@ function Mutex() {
 function Critical(value,min,max)
 {
     this.value = value;//资源量
+    this.mutex = new Mutex();//资源互斥锁
     this.putMutex = new Mutex();//生产互斥锁
     this.getMutex = new Mutex();//消费互斥锁
     this.min = min;//资源最小值
@@ -77,7 +78,9 @@ function Critical(value,min,max)
         
         await this.putMutex.Wait();
         await this.WaitNotFull(putValue);
+        await this.mutex.Wait();
         this.value += putValue;
+        this.mutex.Signal();
         Handler(this.value);
         this.putMutex.Signal();
     }
@@ -85,7 +88,9 @@ function Critical(value,min,max)
         
         await this.getMutex.Wait();
         await this.WaitNotEmpty(getValue);
+        await this.mutex.Wait();
         this.value -= getValue;
+        this.mutex.Signal();
         Handler(this.value);
         this.getMutex.Signal(); 
     }
@@ -133,7 +138,3 @@ function Critical(value,min,max)
     }
 }
 
-module.exports
-{
-    Site,Sleep,Mutex,Critical
-};

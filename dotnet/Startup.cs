@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using dotnet.Model;
+using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Cookie;
 using dotnet.Services.Database;
@@ -21,6 +24,8 @@ namespace dotnet
         //添加的服务由服务器容器代理,可以通过构造函数中的参数获取实例或接口
         public void ConfigureServices(IServiceCollection services)
         {
+
+        
             //增加控制器服务
             services.AddControllers();
             //增加控制器与视图(观察者模式)服务
@@ -32,8 +37,10 @@ namespace dotnet
                 options.LoginPath = "/LogIn";
             });
 
-            //增加作用域Cookie服务
-            services.AddScoped<ICookie, Cookie>();
+            
+            services.AddScoped<User>();
+            //增加Cookie服务
+            services.AddSingleton<ICookie, Cookie>();
 
             //增加字典服务,用于注册验证
             services.AddSingleton<Dictionary<string,string>>();
@@ -54,11 +61,16 @@ namespace dotnet
             //增加标签索引,匹配服务
             services.AddSingleton<TagService>();
 
+            //增加用户服务
+            services.AddSingleton<UserService>();
+
             //配置跨域访问
             services.AddCors(options => 
             {
                 options.AddPolicy("any", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +91,8 @@ namespace dotnet
             app.UseAuthorization();
             //允许跨域访问
             app.UseCors("any");
+            //获取用户登录信息
+            app.UseMiddleware<GetUserInfoMiddleware>();
             //定位到对应的服务
             app.UseEndpoints(endpoints =>
             {

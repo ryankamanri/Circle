@@ -1,6 +1,8 @@
 using System;
 using System.Dynamic;
+using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using dotnet.Model;
@@ -22,13 +24,16 @@ namespace dotnet.Controllers
 
         private TagService _tagService;
 
+        private User _user;
 
 
-        public TestController(SQL sql,DataBaseContext dbc,TagService tagService)
+
+        public TestController(SQL sql,DataBaseContext dbc,TagService tagService,User user)
         {
             _sql = sql;
             _dbc = dbc;
             _tagService = tagService;
+            _user = user;
         }
 
         [HttpGet]
@@ -93,20 +98,27 @@ namespace dotnet.Controllers
 
         [HttpGet]
         [Route("dbc")]
-        public string DBCTest()
+        public async Task<string> DBCTest()
         {
             string result = "";
 
-            Tag 线性代数 = new Tag("线性代数");
-            Tag 概率论 = new Tag("概率论");
-            Tag 计算机 = new Tag("计算机");
-            _dbc.SelectID(线性代数);
-            _dbc.SelectID(概率论);
-            _dbc.SelectID(计算机);
-            double similarity = _tagService.CalculateSimilarity(线性代数,线性代数);
-            result += $"{similarity}\n";
-            similarity = _tagService.CalculateSimilarity(概率论,计算机);
-            result += $"{similarity}\n";
+            // Tag 线性代数 = new Tag("线性代数");
+            // Tag 概率论 = new Tag("概率论");
+            // Tag 计算机 = new Tag("计算机");
+            // _dbc.SelectID(线性代数);
+            // _dbc.SelectID(概率论);
+            // _dbc.SelectID(计算机);
+            // double similarity = _tagService.CalculateSimilarity(线性代数,线性代数);
+            // result += $"{similarity}\n";
+            // similarity = _tagService.CalculateSimilarity(概率论,计算机);
+            // result += $"{similarity}\n";
+
+            //await _dbc.Connect(_user,_dbc.Select(new Tag(3)),relation => relation.Type = new List<string>(){"Self"});
+            //await _dbc.Connect(_user,_dbc.Select(new Tag(4)),relation => relation.Type = new List<string>(){"Interested"});
+            IEnumerable<int> list = new List<int>();
+
+            list.Intersect(list);
+            
             return result;
         }
     }

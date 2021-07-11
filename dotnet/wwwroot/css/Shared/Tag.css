@@ -1,0 +1,29 @@
+.tag{
+    min-width: 70px;
+    height: 30px;
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    border-radius: 100px;
+    border: 2px solid transparent;
+    transition: opacity 0.3s ease-in-out,border 0.3s ease-in-out,margin 0.3s ease-in-out;
+    opacity: 0.8;
+}
+._Tag{
+    color: black;
+    position: relative;
+    margin: 0 5px;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+
+.tag:hover{
+    cursor: pointer;
+    opacity: 1;
+    border: 2px solid #FFF;
+    margin: 5px;
+}
+
+.ID{
+    display: none;
+}

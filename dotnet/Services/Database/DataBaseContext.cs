@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -288,11 +289,17 @@ namespace dotnet.Services.Database
             if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"select * from {tableName} where {selectWay}";
 
-            return id_id.GetList(_sql.Query(SQLStatement))[0].Relations;
+            ID_IDList resultList = id_id.GetList(_sql.Query(SQLStatement));
+            if(resultList.Count == 0) return null;
+            return resultList[0].Relations;
         }
 
         /// <summary>
         /// 改变两个实体间的关系
+        /// 注意!在Action<dynamic> SetRelation 中已有relation 的参数,
+        /// 不要将别的引用参数的值赋给它,这样会导致修改不到已有的relation.
+        /// 正确修改方法 : relation.XX = XX.
+        /// 错误修改方法 : realtion = XX.
         /// </summary>
         /// <param name="tke"></param>
         /// <param name="tve"></param>
@@ -300,16 +307,16 @@ namespace dotnet.Services.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task ChangeRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Action<dynamic> SetRelations)
+        public async Task ChangeRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Action<dynamic> SetRelation)
         {
             dynamic Tke = tke,Tve = tve;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            ID_ID key_value = new ID_ID();
-            SetRelations(key_value.Relations);
-            string relationsJSON = JsonConvert.SerializeObject(key_value.Relations);
+            dynamic relation = SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
+            SetRelation(relation);
+            string relationJSON = JsonConvert.SerializeObject(relation);
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
             if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
-            string SQLStatement = $"update {tableName} set relations = '{relationsJSON}' where {selectWay}";
+            string SQLStatement = $"update {tableName} set relations = '{relationJSON}' where {selectWay}";
 
             await _sql.Execute(SQLStatement);
         }
@@ -357,7 +364,7 @@ namespace dotnet.Services.Database
         {
             IDictionary<TOutputEntity,dynamic> mappingResults = Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);
             IList<TOutputEntity> mappingResultsSelect = new List<TOutputEntity>();
-            bool selectionFlag = default, flag = default;
+            bool selectionFlag = default, flag = default,itemFlag = default;
             ID_ID key_value = new ID_ID();
             dynamic selections = key_value.Relations;
             SetSelections(selections);
@@ -369,10 +376,36 @@ namespace dotnet.Services.Database
                     selectionFlag = false;
                     foreach(var relation in mappingResult.Value)
                     {
-                        if(relation.Key == selection.Key && relation.Value == selection.Value) 
+                        if(relation.Key == selection.Key) 
                         {
-                            selectionFlag = true;//如果匹配到了,直接进行下一个selection的判断
-                            break;
+                            //如果两个值都是集合,判断selection.value是不是relation.value的真子集
+                            
+                            if(typeof(ICollection<object>).IsAssignableFrom(relation.Value.GetType()))
+                            {
+                                Type ICollectionType = typeof(ICollection<object>).GetGenericTypeDefinition();
+                                if(!Array.Exists(selection.Value.GetType().GetInterfaces(), new Predicate<Type>(type => type.GetGenericTypeDefinition() == ICollectionType))) break;
+                                itemFlag = true;
+                                foreach(var selectionItem in selection.Value)
+                                {
+                                    if(!relation.Value.Exists(new Predicate<dynamic>(relationItem => relationItem == selectionItem)))
+                                    {
+                                        itemFlag = false;
+                                        break;
+                                    }
+                                }
+                                if(itemFlag == true)
+                                {
+                                    selectionFlag = true;//如果匹配到了,直接进行下一个selection的判断
+                                    break;
+                                }
+
+                            }
+                            else if(relation.Value == selection.Value)
+                            {
+                                selectionFlag = true;//如果匹配到了,直接进行下一个selection的判断
+                                break;
+                            }
+                            
                         }
                     }
                     if(selectionFlag == false)//有一个selection没匹配到
