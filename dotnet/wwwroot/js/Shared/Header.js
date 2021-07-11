@@ -52,6 +52,7 @@
                 resultItem.innerHTML = obj[i];
                 resultItem.setAttribute("class","self-dropdown-item");
                 searchResult.append(resultItem);
+                
             }
             
         }
