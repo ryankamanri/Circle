@@ -37,12 +37,18 @@ namespace dotnet
                 options.LoginPath = "/LogIn";
             });
 
+            //配置跨域访问
+            services.AddCors(options => 
+            {
+                options.AddPolicy("any", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
+
             
             services.AddScoped<User>();
             //增加Cookie服务
             services.AddSingleton<ICookie, Cookie>();
 
-            //增加字典服务,用于注册验证
+            //增加字典服务,用于注册验证,保存cookie
             services.AddSingleton<Dictionary<string,string>>();
 
             //增加单例服务,数据库访问
@@ -64,11 +70,9 @@ namespace dotnet
             //增加用户服务
             services.AddSingleton<UserService>();
 
-            //配置跨域访问
-            services.AddCors(options => 
-            {
-                options.AddPolicy("any", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+            services.AddSingleton<SearchService>();
+
+            services.AddSingleton<PostService>();
 
             
         }

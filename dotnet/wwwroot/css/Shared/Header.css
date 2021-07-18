@@ -1,9 +1,9 @@
 
         .self-dropdown {
             margin: 0;
-            position: absolute;
+            position: fixed;
             right: 1%;
-            top: 14.28%;
+            top: 1%;
             padding-left: 0;
         }
 

@@ -1,0 +1,42 @@
+@using dotnet.Model
+@using dotnet.Model.Relation
+@model KeyValuePair<UserInfo,List<Tag>>
+@inject User _user
+@inject dotnet.Services.UserService _userService
+@{
+    IList<Tag> userTags = _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"}).Result;
+    IEnumerable<Tag> showTags = Model.Value.Union(userTags,new Tag());
+    int count = 0;
+    double similarity = _userService.CarculateSimilarity(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"}).Result;
+}
+<div class="user mt-4 mb-4 ml-4 mr-4">
+        <div class="headimage col-md-12">
+            <img src="@Model.Key.HeadImage" alt="">
+        </div>
+        <div class="nickname col-md-12 text-center">@Model.Key.NickName</div>
+        <div class="sm-font col-md-12 text-center">
+            @Model.Key.SchoolYear.Year 级 @Model.Key.Speciality
+        </div>
+        <div class="tags col-md-12 pt-1 pb-1 text-center">
+            
+            @* @for(int i = 0;i < Count;i ++)
+            {
+                @Html.PartialAsync("Tag",Model.Value[i]).Result
+            } *@
+
+            @foreach (var showTag in showTags)
+            {
+                if(count >= 4) break;
+                <div class="tagNode">@Html.PartialAsync("Tag",showTag).Result</div>
+                count++;
+            }
+        </div>
+        <div class="col-md-12 sm-font text-center">
+            与我的相似度 : @((int)(similarity * 100)) %
+        </div>
+        <div class="buttons col-md-12 text-center">
+            <input class="btn btn-sm sm-font btn-outline-primary" type="button" value="关注">
+            <input class="btn btn-sm sm-font btn-primary" type="button" value="私聊">
+        </div>
+        <link rel="stylesheet" href="/css/Shared/SearchUserInfo.css">
+</div>

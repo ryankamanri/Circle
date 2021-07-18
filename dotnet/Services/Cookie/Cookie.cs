@@ -11,41 +11,66 @@ namespace dotnet.Services.Cookie
 
     public interface ICookie
     {
-        void SetCookie(HttpContext httpContext,ClaimsPrincipal claimsPrincipal);
+        void SignIn(HttpContext httpContext,ClaimsPrincipal claimsPrincipal);
 
-        void DeleteCookie(HttpContext httpContext);
+        void SignOut(HttpContext httpContext);
 
-        ClaimsPrincipal GetCookie(HttpContext httpContext);
+        ClaimsPrincipal GetAuth(HttpContext httpContext);
+
+        void AppendCookie(HttpContext httpContext,string key,string value);
+
+        void DeleteCookie(HttpContext httpContext,string key);
+
+        string GetCookie(HttpContext httpContext,string key);
     }
     
     public class Cookie : ICookie
     {
 
 
-        private const string _cookieName  = "SelfLogIn";
+        private string cookieName { get; } = "SelfLogIn";
 
-        public void DeleteCookie(HttpContext httpContext)
+
+        public void SignIn(HttpContext httpContext,ClaimsPrincipal claimsPrincipal)
         {
-            httpContext.Response.Cookies.Delete(_cookieName);
+            AuthenticationScheme scheme = new AuthenticationScheme("name", "displayName", typeof(Scheme));
+            var ticket = new AuthenticationTicket(claimsPrincipal, scheme.Name);
+            httpContext.Response.Cookies.Append(cookieName, Base64.EncodeBase64(Scheme.Serialize(ticket)));
+
+            httpContext.SignInAsync(claimsPrincipal);
+        }
+        public void SignOut(HttpContext httpContext)
+        {
+            httpContext.Response.Cookies.Delete(cookieName);
             httpContext.SignOutAsync();
         }
 
-        public ClaimsPrincipal GetCookie(HttpContext httpContext)
+        public ClaimsPrincipal GetAuth(HttpContext httpContext)
         {
             AuthenticationTicket ticket;
-            string content = httpContext.Request.Cookies[_cookieName];
+            string content = httpContext.Request.Cookies[cookieName];
             if(content == default || content == "") return new ClaimsPrincipal();
             ticket = Scheme.Deserialize(Base64.DecodeBase64(content));
             return ticket.Principal;
         }
 
-        public void SetCookie(HttpContext httpContext,ClaimsPrincipal claimsPrincipal)
-        {
-            AuthenticationScheme scheme = new AuthenticationScheme("name", "displayName", typeof(Scheme));
-            var ticket = new AuthenticationTicket(claimsPrincipal, scheme.Name);
-            httpContext.Response.Cookies.Append(_cookieName, Base64.EncodeBase64(Scheme.Serialize(ticket)));
+        
 
-            httpContext.SignInAsync(claimsPrincipal);
+        public void AppendCookie(HttpContext httpContext,string key,string value)
+        {
+            httpContext.Response.Cookies.Append(Base64.EncodeBase64(key), Base64.EncodeBase64(value));
+        }
+
+        public void DeleteCookie(HttpContext httpContext,string key)
+        {
+            httpContext.Response.Cookies.Delete(Base64.EncodeBase64(key));
+        }
+
+        public string GetCookie(HttpContext httpContext,string key)
+        {
+            string unDecodedCookie =  httpContext.Request.Cookies[Base64.EncodeBase64(key)];
+            if(unDecodedCookie == default) return default;
+             return Base64.DecodeBase64(unDecodedCookie);
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using System.Linq;
 using System.Collections.Generic;
 using dotnet.Model;
 using dotnet.Model.Relation;
@@ -34,19 +36,19 @@ namespace dotnet.Services
         /// 标签树(以关系表的形式存储)
         /// </summary>
         /// <value></value>
-        public Dictionary<long,long> TagTree {get;private set;}
+        private Dictionary<long,long> TagTree;
         public TagService(DataBaseContext dbc)
         {
             _dbc = dbc;
-            InitTags();
+            InitTags().Wait();
             InitTagIndex();
             InitTagDictionary();
-            InitTagTree();
+            InitTagTree().Wait();
         }
 
-        private void InitTags()
+        private async Task InitTags()
         {
-            Tags = _dbc.SelectAll<Tag>(new Tag());
+            Tags = await _dbc.SelectAll<Tag>(new Tag());
         }
 
         
@@ -82,14 +84,44 @@ namespace dotnet.Services
         /// <summary>
         /// 标签树初始化
         /// </summary>
-        private void InitTagTree()
+        private async Task InitTagTree()
         {
             TagTree = new Dictionary<long, long>();
-            ID_IDList tagSon_tagParents = _dbc.SelectAllRelations<Tag,Tag>(new Tag(),new Tag());
+            ID_IDList tagSon_tagParents = await _dbc.SelectAllRelations<Tag,Tag>(new Tag(),new Tag());
             foreach(var tagSon_tagParent in tagSon_tagParents)
             {
                 TagTree.Add(tagSon_tagParent.ID,tagSon_tagParent.ID_2);
             }
+        }
+
+        /// <summary>
+        /// 寻找子标签
+        /// </summary>
+        /// <param name="parentTag"></param>
+        /// <returns></returns>
+        public ICollection<Tag> FindChildTag(Tag parentTag)
+        {
+            //return (await _dbc.Mapping<Tag,Tag>(parentTag,new Tag(),ID_IDList.OutPutType.Key)).Keys;
+            var childIDs = from tagTreeItem in TagTree
+            where tagTreeItem.Value == parentTag.ID
+            select tagTreeItem.Key;
+            ICollection<Tag> tags = new List<Tag>();
+            foreach(var childID in childIDs)
+            {
+                tags.Add(TagDictionary[childID]);
+            }
+            return tags;
+        }
+
+        
+        /// <summary>
+        /// 寻找父标签
+        /// </summary>
+        /// <param name="childTag"></param>
+        /// <returns></returns>
+        public Tag FindParentTag(Tag childTag)
+        {
+            return TagDictionary[TagTree[childTag.ID]];
         }
 
         /// <summary>

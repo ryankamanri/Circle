@@ -10,41 +10,34 @@ using dotnet.Services.Database;
 
 namespace dotnet.Model
 {
-    public class Tag : Entity<Tag>
+    public class Tag : Entity<Tag>,IEqualityComparer<Tag>
     {
         
         public string _Tag { get; set; }
 
-        private void Init()
-        {
-            TableName = "tags";
+        public override string TableName { get ; set ;} = "tags";
 
-            Columns  = "tags.ID,tag";
+        public override string ColumnsWithoutID => $"{TableName}.tag";
 
-            ColumnsWithoutID = "tag";
-        }
 
         public Tag()
         {
-            Init();
+
         }
 
-        public Tag(long ID)
+        public Tag(long ID) : base(ID)
         {
-            this.ID = ID;
-            Init();
+
         }
 
         public Tag(string tag)
         {
             this._Tag = tag;
-            Init();
+
         }
-        public Tag(long ID,string tag)
+        public Tag(long ID,string tag) : base(ID)
         {
-            this.ID = ID;
             this._Tag = tag;
-            Init();
         }
 
 
@@ -61,40 +54,30 @@ namespace dotnet.Model
 
         public override string UpdateString()
         {
-            return $"tag = '{_Tag}'";
+            return $"{TableName}.tag = '{_Tag}'";
         }
 
         public override string SelectString()
         {
-            return $"tag = '{_Tag}'";
+            return $"{TableName}.tag = '{_Tag}'";
         }
         
 
-        public override IList<Tag> GetList(MySqlDataReader msdr)
+        public override Tag GetEntityFromDataReader(MySqlDataReader msdr)
         {
-            IList<Tag> Tags = new List<Tag>();
-            while (msdr.Read())
-            {
-                Tags.Add(new Tag((long)msdr["ID"], (string)msdr["tag"]));
-            }
-            msdr.Close();
-            return Tags;
+            return new Tag((long)msdr["ID"], (string)msdr["tag"]);
         }
 
-        public override IDictionary<Tag,dynamic> GetRelationDictionary(MySqlDataReader msdr)
+        public bool Equals(Tag tag_1,Tag tag_2)
         {
-            IDictionary<Tag,dynamic> Tag_Relations = new Dictionary<Tag,dynamic>();
-            while (msdr.Read())
-            {
-
-                Tag_Relations.Add(new Tag((long)msdr["ID"], (string)msdr["tag"]),
-                JsonConvert.DeserializeObject<ExpandoObject>((string)msdr["relations"]));
-            }
-            msdr.Close();
-            return Tag_Relations;
+            return (tag_1.ID == tag_2.ID);
         }
 
-   
+        public int GetHashCode(Tag tag)
+        {
+            return (int)tag.ID;
+        }
+
 
         /// <summary>
         /// 获取该标签的连续子集
@@ -124,5 +107,6 @@ namespace dotnet.Model
             }
             return subset;
         }
+
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using dotnet.Model;
@@ -19,7 +20,8 @@ using dotnet.Services.Cookie;
 namespace dotnet.Controllers
 {
     [Controller]
-    [Route("map/")]
+    [Authorize]
+    [Route("Shared/")]
     public class MappingController : Controller
     {
         private DataBaseContext _dbc;
@@ -27,13 +29,16 @@ namespace dotnet.Controllers
 
         private TagService _tagService;
 
+        private PostService _postService;
+
         private ICookie _cookie;
-        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie,TagService tagService)
+        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie,TagService tagService,PostService postService)
         {
             _sql = sql;
             _dbc = dbc;
             _cookie = cookie;
             _tagService = tagService;
+            _postService = postService;
         }
 
 
@@ -66,6 +71,18 @@ namespace dotnet.Controllers
             var resultJSON = JsonConvert.SerializeObject(tagsString);
             return new JsonResult(resultJSON);
             
+        }
+
+        [HttpPost]
+        [Route("ShowPostInfo")]
+        public async Task<IActionResult> ShowPostInfo()
+        {
+            StringValues postID = new StringValues();
+            if(!HttpContext.Request.Form.TryGetValue("postID",out postID)) return new JsonResult("bad request");
+
+            PostInfo postInfo = await _postService.GetPostInfo(new Post(Convert.ToInt64(postID.ToString())));
+
+            return new JsonResult(JsonConvert.SerializeObject(postInfo));
         }
     }
 }

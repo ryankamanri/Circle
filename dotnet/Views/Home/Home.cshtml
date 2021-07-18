@@ -1,59 +1,61 @@
-@using System.Dynamic
 @using dotnet.Model
 @using dotnet.Model.Relation
-@using dotnet.Services.Cookie
-@using dotnet.Services.Database
-@model User
-@inject ICookie _cookie
-@inject DataBaseContext _dbc
+@inject dotnet.Model.User _user
+@inject dotnet.Services.Database.DataBaseContext _dbc
+@inject dotnet.Services.TagService _tagService
+@inject dotnet.Services.UserService _userService
+
 
 @{
     Layout = "../Shared/_Layout.cshtml";
-    ViewBag.User_Account = Model.Account;
-    IList<Tag> mySelfTags = _dbc.MappingSelect<User,Tag>(Model,new Tag(),ID_IDList.OutPutType.Value,
-        selection => selection.Type = new List<string>(){"Self"});
-    IList<Tag> myInterestedTags = _dbc.MappingSelect<User,Tag>(Model,new Tag(),ID_IDList.OutPutType.Value,
-        selection => selection.Type = new List<string>(){"Interested"});
-    IList<Tag> allTags = _dbc.SelectAll<Tag>(new Tag());
-}
-@functions{
-    public string msg = $"ID = ";
-}
+    ViewData["Title"] = "个人主页";
 
-<div style="background-color: #cccccc;">
-    <h2>主视图</h2>
-    <h3>这里放登录后的主页面</h3>
-    <h3>@msg @Model.ID</h3>
-    <div class="col-md-6">
-        <h3>我的个人标签 : </h3>
-        <div id="mySelfTags" class="tagbox" style="min-height: 50px;">
-            @foreach (var tag in mySelfTags)
-            {
-                @await Html.PartialAsync("Tag",tag);
-            }
-        </div>
-    </div>
-    <div class="col-md-6">
-        <h3>我的兴趣标签 : </h3>
-        <div id="myInterestedTags" class="tagbox" style="min-height: 50px;">
-            @foreach (var tag in myInterestedTags)
-            {
-                @await Html.PartialAsync("Tag",tag);
-            }
-        </div>
-    </div>
+    var myInterestedPosts = _userService.MappingInterestedPosts(_user).Result;
+    var allPosts = _dbc.SelectAll<Post>(new Post()).Result;
+    IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
     
-    <h3>标签库 : </h3>
-    <div class="tagbox" style="
-            min-height: 100px;
-            background-color: blanchedalmond;">
-        @foreach (var tag in allTags)
-        {
-            @await Html.PartialAsync("Tag",tag);
-        }
+    int count = Math.Min(25,myPosts.Count);
+
+}
+
+<div class="ky-container">
+    <div class="ky-main clearfix col-md-12">
+        <div class="content col-md-12">
+            <div class="module-box feed-publish-mod">
+                <div class="menu-box">
+                    <ul class="menu clearfix">
+                        <li class="selected">
+                            <a href="javascript:;">帖子</a>
+                        </li>
+                        <li class="selected">
+                            <a href="javascript:;">动态</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu-box menu-line-box">
+                    <ul class="menu clearfix">
+                        <li class="selected">
+                            <a href="javascript:;">发帖子</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            @* @foreach (var post in myInterestedPosts)
+            {
+                @Html.PartialAsync("Post",post).Result
+            } *@
+            @for(int i = 0;i < count;i ++)
+            {
+                @Html.PartialAsync("Post",myPosts[i]).Result
+            }
+            
+
+        </div>
     </div>
 
+    <script src="/js/Home/Home.js"></script>
 </div>
 
-<script src="/js/Home/Home.js"></script>
 

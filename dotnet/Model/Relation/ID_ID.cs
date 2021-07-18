@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using dotnet.Services.Extensions;
 using dotnet.Services.Database;
 
 
@@ -47,14 +48,15 @@ namespace dotnet.Model.Relation
         }
 
         
-        public ID_IDList GetList(MySqlDataReader msdr)
+        public ID_IDList GetList(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
         {
             ID_IDList ID_IDs = new ID_IDList();
-            while (msdr.Read())
+            while (msdr_mutex.Key.Read())
             {
-                ID_IDs.Add(new ID_ID((long)msdr[0], (long)msdr[1],(string)msdr["relations"]));
+                ID_IDs.Add(new ID_ID((long)msdr_mutex.Key[0], (long)msdr_mutex.Key[1],(string)msdr_mutex.Key["relations"]));
             }
-            msdr.Close();
+            msdr_mutex.Key.Close();
+            msdr_mutex.Value.Signal();
             return ID_IDs;
         }
 

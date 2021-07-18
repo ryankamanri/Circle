@@ -1,0 +1,200 @@
+
+.box{
+    width: 1000px;
+    height: 700px;
+    background-color: rgb(195, 228, 228);
+    border-radius: 15px;
+    box-shadow: 0 15px 25px rgba(0,0,0,.5);
+}
+.box1{
+    width: 200px;
+    height: 700px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    background-color:rgb(14, 54, 54);
+    position: absolute;
+}
+.box2{
+    width: 800px;
+    height: 100px;
+    background-color:rgb(183, 228, 224);
+    position: absolute;
+    margin-left: 200px;
+    border-top-right-radius: 15px;
+}
+.biaozhi button{
+    background-color: cornflowerblue;
+    color: white;
+    width: 150px;
+    height: 40px;
+    position:absolute;
+    font-size: 15px;
+    margin-left: 20px;
+    margin-top: 30px;
+    outline: none;
+    border-radius: 15px;
+    border: 0;
+    cursor: pointer;
+}
+ .logo{
+    font-size: 20px;
+    color: white;
+    border-top-left-radius: 15px;
+    background-color: rgb(33, 65, 66);
+    width: 200px;
+    height: 100px;
+}
+.wenzi{
+    position:absolute;
+    margin-top: 35px;
+    margin-left: 70px;
+}
+.logo i{
+    position: absolute;
+    margin-top: 40px;
+    margin-left: 30px;
+    background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-box_e97e9a2.png);
+    width: 21px;
+    height: 16px;
+    background-repeat: no-repeat;
+}
+.tubiao {
+    width: 200px;
+    height: 60px;
+    background-color:rgb(14, 54, 49);
+    
+}
+.tubiao1{
+    background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-msg-01_140328b.png);
+    position:absolute;
+    width: 40px;
+    height: 20px;
+    margin-top: 20px;
+    margin-left: 40px;
+    background-repeat: no-repeat;
+}
+
+/*.tubiao a{
+    display: block;
+    width: 50%;
+    float: left;
+    outline: 0;
+    height: 23px;
+}
+*/
+.tubiao .tubiao1.on,.tubiao .tubiao2.on{
+    
+    border-bottom-width:3px ;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(215, 81, 68);
+}
+ul{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+li{
+    float: left;
+}
+.a1{
+    display: block;
+    width: 100px;
+    height: 40px;
+    padding: 4px 0px;
+    
+    
+}
+.a1 i{
+    background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-msg-01_140328b.png);
+    margin-top: 10px;
+    margin-left: 40px;
+    position:absolute;
+    width: 40px;
+    height: 20px;
+    background-repeat: no-repeat;
+}
+.a2 i{
+    background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-msg-02_0d9e698.png);
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    margin-top: 10px;
+    margin-left: 40px;
+    background-repeat: no-repeat;
+
+}
+.a2{
+    display: block;
+    color: white;
+    width: 100px;
+    height: 40px;
+    padding: 4px 0px;
+    background-repeat: no-repeat;
+}
+tubiao a:hover,tubiao a:active{
+    background-color: rgb(13, 88, 75);
+}
+.box3{
+   background-color:rgb(235, 252, 251);;
+   width: 760px;
+   height: 560px;
+   margin-top: 120px;
+   margin-left: 220px;
+   position:absolute;
+   border-radius: 15px;
+}
+.box4{
+   width: 760px;
+   height: 50px;
+   position:absolute;
+   background-color: rgb(14, 54, 54);
+   color: white;
+   border-top-left-radius: 15px;
+   border-top-right-radius: 15px;
+   
+}
+input{
+   padding: 30px 260px;
+   margin-top: 550px;
+   margin-left: 250px;
+   position:absolute;
+   outline:none;
+   /*border-radius: 15px;*/
+}
+.input1{
+    width: 700px;
+    height: 60px;
+    margin-top: 560px;
+    margin-left: 250px;
+    position:absolute;
+    outline: none;
+    border-radius: 15px;
+    font-size: 18px;
+}
+button{
+  background-color: cornflowerblue;
+  color: white;
+  width: 60px;
+  height: 30px;
+  margin-top: 640px;
+  margin-left: 900px;
+  position: absolute;
+  outline: none;
+  border-radius: 15px;
+  border: 0;
+  cursor: pointer;
+  
+}
+.box2 i{
+  float: right;
+  background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/message_bundle/img/settings-01_6b6ab25.png);
+  display: block;
+  position:absolute;
+  width: 24px;
+  height: 28px;
+  margin-top: 40px;
+  margin-left: 750px;
+  background-repeat: no-repeat;
+  
+}

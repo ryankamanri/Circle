@@ -6,36 +6,28 @@
     <title>Document</title>
     <script src="/lib/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/Auth/LogIn.css">
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body>
-    <div class="col-md-4" style="margin:auto;position:relative;top:50%;transform:translate(0,-50%);">
-        <h1>这里放登录框</h1>
-        <input type="text" id="account" class="form-control" placeholder="用户名">
-        <input type="password" id="password" class=" form-control" placeholder="密码">
-        <input type="button" id="login" value="提交" class="btn btn-primary">
-    </div>
+    <div id="body" style="height: 100%;margin: 0;background-image: url('/Images/1.jpg');
+        background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
+        <div class="box">
+            <h2>登录</h2>
+            <form class="form-box">
+                <div class="inputBox">
+                    <input type="text" id="account" name="" required="">
+                    <label>用户名(邮箱)</label>
+                </div>
+                <div class="inputBox">
+                    <input type="password" id="password" name="" required="">
+                    <label>密码</label>
+                </div>
+                <input class="btn btn-primary col-md-12" type="button" id="login" name="" value="提交">
 
+            </form>
+        </div>
+    </div>
 </body>
-<script>
-    $("#login").on("click",() => {
-        let account = $("#account").val();
-        let password = $("#password").val();
-        $.ajax({
-            url : "/LogInSubmit",
-            type : "POST",
-            data : {
-                User : [
-                    account,
-                    password
-                ]
-            }
-        }).done((data) => {
-            if(data == "login succeed") window.location.href = "/Home";
-            alert("send succeed\n" + data);
-        }).fail(() =>
-            alert("send failure")
-        )
-    })
-</script>
+<script src="/js/Auth/LogIn.js"></script>
 </html>

@@ -138,3 +138,14 @@ function Critical(value,min,max)
     }
 }
 
+function parseElement(str) {
+	var o=document.createElement("div");
+	o.innerHTML=str;
+	return o.childNodes[0];
+}
+
+function stringlify(obj){
+	var o=document.createElement("div");
+	o.appendChild(obj);
+	return o.innerHTML;
+}

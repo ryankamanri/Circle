@@ -1,41 +1,43 @@
+@inject dotnet.Model.User _user
+@inject dotnet.Services.Database.DataBaseContext _dbc
 
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData["Title"] - 圈</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/Home/Home/main.css">
+    <link rel="stylesheet" href="/css/Home/Home/ky.css">
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/js/site.js"></script>
     <script src="/js/My.js"></script>
-
-    
-
 </head>
 
 <body>
-    @await Html.PartialAsync("Header")
-    <div style="background-color:#eeeeee; margin:auto" class="col-md-8">
-        <h1>布局页</h1>
-        <h2>你好,@ViewBag.User_Account</h2>
-        <div>
-            <main>
-                @RenderBody()
-            </main>
+    @await Html.PartialAsync("Header",_user)
+    @await Html.PartialAsync("MyInterestedTags")
 
-        </div>
+    <div style=" margin:auto" class="col-md-8">
+        <main>
+            @RenderBody()
+        </main>
     </div>
 
 </body>
+<script src="/js/Shared/_Layout.js"></script>
 
-</html>
 <link rel="stylesheet" href="/css/Shared/Header.css">
 <script src="/js/Shared/Header.js"></script>
 
 <link rel="stylesheet" href="/css/Shared/Tag.css">
 <script src="/js/Shared/Tag.js"></script>
+
+<script src="/js/Shared/Post.js"></script>
+
+</html>
+            

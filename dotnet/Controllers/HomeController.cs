@@ -7,14 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Middlewares;
+using dotnet.Services;
 using dotnet.Services.Database;
+using dotnet.Services.Extensions;
 using dotnet.Services.Cookie;
 
 namespace dotnet.Controllers
 {
     [Controller]
+    [Authorize]
     [Route("Home")]
     public class HomeController : Controller
     {
@@ -22,19 +26,27 @@ namespace dotnet.Controllers
         private ICookie _cookie;
         private DataBaseContext _dbc;
 
+        private UserService _userService;
 
-        public HomeController(DataBaseContext dbc,ICookie cookie,User user)
+        private TagService _tagService;
+
+
+        public HomeController(DataBaseContext dbc, ICookie cookie, User user, UserService userService,TagService tagService)
         {
             _dbc = dbc;
             _cookie = cookie;
             _user = user;
+            _userService = userService;
+            _tagService = tagService;
         }
 
+
+        #region Home
+
         [HttpGet]
-        [Authorize]
         public IActionResult Home()
         {
-            return View(_user);
+            return View();
         }
 
         /// <summary>
@@ -45,36 +57,12 @@ namespace dotnet.Controllers
         [Route("AddTag")]
         public async Task<IActionResult> AddTag()
         {
-            StringValues tagID = new StringValues(),tagRelation = new StringValues();
-            if(HttpContext.Request.Form.TryGetValue("tagID",out tagID) == false) return new JsonResult("bad request");
-            if(HttpContext.Request.Form.TryGetValue("tagRelation",out tagRelation) == false) return new JsonResult("bad request");
+            StringValues tagID = new StringValues(), tagRelation = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
             Tag tag = new Tag(Convert.ToInt64(tagID));
-            dynamic relation = _dbc.SelectRelation<User,Tag>(_user,tag);
 
-            if (relation == null)
-            {   //两个实体之间的关系不存在,则新建关系
-                await _dbc.Connect<User, Tag>(_user, tag, relation => relation.Type = new List<string>() { tagRelation.ToString() });
-                return new JsonResult("add tag succeed");
-            }
-            await _dbc.ChangeRelation<User, Tag>(_user, tag, async relation =>
-               {
-                   bool isTypeExists = false;
-                   foreach (var properties in relation)
-                   {
-                       //两个实体之间存在名为Type的关系
-                       if (properties.Key.ToString() == "Type")
-                       {
-                           if (!relation.Type.Contains(tagRelation.ToString()))
-                           {
-                               relation.Type.Add(tagRelation.ToString());
-                               isTypeExists = true;
-                               return;
-                           }
-                       }
-                   }
-                   //两个实体之间不存在名为Type的关系
-                   if (isTypeExists == false) relation.Type = new List<string>() { tagRelation.ToString() };
-               });
+            await _userService.AppendTagRelation(_user,tag, tagRelation.ToString());
 
             return new JsonResult("add tag succeed");
         }
@@ -87,20 +75,68 @@ namespace dotnet.Controllers
         [Route("RemoveTag")]
         public async Task<IActionResult> RemoveTag()
         {
-            StringValues tagID = new StringValues(),tagRelation = new StringValues();
-            if(HttpContext.Request.Form.TryGetValue("tagID",out tagID) == false) return new JsonResult("bad request");
-            if(HttpContext.Request.Form.TryGetValue("tagRelation",out tagRelation) == false) return new JsonResult("bad request");
+            StringValues tagID = new StringValues(), tagRelation = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
             Tag tag = new Tag(Convert.ToInt64(tagID));
-            //dynamic relation = _dbc.SelectRelation<User,Tag>(_user,tag);
 
-            await _dbc.ChangeRelation<User,Tag>(_user,tag,async relation => 
-            {
-                relation.Type.Remove(tagRelation.ToString());
-                if(relation.Type.Count == 0) 
-                    await _dbc.Disconnect<User,Tag>(_user,tag);
-            });
-            
+            await _userService.RemoveTagRelation(_user,tag,tagRelation.ToString());
+
             return new JsonResult("remove tag succeed");
         }
+        #endregion
+
+
+        #region PrivateChat
+        [HttpGet]
+        [Route("PrivateChat")]
+        public IActionResult PrivateChat()
+        {
+            return View("PrivateChat");
+        }
+        #endregion
+
+        #region TagTree
+
+        [HttpGet]
+        [Route("TagTree")]
+        public IActionResult TagTree()
+        {
+            return View("TagTree");
+        }
+
+        [HttpPost]
+        [Route("FindChildTags")]
+        public IActionResult FindChildTags()
+        {
+            StringValues tagID = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
+            
+            ICollection<Tag> childTags = _tagService.FindChildTag(new Tag(Convert.ToInt64(tagID)));
+
+            IList<string> resultJSON = new List<string>();
+
+            foreach(var childTag in childTags)
+            {
+                resultJSON.Add(this.RenderViewAsync("Tag",childTag,true).Result);
+            }
+
+            return new JsonResult(JsonConvert.SerializeObject(resultJSON));
+        }
+            
+        #endregion
+
+
+        #region SearchResult
+
+        [HttpGet]
+        [Route("SearchResult")]
+        public IActionResult SearchResult(string searchString)
+        {
+            return View("SearchResult",searchString);
+        }
+            
+        #endregion
+
     }
 }

@@ -5,201 +5,302 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>圈</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-    <script src="/lib/vue/dist/vue.js"></script>
-    <script src="/lib/jquery/dist/jquery.js"></script>
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/js/site.js"></script>
-    <script src="/js/My.js"></script>
-    <style>
-        * {
-            color: white;
-        }
-
-        .self-dropdown {
-            margin: 0;
-            position: absolute;
-            right: 1%;
-            top: 14.28%;
-            padding-left: 0;
-        }
-
-        .self-dropdown-item {
-            display: none;
-
-        }
-
-        .self-dropdown:hover .self-dropdown-item {
-            display: block;
-            padding: 10px 10px 10px 10px;
-        }
-
-        .self-dropdown-block {
-            opacity: 0;
-            transition: background-color 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            position: relative;
-            top: 56px;
-            border: 1px;
-            border-radius: 5px;
-        }
-
-        .self-dropdown:hover>.self-dropdown-block {
-            display: block;
-            background-color: #f1f1f1;
-            opacity: 1;
-        }
-
-        .self-dropdown-item:hover {
-            background-color: lightgray;
-            border-radius: 5px;
-        }
-
-        .self-dropdown li {
-            color: black;
-        }
-
-        .selfstyle-inline-block {
-            display: inline-block;
-        }
-
-        .selfstyle-blockstyle {
-
-            border-radius: 5px;
-        }
-
-        .selfstyle-boundary {
-            background-color: #e9e7ef;
-            width: 1px;
-            height: 90%;
-
-        }
-
-        .selfstyle-top {
-            vertical-align: top;
-        }
-
-        .selfstyle-translucent {
-            background-color: rgba(0, 0, 0, 0);
-        }
-
-        #posts>div {
-            opacity: 0;
-        }
-    </style>
+    
+    <link rel="stylesheet" href="/css/Auth/Index.css">
 </head>
 
 <body>
     <div id="app">
 
-        <div v-show="showLoad" class="col-md-6" style="margin:auto; text-align:center; transform:translate(0,100%); ">
-            <h1 style="color:black;">Loading...</h1>
+        <div id="showLoad" class="col-md-6" style="margin:auto; text-align:center; transform:translate(0,100%); ">
+            <h3 style="color:black;">Loading...</h3>
             <div class="progress ">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:100%"></div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    style="width:100%"></div>
             </div>
         </div>
-        
+
 
         <div id="body" style="opacity: 0;height: 100%;margin: 0;background-image: url('/Images/1.jpg');
     background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
 
 
-            <main v-show="showMain" style="height: 100%;">
-                <div class="container" style="height: 100%;">
-                    <div class="jumbotron text-center selfstyle-translucent" style="
-            padding-right: 64px;
-            opacity: 0;
-            padding: 25% 0 21% 0        ">
-                        <h1>校友互助云平台</h1>
-                        <br><br>
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="inner-width">
+                    <a href="/icon.png" class="logo"></a>
+                    <button class="menu-toggler">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
 
-                        <h5 style="letter-spacing: 10px;">一个简易,快捷,便利的互助平台</h5>
-                        <br><br>
-                        <a href="/LogIn" class="btn btn-primary col-md-2 mr-4">登录</a>
-                        <a href="/SignIn" class="btn btn-outline-primary col-md-2 mr-4">注册</a>
+                    <div class="navbar-menu">
+
+                        <a href="#home">主页</a>
+                        <a href="#about">详情</a>
+                        <a href="#services">服务</a>
+                        <a href="#works">工作</a>
+                        <a href="#contact">联系</a>
                     </div>
+                </div>
+            </nav>
+            <!-- Home -->
+            <section id="home">
 
-                    <hr style="background-color: white;">
-                    <div style="height: 100%;padding-top: 100px;" id="posts">
-                        <div class="col-md-11 selfstyle-inline-block selfstyle-top selfstyle-translucent">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <h4>在这里,你可以...</h4>
-                                <br>
-                            </div>
+                <div class="inner-width">
+                    <div class="content">
+                        <h1></h1>
+                        <div class="sm">
+                            <a href="www.facebook.com" class="fab fa-facebook-f"></a>
+                            <a href="#" class="fab fa-twitter"></a>
+                            <a href="#" class="fab fa-instagram"></a>
+                            <a href="#" class="fab fa-linkedin-in"></a>
+                            <a href="#" class="fab fa-youtube"></a>
                         </div>
-                        <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
-                        <div class="col-md-4 selfstyle-inline-block selfstyle-top">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <h6>匹配到契合自己学校的学长或学姐,与他/她们展开深入交流</h6>
-                                <br>
-                            </div>
-                        </div>
-                        <div class="col-md-7 selfstyle-inline-block selfstyle-top selfstyle-translucent">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <img src="/Images/IndexImage/1.jpg" alt="" srcset="" style="width: inherit;">
-                                <br>
-                            </div>
-                        </div>
-                        <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
-                        <div class="col-md-7 selfstyle-inline-block selfstyle-top">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <img src="/Images/IndexImage/2.jpg" alt="" srcset="" style="width: inherit;">
-                                <br>
-                            </div>
-                        </div>
-                        <div class="col-md-4 selfstyle-inline-block selfstyle-top selfstyle-translucent">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <h6>如果你是毕业生,可以发布与你们单位相关的招聘信息</h6>
-                                <br>
-                            </div>
-                        </div>
-                        <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
-                        <div class="col-md-4 selfstyle-inline-block selfstyle-top">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <h6>如果你是即将入学的准大学生,可以匹配到自己的师兄师姐咨询相关问题</h6>
-                                <br>
-                            </div>
-                        </div>
-                        <div class="col-md-7 selfstyle-inline-block selfstyle-top selfstyle-translucent">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <img src="/Images/IndexImage/3.jpg" alt="" srcset="" style="width: inherit;">
-                                <br>
-                            </div>
-                        </div>
-                        <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
-                        <div class="col-md-7 selfstyle-inline-block selfstyle-top">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <img src="/Images/IndexImage/4.jpg" alt="" srcset="" style="width: inherit;">
-                                <br>
-                            </div>
-                        </div>
-                        <div class="col-md-4 selfstyle-inline-block selfstyle-top selfstyle-translucent">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <h6>...</h6>
-                                <br>
-                            </div>
-                        </div>
-                        <!-- <div class="selfstyle-inline-block selfstyle-boundary selfstyle-top selfstyle-translucent" id="boundary"></div> -->
-                        <div class="col-md-7 selfstyle-inline-block selfstyle-top">
-                            <div class="col-md-11 m-auto selfstyle-blockstyle ">
-                                <br><br><br><br>
-                                <h6>...</h6>
-                                <br>
-                            </div>
+                        <div class="buttons">
+                            <a href="/LogIn">登录</a>
+                            <a href="/SignIn">注册</a>
                         </div>
                     </div>
                 </div>
+            </section>
+            <!-- About -->
+            <section id="about">
+                <div class="inner-width">
+                    <h1 class="section-title">校友互助共享圈</h1>
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h2>作为一名学生</h2>
+                            <h3>
+                                <span>学习</span>
+                                <span>分享</span>
+                                <span>交流</span>
+                            </h3>
+                            <p>
 
-            </main>
-            <footer></footer>
+                                在这里，你可以...</br>
+                                匹配到契合自己学校的学长或学姐，与他/她们展开深入交流</br>
+                                </br>
+                                如果你是即将入学的准大学生，可以匹配到自己的师兄师姐咨询问题</br>
+                                如果你是在校大学生，可以匹配到方向相似的师兄师姐解惑</br>
+                                如果你是...</br>
+                                </br>
+                                加入我们，学习更多的知识。</br>
+                                加入我们，收获更好的自己。</br>
+                                加入我们，携手共同进步。</br>
+                                </br>
+                                </br>
+                                </br>
+                            </p>
+                        </div>
+                    </div>
+                    <!--<div class="skills">
+        <div class="skill">
+          <div class="skill-info">
+            <span>HTML</span>
+            <span>90%</span>
+          </div>
+          <div class="skill-bar html"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-info">
+            <span>CSS</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar css"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-info">
+            <span>Javascript</span>
+            <span>70%</span>
+          </div>
+          <div class="skill-bar js"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-info">
+            <span>PHP</span>
+            <span>60%</span>
+          </div>
+          <div class="skill-bar php"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-info">
+            <span>MySQL</span>
+            <span>90%</span>
+          </div>
+          <div class="skill-bar mysql"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-info">
+            <span>C#</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar cs"></div>
+        </div>
+      </div>-->
+                </div>
+            </section>
+            <!-- Services -->
+            <section id="services" class="dark">
+                <div class="inner-width">
+                    <h1 class="section-title">服 务</h1>
+                    <div class="services">
+                        <div class="service">
+                            <i class="icon fas fa-paint-brush"></i>
+                            <h4>发帖</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                        <div class="service">
+                            <i class="icon fas fa-pager"></i>
+                            <h4>匹配</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                        <div class="service">
+                            <i class="icon fas fa-database"></i>
+                            <h4>私聊</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                        <div class="service">
+                            <i class="icon fab fa-android"></i>
+                            <h4>动态</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                        <div class="service">
+                            <i class="icon fas fa-credit-card"></i>
+                            <h4>标签</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                        <div class="service">
+                            <i class="icon fas fa-keyboard"></i>
+                            <h4>Edit Texts</h4>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <!--<section id="education">
+    <div class="inner-width">
+      <h1 class="section-title">Education & Experiences</h1>
+      <div class="time-line">
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+        <div class="block">
+          <h4>2018 - 2019</h4>
+          <h3>Software engineering</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At expedita maiores ullam voluptatum a nulla aperiam enim eveniet adipisci ipsum.</p>
+        </div>
+      </div>
+    </div>
+  </section> -->
+            <!-- Works -->
+            <section id="works">
+                <div class="inner-width">
+                    <h1 class="section-title">工 作</h1>
+                    <div class="works">
+                        <a href="/Images/IndexImage/1.jpg" class="work">
+                            <img src="/Images/IndexImage/1.jpg" alt="">
+                            <div class="info">
+                                <h3>学习</h3>
+                                <div class="cat">一起进步</div>
+                            </div>
+                        </a>
+                        <a href="Images/IndexImage/2.jpg" class="work">
+                            <img src="/Images/IndexImage/2.jpg" alt="">
+                            <div class="info">
+                                <h3>自习</h3>
+                                <div class="cat">提升自我</div>
+                            </div>
+                        </a>
+                        <a href="Images/IndexImage/3.jpg" class="work">
+                            <img src="/Images/IndexImage/3.jpg" alt="">
+                            <div class="info">
+                                <h3>讨论</h3>
+                                <div class="cat">发掘想法</div>
+                            </div>
+                        </a>
+                        <a href="Images/IndexImage/4.jpg" class="work">
+                            <img src="/Images/IndexImage/4.jpg" alt="">
+                            <div class="info">
+                                <h3>绘画</h3>
+                                <div class="cat">享受生活</div>
+                            </div>
+                        </a>
+                        <a href="Images/IndexImage/5.jpg" class="work">
+                            <img src="/Images/IndexImage/25.jpg" alt="">
+                            <div class="info">
+                                <h3>竞争</h3>
+                                <div class="cat">激励自我</div>
+                            </div>
+                        </a>
+                        <a href="Images/IndexImage/6.jpg" class="work">
+                            <img src="/Images/IndexImage/26.jpg" alt="">
+                            <div class="info">
+                                <h3>比赛</h3>
+                                <div class="cat">展现自我</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <!-- Contact -->
+            <section id="contact" class="dark">
+                <div class="inner-width">
+                    <h1 class="section-title">联 系</h1>
+
+                    <form action="#" class="contact-form">
+                        <input type="text" class="nameZone" placeholder="你的名字">
+                        <input type="email" class="emailZone" placeholder="你的邮箱">
+                        <input type="text" class="subjectZone" placeholder="主题">
+                        <textarea class="messageZone" placeholder="信息"></textarea>
+                        <input type="submit" value="发送" class="btn">
+                    </form>
+                </div>
+            </section>
+            <!-- Footer -->
+            <footer>
+                <div class="inner-width">
+                    <div class="copyright">
+                        &copy; 2020 | Created & Designed By <a href="#">回到首页</a>
+                    </div>
+                    <div class="sm">
+                        <a href="#" class="fab fa-facebook-f"></a>
+                        <a href="#" class="fab fa-twitter"></a>
+                        <a href="#" class="fab fa-instagram"></a>
+                        <a href="#" class="fab fa-linkedin-in"></a>
+                        <a href="#" class="fab fa-youtube"></a>
+                    </div>
+                </div>
+            </footer>
+            <!-- Go Top BTN -->
+            <button class="goTop fas fa-arrow-up"></button>
         </div>
 
     </div>
@@ -211,32 +312,18 @@
 
 </html>
 
-
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/js/Show.js"></script>
+<script src="/js/My.js"></script>
 <script>
     
     
-    let vue = new Vue({
-        el: "#app",
-        data: {
-            showMain: false,
-            showLoad: true
-        },
-        methods: {
-            ShowLoader: function (event) {
 
-            }
-        }
-    })
-
-    document.addEventListener("readystatechange", function (event) {
-        if (document.readyState == "complete") {
-            vue.showLoad = false;
-            vue.showMain = true;
-        }
-    })
+    
 
 
-    let critical = new Critical(0, 0, 2);
+    @* let critical = new Critical(0, 0, 2);
 
     $(window).on("load", async (event) => {
         $(".container>.jumbotron").animate({
@@ -296,5 +383,5 @@
 
 
 
-    });
+    }); *@
 </script>

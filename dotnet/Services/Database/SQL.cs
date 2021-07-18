@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using dotnet.Services.Extensions;
 
 namespace dotnet.Services.Database
 {
@@ -9,7 +11,7 @@ namespace dotnet.Services.Database
     /// </summary>
     public class SQL
     {
-        
+
         public class MySqlConnectOptions
         {
             public string Server { get; set; }
@@ -29,8 +31,10 @@ namespace dotnet.Services.Database
 
         private MySqlConnection connection;
 
-        
-        
+        public Mutex dataReaderMutex;
+
+
+
 
         /// <summary>
         /// 对数据库访问服务的初始化
@@ -45,13 +49,15 @@ namespace dotnet.Services.Database
             {
                 connection = new MySqlConnection(_options.ToString());
                 connection.Open();
-                
+
             }
             catch (Exception e)
             {
                 connection.Close();
                 throw e;
             }
+
+            dataReaderMutex = new Mutex();
         }
 
 
@@ -64,11 +70,12 @@ namespace dotnet.Services.Database
             {
                 connection.Close();
 
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw e;
             }
-            
+
         }
 
         /// <summary>
@@ -77,19 +84,22 @@ namespace dotnet.Services.Database
         /// </summary>
         /// <param name="expression">SQL表达式</param>
         /// <returns></returns>
-        public MySqlDataReader Query(string expression)
+        public async Task<KeyValuePair<MySqlDataReader,Mutex>> Query(string expression)
         {
             try
             {
-                using MySqlCommand command = connection.CreateCommand();
-                command.CommandText = $"{expression}";
-                return command.ExecuteReader();
+                await dataReaderMutex.Wait();
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = $"{expression}";
+                    return new KeyValuePair<MySqlDataReader, Mutex>(command.ExecuteReader(),dataReaderMutex);
+                }
             }
             catch (Exception e)
             {
                 throw e;
             }
-            
+
 
         }
 

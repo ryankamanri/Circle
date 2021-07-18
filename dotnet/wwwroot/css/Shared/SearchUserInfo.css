@@ -1,0 +1,24 @@
+.user{
+    display: inline-block;
+    min-width: 250px;
+    min-height: 250px;
+    max-width: 250px;
+    max-height: 250px;
+    box-shadow: 1px 1px 8px 0px;
+    border-radius: 30px;
+    background-color: white;
+}
+.headimage{
+    margin: 10px 0 10px 0;
+    text-align: center;
+}
+.headimage img{
+    width: 50px;
+    border-radius: 100px;
+}
+.sm-font{
+    font-size: xx-small !important;
+}
+.inline{
+    display: inline-block !important;
+}

@@ -1,6 +1,6 @@
 .tag{
     min-width: 70px;
-    height: 30px;
+    height: 25px;
     text-align: center;
     display: inline-block;
     margin: 5px;
@@ -12,9 +12,10 @@
 ._Tag{
     color: black;
     position: relative;
-    margin: 0 5px;
+    padding: 5px 0;
     top: 50%;
     transform: translate(0,-50%);
+    font-size: xx-small;
 }
 
 .tag:hover{
@@ -26,4 +27,12 @@
 
 .ID{
     display: none;
+}
+
+.tagNode{
+    display: inline-block;
+    vertical-align: top;
+}
+.tagNode>.tag{
+    display: block !important;
 }

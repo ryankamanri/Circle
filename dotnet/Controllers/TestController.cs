@@ -61,12 +61,13 @@ namespace dotnet.Controllers
             Tag tag37 = new Tag(37);
             Tag tag17 = new Tag(17);
 
-            _dbc.Select(tag37);
-            _dbc.Select(tag17);
-            _dbc.ChangeRelation(tag37,tag17,relation => 
+            _dbc.Select(tag37).Wait();
+            _dbc.Select(tag17).Wait();
+            _dbc.ChangeRelation(tag37,tag17,async relation => 
             {
                 relation.relation = 1;
-            });
+                return true;
+            }).Wait();
 
             dynamic relation = _dbc.SelectRelation(tag37,tag17);
 
@@ -115,10 +116,20 @@ namespace dotnet.Controllers
 
             //await _dbc.Connect(_user,_dbc.Select(new Tag(3)),relation => relation.Type = new List<string>(){"Self"});
             //await _dbc.Connect(_user,_dbc.Select(new Tag(4)),relation => relation.Type = new List<string>(){"Interested"});
-            IEnumerable<int> list = new List<int>();
+            // IEnumerable<int> list = new List<int>();
 
-            list.Intersect(list);
-            
+            // list.Intersect(list);
+            //User me = new User("974481066@qq.com");
+            //_dbc.SelectID(_user);
+            //await _dbc.InsertWithID<UserInfo>(new UserInfo(me.ID,"kamanri","hwl","四川师范大学","计算机科学学院","计算机科学与技术",new DateTime(2019,1,1),"暂时没有想好",""));
+            // UserInfo myInfo = _dbc.Select(new UserInfo(_user.ID)).Result;
+
+            // Post post = new Post("第一个帖子","简短的摘要",myInfo.NickName,DateTime.Now);
+            // await _dbc.Insert(post);
+            // IList<User> users = await _dbc.MappingSelect<Tag,User>(new Tag(34,"Oracle"),new Model.User(),ID_IDList.OutPutType.Key,
+            // selection => selection.Type = new List<string>(){"Self"});
+
+            Key_ListValue_Pairs<User,Tag> tagsGroupByUser = new Key_ListValue_Pairs<User, Tag>();
             return result;
         }
     }

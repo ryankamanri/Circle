@@ -1,0 +1,39 @@
+.ceiledTagNode{
+    display: table-cell;
+    vertical-align: top;
+}
+.ceiledTagNode>.tag{
+    display: block !important;
+}
+
+
+#tagRoot{
+    min-height: 400px;
+    display: flex;
+    overflow-x: scroll;
+}
+
+
+#tagRoot::-webkit-scrollbar{
+    width: 10px;
+    height: 5px;
+}
+#tagRoot::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+    border-radius: 10px;
+
+     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+    background: #535353;
+
+}
+
+#tagRoot::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+    border-radius: 10px;
+
+    background: #EDEDED;
+
+}

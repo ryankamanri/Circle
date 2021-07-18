@@ -1,0 +1,26 @@
+body{
+    background-color: #96CDCD;
+}
+body, html {
+    margin: 0;
+    height: 100%;
+}
+html {
+    color: #333;
+    background: #fff;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-rendering: optimizelegibility;
+    -moz-osx-font-smoothing: grayscale;
+    direction: ltr;
+}
+html {
+    display: block;
+}
+.container{
+    position: relative;
+    width: 100%;
+}
+element.style {
+    color: rgb(37, 187, 155);
+}

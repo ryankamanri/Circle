@@ -74,6 +74,19 @@ namespace dotnet.Services.Database
             await _sql.Execute(SQLStatement);
         }
 
+        /// <summary>
+        /// 将模型实体保存到数据库
+        /// </summary>
+        /// <param name="te"></param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public async Task InsertWithID<TEntity>(TEntity te)
+        {
+            dynamic Te = te;
+            string SQLStatement = $"insert into {Te.TableName} ({Te.Columns}) values ({Te.InsertString()})";
+            await _sql.Execute(SQLStatement);
+        }
+
         public async Task Inserts<TEntity>(IList<TEntity> tes)
         {
             if(tes.Count == 0) return;
@@ -86,6 +99,21 @@ namespace dotnet.Services.Database
             }
             insertString += $"({Tes[Tes.Count - 1].InsertString()})";
             string SQLStatement = $"insert into {tableName} ({columnsWithoutID}) values {insertString}";
+            await _sql.Execute(SQLStatement);
+        }
+
+        public async Task InsertsWithID<TEntity>(IList<TEntity> tes)
+        {
+            if(tes.Count == 0) return;
+            dynamic Tes = tes;
+            string insertString = "",tableName = Tes[0].TableName,columns = Tes[0].Columns;
+            for(int i = 1;i < Tes.Count - 1;i++)
+            {
+                insertString += $"({Tes[i].InsertString()})";
+                insertString += ",";
+            }
+            insertString += $"({Tes[Tes.Count - 1].InsertString()})";
+            string SQLStatement = $"insert into {tableName} ({columns}) values {insertString}";
             await _sql.Execute(SQLStatement);
         }
 
@@ -140,11 +168,11 @@ namespace dotnet.Services.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public TEntity Select<TEntity>(TEntity te)
+        public async Task<TEntity> Select<TEntity>(TEntity te)
         {
             dynamic Te = te;
             string SQLStatement = $"select * from {Te.TableName} where ID = {Te.ID}";
-            IList<TEntity> result = Te.GetList(_sql.Query(SQLStatement));
+            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return default;
             te = result[0];
             return result[0];
@@ -156,11 +184,11 @@ namespace dotnet.Services.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public long SelectID<TEntity>(TEntity te)
+        public async Task<long> SelectID<TEntity>(TEntity te)
         {
             dynamic Te = te;
             string SQLStatement = $"select * from {Te.TableName} where {Te.SelectString()}";
-            dynamic result = Te.GetList(_sql.Query(SQLStatement));
+            dynamic result = Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return long.MinValue;
             Te.ID = result[0].ID;
             return result[0].ID;
@@ -173,7 +201,7 @@ namespace dotnet.Services.Database
         /// <param name="tes"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public IList<TEntity> Selects<TEntity>(IList<TEntity> tes)
+        public async Task<IList<TEntity>> Selects<TEntity>(IList<TEntity> tes)
         {
             dynamic Tes = tes;
             string IDs = default;
@@ -183,8 +211,8 @@ namespace dotnet.Services.Database
             }
             IDs += $"{Tes[Tes.Count - 1].ID}";
             string SQLStatement = $"select * from {Tes[0].TableName} where ID in ({IDs})";
-            IList<TEntity> result = Tes[0].GetList(_sql.Query(SQLStatement));
-            if(result.Count == 0) return default;
+            IList<TEntity> result = Tes[0].GetList(await _sql.Query(SQLStatement));
+            if(result.Count == 0) return new List<TEntity>();
             return result;
         }
 
@@ -194,7 +222,7 @@ namespace dotnet.Services.Database
         /// <param name="tes"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public List<TEntity> SelectIDs<TEntity>(IList<TEntity> tes)
+        public async Task<List<TEntity>> SelectIDs<TEntity>(IList<TEntity> tes)
         {
             dynamic Tes = tes;
             string constraints = default;
@@ -205,7 +233,7 @@ namespace dotnet.Services.Database
             }
             constraints += $"({Tes[Tes.Count - 1].SelectString()})";
             string SQLStatement = $"select * from {Tes[0].TableName} where {constraints}";
-            List<TEntity> result = Tes[0].GetList(_sql.Query(SQLStatement));
+            List<TEntity> result = Tes[0].GetList(await _sql.Query(SQLStatement));
             return result;
         }
 
@@ -216,24 +244,44 @@ namespace dotnet.Services.Database
         /// <param name="exampleInstance"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public IList<TEntity> SelectAll<TEntity>(TEntity exampleInstance)
+        public async Task<IList<TEntity>> SelectAll<TEntity>(TEntity exampleInstance)
         {
             dynamic Te = exampleInstance;
             string SQLStatement = $"select * from {Te.TableName}";
-            IList<TEntity> result = Te.GetList(_sql.Query(SQLStatement));
+            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return default;
             return result;
         }
 
 
-        public ID_IDList SelectAllRelations<TKeyEntity,TValueEntity>(TKeyEntity keyExampleInstance,TValueEntity valueExampleInstance)
+        /// <summary>
+        /// 自定义选择实体
+        /// !!这个方法不安全,谨慎使用!!
+        /// </summary>
+        /// <param name="te"></param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public async Task<IList<TEntity>> SelectCustom<TEntity>(TEntity exampleInstance,string selectString)
+        {
+            dynamic Te = exampleInstance;
+            string SQLStatement = $"select * from {Te.TableName} where {selectString}";
+            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
+            if(result.Count == 0) return new List<TEntity>();
+            return result;
+        }
+
+        public async Task<ID_IDList> SelectAllRelations<TKeyEntity,TValueEntity>(TKeyEntity keyExampleInstance,TValueEntity valueExampleInstance)
         {
             dynamic Tke = keyExampleInstance,Tve = valueExampleInstance;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string SQLStatement = $"select * from {tableName}";
 
-            return id_id.GetList(_sql.Query(SQLStatement));
+            return id_id.GetList(await _sql.Query(SQLStatement));
         }
+
+
+
+
 
         /// <summary>
         /// 两个实体之间建立关系
@@ -281,7 +329,7 @@ namespace dotnet.Services.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public dynamic SelectRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve)
+        public async Task<dynamic> SelectRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve)
         {
             dynamic Tke = tke,Tve = tve;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
@@ -289,8 +337,8 @@ namespace dotnet.Services.Database
             if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"select * from {tableName} where {selectWay}";
 
-            ID_IDList resultList = id_id.GetList(_sql.Query(SQLStatement));
-            if(resultList.Count == 0) return null;
+            ID_IDList resultList = id_id.GetList(await _sql.Query(SQLStatement));
+            if(resultList.Count == 0) return default;
             return resultList[0].Relations;
         }
 
@@ -300,6 +348,7 @@ namespace dotnet.Services.Database
         /// 不要将别的引用参数的值赋给它,这样会导致修改不到已有的relation.
         /// 正确修改方法 : relation.XX = XX.
         /// 错误修改方法 : realtion = XX.
+        /// Action中参数 : 1.dynamic 要改变的关系 2. 返回值 : 是否继续执行
         /// </summary>
         /// <param name="tke"></param>
         /// <param name="tve"></param>
@@ -307,12 +356,14 @@ namespace dotnet.Services.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task ChangeRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Action<dynamic> SetRelation)
+        public async Task ChangeRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Func<dynamic,Task<bool>> SetRelation)
         {
             dynamic Tke = tke,Tve = tve;
+            bool IsExecute = true;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            dynamic relation = SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
-            SetRelation(relation);
+            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
+            IsExecute = await SetRelation(relation);
+            if(IsExecute == false) return;
             string relationJSON = JsonConvert.SerializeObject(relation);
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
             if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
@@ -321,6 +372,68 @@ namespace dotnet.Services.Database
             await _sql.Execute(SQLStatement);
         }
 
+
+        /// <summary>
+        /// 新增关系
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="relation"></param>
+        /// <returns></returns>
+        public async Task AppendRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve, string relationName, string newRelation)
+        {
+            await ChangeRelation<TKeyEntity, TValueEntity>(tke, tve, async relation =>
+               {
+                   if (relation == null)
+                   {   //两个实体之间的关系不存在,则新建关系,并取消update执行
+                       await Connect<TKeyEntity, TValueEntity>(tke, tve, relation => relation.Type = new List<string>() { relation.ToString() });
+                       return false;
+                   }
+                   foreach (var properties in relation)
+                   {
+                       //两个实体之间存在名为Type的关系
+                       if (properties.Key.ToString() == relationName)
+                       {
+                            if (!properties.Value.Contains(newRelation.ToString()))
+                            {
+                                properties.Value.Add(newRelation.ToString());
+                            }
+                            return true;
+                       }
+                   }
+                   //两个实体之间不存在名为Type的关系
+                   ((IDictionary<string,Object>)relation).Add(relationName,new List<string>() { newRelation.ToString() });
+                   return true;
+
+               });
+
+        }
+
+        /// <summary>
+        /// 移除关系
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="relation"></param>
+        /// <returns></returns>
+        public async Task RemoveRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve,string relationName, string oldRelation)
+        {
+            await ChangeRelation<TKeyEntity, TValueEntity>(tke, tve, async relation =>
+             {
+                 //relation.Type.Remove(oldRelation.ToString());
+                 foreach (var properties in relation)
+                 {
+                     if (properties.Key == relationName)
+                     {
+                         properties.Value.Remove(oldRelation.ToString());
+                         if (properties.Value.Count == 0)
+                         {
+                             await Disconnect<TKeyEntity, TValueEntity>(tke, tve);
+                             return false;
+                         }
+                     }
+                 }
+                 return true;
+             });
+        }
 
 
         /// <summary>
@@ -334,19 +447,38 @@ namespace dotnet.Services.Database
         /// <typeparam name="TInputEntity">输入实体</typeparam>
         /// <typeparam name="TOutputEntity">输出实体</typeparam>
         /// <returns></returns>
-        public IDictionary<TOutputEntity,dynamic> Mapping<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
+        public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
         {
             dynamic i = input, o = outputExampleInstance;
-            string relationTableName = default,relationWay = default,SQLStatement = default;
+            string relationTableName = default,relationWay = default,connectedTable = default,SQLStatement = default,iTempTableName = default,oTempTableName = default;
 
             if(type == ID_IDList.OutPutType.Key) relationTableName = $"{o.TableName}_{i.TableName}";
             else relationTableName = $"{i.TableName}_{o.TableName}";
 
+            connectedTable = $"{o.TableName},{relationTableName},{i.TableName}";
+
+            if(typeof(TInputEntity) == typeof(TOutputEntity))
+            {
+                iTempTableName = i.TableName;
+                oTempTableName = o.TableName;
+                if(type == ID_IDList.OutPutType.Value) 
+                {
+                    i.TableName = i.TableName + "_1";
+                    o.TableName = o.TableName + "_2";
+                }
+                else
+                {
+                    i.TableName = i.TableName + "_2";
+                    o.TableName = o.TableName + "_1";
+                }
+                connectedTable = $"{oTempTableName} as {o.TableName},{relationTableName},{iTempTableName} as {i.TableName}";
+            }
+
             relationWay = $"{i.TableName}.ID = {relationTableName}.{i.TableName} and {o.TableName}.ID = {relationTableName}.{o.TableName}";
 
-            SQLStatement = $"select {o.Columns},relations from {o.TableName},{relationTableName},{i.TableName} where {relationWay} and {i.TableName}.ID = {i.ID}";
+            SQLStatement = $"select {o.Columns},relations from {connectedTable} where {relationWay} and {i.TableName}.ID = {i.ID}";
 
-            return o.GetRelationDictionary(_sql.Query(SQLStatement));
+            return o.GetRelationDictionary(await _sql.Query(SQLStatement));
 
         }
 
@@ -360,9 +492,9 @@ namespace dotnet.Services.Database
         /// <typeparam name="TInputEntity"></typeparam>
         /// <typeparam name="TOutputEntity"></typeparam>
         /// <returns></returns>
-        public IList<TOutputEntity> MappingSelect<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<IList<TOutputEntity>> MappingSelect<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
-            IDictionary<TOutputEntity,dynamic> mappingResults = Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);
+            IDictionary<TOutputEntity,dynamic> mappingResults = await Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);
             IList<TOutputEntity> mappingResultsSelect = new List<TOutputEntity>();
             bool selectionFlag = default, flag = default,itemFlag = default;
             ID_ID key_value = new ID_ID();
@@ -374,6 +506,7 @@ namespace dotnet.Services.Database
                 foreach(var selection in selections)
                 {
                     selectionFlag = false;
+                    if(mappingResult.Value == null) break;
                     foreach(var relation in mappingResult.Value)
                     {
                         if(relation.Key == selection.Key) 
@@ -428,7 +561,7 @@ namespace dotnet.Services.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>> MappingUnionStatistics<TInputEntity,TOutputEntity>(List<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>> MappingUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
         {
             //以某些标签能够匹配到的其他用户为例
             Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>> dictionary = new Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>();
@@ -436,7 +569,7 @@ namespace dotnet.Services.Database
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IDictionary<TOutputEntity,dynamic> targets = Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);//找到拥有该标签的用户
+                IDictionary<TOutputEntity,dynamic> targets = await Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target.Key);
@@ -459,18 +592,17 @@ namespace dotnet.Services.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Key_ListValue_Pairs<TOutputEntity,TInputEntity> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(List<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,TInputEntity>> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
             //以某些标签能够匹配到的其他用户为例
             Key_ListValue_Pairs<TOutputEntity,TInputEntity> dictionary = new Key_ListValue_Pairs<TOutputEntity,TInputEntity>();
             if (inputs.Count == 0) return dictionary;
             ID_ID key_value = new ID_ID();
             dynamic selections = key_value.Relations;
-            SetSelections(selections);
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IList<TOutputEntity> targets = MappingSelect<TInputEntity,TOutputEntity>(input,outputExampleInstance,type,selections);//找到拥有该标签的用户
+                IList<TOutputEntity> targets = await MappingSelect<TInputEntity,TOutputEntity>(input,outputExampleInstance,type,SetSelections);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target);

@@ -30,6 +30,8 @@ namespace dotnet.Controllers
             this.account_authCode = account_authCode;
         }
 
+        #region Index
+            
         [HttpGet]
         [Route("/")]
         public IActionResult Index()
@@ -37,6 +39,10 @@ namespace dotnet.Controllers
             return View("Index");
         }
 
+        #endregion
+
+ 
+        #region LogIn
 
         [HttpGet]
         [Route("LogIn")]
@@ -45,14 +51,59 @@ namespace dotnet.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpPost]
+        [Route("LogInSubmit")]
+        public IActionResult LogInSubmit()
+        {
+            string account = "",password = "";
+            StringValues authInfo = new StringValues();
+            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("bad request");
+
+            account = authInfo[0];
+            password = authInfo[1];
+
+            User user = new User(account);
+
+            _dbc.SelectID(user).Wait();
+
+            user = _dbc.Select(user).Result;
+
+            if(user == default)
+                return new JsonResult("account not found");
+
+            if(user.Password != password)
+                return new JsonResult("password is error");
+
+            var userClaims = new List<Claim>()
+            {
+                new Claim("ID",user.ID.ToString()),
+                new Claim("Account",account)
+            };
+
+            var userIdentity = new ClaimsIdentity(userClaims,"user");
+
+            var userIdentities = new List<ClaimsIdentity>(){userIdentity};
+
+            var claimsPrincipal = new ClaimsPrincipal(userIdentities);
+
+            _cookie.SignIn(HttpContext,claimsPrincipal);
+
+            return new JsonResult("login succeed");
+        }
+
+            
+        #endregion
+
+        
+
+        #region SignIn
+
+         [HttpGet]
         [Route("SignIn")]
         public IActionResult SignIn()
         {
             return View();
         }
-
-        
 
         [HttpPost]
         [Route("GetAuthCode")]
@@ -98,7 +149,7 @@ namespace dotnet.Controllers
 
             if(account_authCode[account] != authCode) return new JsonResult("auth code error");
 
-            if(_dbc.SelectID(new Model.User(account,"")) != long.MinValue) return new JsonResult("account exist");
+            if(_dbc.SelectID(new Model.User(account,"")).Result != long.MinValue) return new JsonResult("account exist");
             
 
             //验证成功
@@ -106,7 +157,7 @@ namespace dotnet.Controllers
             User newUser = new User(account,password);
 
             await _dbc.Insert<User>(newUser);
-            _dbc.SelectID<User>(newUser);
+            _dbc.SelectID<User>(newUser).Wait();
 
             var userClaims = new List<Claim>()
             {
@@ -116,64 +167,48 @@ namespace dotnet.Controllers
 
             var userIdentity = new ClaimsIdentity(userClaims,"user");
 
-            var userIdentities = new List<ClaimsIdentity>()
-            {
-                userIdentity
-            };
-            var claimsPrincipal = new ClaimsPrincipal(userIdentities);
-
-            _cookie.SetCookie(HttpContext,claimsPrincipal);
-
-            return new JsonResult("signin succeed");
-        }
-
-
-        [HttpPost]
-        [Route("LogInSubmit")]
-        public IActionResult LogInSubmit()
-        {
-            string account = "",password = "";
-            StringValues authInfo = new StringValues();
-            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("bad request");
-
-            account = authInfo[0];
-            password = authInfo[1];
-
-            User user = new User(account);
-
-            _dbc.SelectID(user);
-
-            user = _dbc.Select(user);
-
-            if(user == default)
-                return new JsonResult("account not found");
-
-            if(user.Password != password)
-                return new JsonResult("password is error");
-
-            var userClaims = new List<Claim>()
-            {
-                new Claim("ID",user.ID.ToString()),
-                new Claim("Account",account)
-            };
-
-            var userIdentity = new ClaimsIdentity(userClaims,"user");
-
             var userIdentities = new List<ClaimsIdentity>(){userIdentity};
 
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
-            _cookie.SetCookie(HttpContext,claimsPrincipal);
+            _cookie.SignIn(HttpContext,claimsPrincipal);
 
-            return new JsonResult("login succeed");
+            return new JsonResult("signin succeed");
+        }
+            
+        #endregion
+
+       
+
+        #region SelectCircle
+
+        [HttpGet]
+        [Route("SelectCircle")]
+        public IActionResult SelectCircle()
+        {
+            return View();
         }
 
+        [HttpPost]
+        [Route("SelectCircleSubmit")]
+        public IActionResult SelectCircleSubmit()
+        {
+            StringValues Circle = new StringValues();
+            if(HttpContext.Request.Form.TryGetValue("Circle",out Circle) == false) return new JsonResult("bad request");
+
+            _cookie.AppendCookie(HttpContext,"Circle",Circle);
+            return new JsonResult("select circle succeed");
+        }
+            
+        #endregion
+
+        
 
         [HttpPost]
         [Route("LogOutSubmit")]
         public IActionResult LogOutSubmit()
         {
-            _cookie.DeleteCookie(HttpContext);
+            _cookie.SignOut(HttpContext);
             return new JsonResult("logout succeed");
         }
 
@@ -183,7 +218,7 @@ namespace dotnet.Controllers
         {
             string result = "";
 
-            ClaimsPrincipal claimsPrincipal =  _cookie.GetCookie(HttpContext);
+            ClaimsPrincipal claimsPrincipal =  _cookie.GetAuth(HttpContext);
 
             foreach (var i in claimsPrincipal.Identities)
             {
@@ -197,5 +232,6 @@ namespace dotnet.Controllers
         }
 
 
+        
     }
 }

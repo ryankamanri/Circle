@@ -1,15 +1,7 @@
         let count = 0;//统计一段时间要发送的ajax请求个数
         let resultList;
 
-        $("#logout").on("click", () => {
-            $.ajax({
-                url: "/LogOutSubmit",
-                type: "POST"
-            }).done(data => {
-                if (data == "logout succeed")
-                    window.location.href = "/";
-            });
-        });
+        
 
         $(document).ready(() => {
             $("form #search").keyup(async() => { //这个事件一定要嵌套在ready()里面
@@ -17,15 +9,28 @@
                 await Sleep(500);
                 count--;
                 if(count > 0) return;
-                Search();
+                SearchTag();
             });
+            $("#logout").on("click", () => {
+                $.ajax({
+                    url: "/LogOutSubmit",
+                    type: "POST"
+                }).done(data => {
+                    if (data == "logout succeed")
+                        window.location.href = "/";
+                });
+            });
+            $("form #searchButton").on("click",() => {
+                let searchString = $("#search").val();
+                window.location.href = `/Home/SearchResult?searchString=${searchString}`;
+            })
         });
 
-        function Search() {
+        function SearchTag() {
             let search = $("#search").val();
             console.log(search);
             $.ajax({
-                url: "/map/Search",
+                url: "/Shared/Search",
                 type: "POST",
                 data: {
                     "search": search
@@ -47,12 +52,10 @@
             let searchResult = document.querySelector("#searchResult");
             for(let i in obj)
             {
-                //let resultItem = $(`<li>${obj[i]}</li>`);
                 resultItem = document.createElement("li");
                 resultItem.innerHTML = obj[i];
                 resultItem.setAttribute("class","self-dropdown-item");
                 searchResult.append(resultItem);
-                
             }
             
         }
