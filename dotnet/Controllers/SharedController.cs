@@ -27,21 +27,91 @@ namespace dotnet.Controllers
         private DataBaseContext _dbc;
         private SQL _sql;
 
+        private User _user;
+
+        private UserService _userService;
+
         private TagService _tagService;
 
         private PostService _postService;
 
         private ICookie _cookie;
-        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie,TagService tagService,PostService postService)
+
+
+        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie,User user,UserService userService,TagService tagService,PostService postService)
         {
             _sql = sql;
             _dbc = dbc;
             _cookie = cookie;
+            _user = user;
             _tagService = tagService;
+            _userService = userService;
             _postService = postService;
+
+            
         }
 
+        // [HttpPost]
+        // [Route("AppendRelation")]
+        // public async Task<IActionResult> AppendRelation()
+        // {
+        //     StringValues entityType = new StringValues(), ID = new StringValues(), relation = new StringValues();
+        //     if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
+        //     if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
+        //     if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
 
+        //     dynamic entity;
+            
+        //     entityDictionary.TryGetValue(entityType,out entity);
+
+        //     if(entity == null) return new JsonResult("entity not found");
+
+        //     entity.ID = Convert.ToInt64(ID);
+            
+        //     if(entity.GetType() == typeof(Tag)) await _userService.AppendTagRelation(_user,entity, relation.ToString());
+
+        //     if(entity.GetType() == typeof(User)) await _userService.AppendFocusUser()
+
+            
+        // }
+
+        /// <summary>
+        /// 添加个人标签
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AppendRelation")]
+        public async Task<IActionResult> AppendRelation()
+        {
+            StringValues entityType = new StringValues(), ID = new StringValues(), relationName = new StringValues(),relation = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("relationName", out relationName)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
+
+            if(!await _userService.AppendRelation(_user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult("entity is not exist");
+
+            return new JsonResult("append succeed");
+        }
+
+        /// <summary>
+        /// 删除个人标签
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("RemoveRelation")]
+        public async Task<IActionResult> RemoveRelation()
+        {
+            StringValues entityType = new StringValues(), ID = new StringValues(), relationName = new StringValues(),relation = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("relationName", out relationName)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
+
+            if(!await _userService.RemoveRelation(_user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult("entity is not exist");
+
+            return new JsonResult("remove succeed");
+        }
 
         /// <summary>
         /// 搜索标签

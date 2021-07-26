@@ -19,6 +19,8 @@ namespace dotnet.Services
 
         private TagService _tagService;
 
+        private IDictionary<string,Object> entityDictionary;
+
         public IList<User> Users{get;private set;}
 
 
@@ -28,6 +30,14 @@ namespace dotnet.Services
             _cookie = cookie;
             _tagService = tagService;
             InitUsers().Wait();
+
+            entityDictionary = new Dictionary<string,object>();
+            entityDictionary.Add("Comment",new Comment());
+            entityDictionary.Add("Post",new Post());
+            entityDictionary.Add("PostInfo",new PostInfo());
+            entityDictionary.Add("User",new User());
+            entityDictionary.Add("UserInfo",new UserInfo());
+            entityDictionary.Add("Tag",new Tag());
         }
 
         private async Task InitUsers()
@@ -57,26 +67,55 @@ namespace dotnet.Services
         }
 
         /// <summary>
-        /// 新增用户标签关系
+        /// 新增本用户标签关系
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="tagRelation"></param>
         /// <returns></returns>
-        public async Task AppendTagRelation(User user,Tag tag, string tagRelation)
-        {
-            await _dbc.AppendRelation<User,Tag>(user,tag,"Type",tagRelation);
+        // public async Task AppendTagRelation(User user,Tag tag, string tagRelation)
+        // {
+        //     await _dbc.AppendRelation<User,Tag>(user,tag,"Type",tagRelation);
 
+        // }
+
+        public async Task<bool> AppendRelation(User user,string entityType,long ID,string relationName,string newRelation)
+        {
+            dynamic entity;
+            
+            entityDictionary.TryGetValue(entityType,out entity);
+
+            if(entity == null) return false;
+
+            entity.ID = Convert.ToInt64(ID);
+            
+            await _dbc.AppendRelation(user,entity,relationName,newRelation);
+
+            return true;
         }
 
         /// <summary>
-        /// 移除用户标签关系
+        /// 移除本用户标签关系
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="tagRelation"></param>
         /// <returns></returns>
-        public async Task RemoveTagRelation(User user,Tag tag,string tagRelation)
+        // public async Task RemoveTagRelation(User user,Tag tag,string tagRelation)
+        // {
+        //     await _dbc.RemoveRelation<User,Tag>(user,tag,"Type",tagRelation);
+        // }
+        public async Task<bool> RemoveRelation(User user,string entityType,long ID,string relationName,string oldRelation)
         {
-            await _dbc.RemoveRelation<User,Tag>(user,tag,"Type",tagRelation);
+            dynamic entity;
+            
+            entityDictionary.TryGetValue(entityType,out entity);
+
+            if(entity == null) return false;
+
+            entity.ID = Convert.ToInt64(ID);
+            
+            await _dbc.RemoveRelation(user,entity,relationName,oldRelation);
+
+            return true;
         }
 
         /// <summary>

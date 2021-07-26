@@ -27,7 +27,7 @@ namespace dotnet.Services.Database
         }
 
 
-        private MySqlConnectOptions _options;
+        private MySqlConnectOptions options;
 
         private MySqlConnection connection;
 
@@ -42,12 +42,12 @@ namespace dotnet.Services.Database
         /// <param name="SetOptions">一个匿名函数,用于设置数据库连接字符串</param>
         public SQL(Action<MySqlConnectOptions> SetOptions)
         {
-            _options = new MySqlConnectOptions();
-            SetOptions(_options);
+            options = new MySqlConnectOptions();
+            SetOptions(options);
 
             try
             {
-                connection = new MySqlConnection(_options.ToString());
+                connection = new MySqlConnection(options.ToString());
                 connection.Open();
 
             }
@@ -88,6 +88,7 @@ namespace dotnet.Services.Database
         {
             try
             {
+                if(connection.State == System.Data.ConnectionState.Closed) connection.Open();
                 await dataReaderMutex.Wait();
                 using (MySqlCommand command = connection.CreateCommand())
                 {
@@ -97,6 +98,7 @@ namespace dotnet.Services.Database
             }
             catch (Exception e)
             {
+                dataReaderMutex.Signal();
                 throw e;
             }
 
@@ -111,6 +113,7 @@ namespace dotnet.Services.Database
         {
             try
             {
+                if(connection.State == System.Data.ConnectionState.Closed) connection.Open();
                 using MySqlCommand command = connection.CreateCommand();
                 command.CommandText = $"{expression}";
                 await command.ExecuteNonQueryAsync();

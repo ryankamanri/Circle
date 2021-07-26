@@ -1,5 +1,6 @@
 @inject dotnet.Model.User _user
 @inject dotnet.Services.Database.DataBaseContext _dbc
+@inject Dictionary<string,string> _dict
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,14 +9,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - 圈</title>
+    <title>@ViewData["Title"] - @_dict["Circle"]</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/lib/dragula/dist/dragula.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/css/Home/Home/main.css">
     <link rel="stylesheet" href="/css/Home/Home/ky.css">
-    <script src="/lib/jquery/dist/jquery.js"></script>
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/js/My.js"></script>
+    <link rel="stylesheet" href="/css/Shared/Header.css">
+    <link rel="stylesheet" href="/css/Shared/Tag.css">
+    
+    
+    
 </head>
 
 <body>
@@ -29,15 +33,15 @@
     </div>
 
 </body>
-<script src="/js/Shared/_Layout.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/dragula/dist/dragula.js"></script>
 
-<link rel="stylesheet" href="/css/Shared/Header.css">
-<script src="/js/Shared/Header.js"></script>
+<script type="module">
+    import _Layout from '/js/Shared/_Layout.js'
+    _Layout._Layout();
+</script>
 
-<link rel="stylesheet" href="/css/Shared/Tag.css">
-<script src="/js/Shared/Tag.js"></script>
-
-<script src="/js/Shared/Post.js"></script>
 
 </html>
             

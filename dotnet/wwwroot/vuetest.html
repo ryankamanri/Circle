@@ -46,6 +46,15 @@
     <div class="tag" id="tag_1" draggable="true" style="background-color: aquamarine;">
         <div class="ID">1</div>
         <div class="_Tag">标签</div>
+        
+
+    </div>
+    <div id="vue">
+        <div>{{text}}</div>
+        <div>{{store.text}}</div>
+        <my></my>
+        
+        <tag :tag="tag1"></tag>
     </div>
         
     <div class="dropbox">
@@ -55,20 +64,52 @@
     <div contenteditable="true"></div>
 </body>
 <script>
-    let tags = document.querySelectorAll(".tag");
-    tags.forEach(tag => {
-        tag.addEventListener("dragstart", event => {
-            event.dataTransfer.setData("id",event.target.id);
-            
-        });
-    });
-    let dropbox = document.querySelector(".dropbox");
-    dropbox.addEventListener("dragover", event => event.preventDefault());
-    dropbox.addEventListener("drop", event =>
-    {
-        let id = event.dataTransfer.getData("id");
-        dropbox.appendChild(document.getElementById(id));
-    });
+    let vue;
 </script>
+<script type="module">
+    import Vue from '/js/MainVue.js'
+    let my = {
+        template : '<h1>My</h1>'
+    }
+
+    let tagComponent = {
+        template : `
+        <div class="tag" :id="tag.ID" draggable="true" :style="{background : bColor}">
+            <div class="ID">{{tag.tagID}}</div>
+            <div class="_Tag" :style="{color : fColor}">{{tag._Tag}}</div>
+        </div>`,
+        
+        props : ['tag'],
+        
+        data() {
+            return{
+                bColor : this.tag.bColor,
+                fColor : this.tag.fColor
+            } 
+        }
+    }
+
+    vue = new Vue.MainVue({
+        el : '#vue',
+        data : {
+            text : 123,
+            tag1 : {
+                ID : 1,
+                bColor : '#ABCDEF',
+                fColor : '#FEDCBA',
+                tagID : 2,
+                _Tag : '第一个标签'
+            }
+        },
+        components : {
+            'my' : my,
+            'tag' : tagComponent
+        }
+    });
+
+
+
+</script>
+
 </html>
 

@@ -49,41 +49,41 @@ namespace dotnet.Controllers
             return View();
         }
 
-        /// <summary>
-        /// 添加个人标签
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("AddTag")]
-        public async Task<IActionResult> AddTag()
-        {
-            StringValues tagID = new StringValues(), tagRelation = new StringValues();
-            if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
-            Tag tag = new Tag(Convert.ToInt64(tagID));
+        // /// <summary>
+        // /// 添加个人标签
+        // /// </summary>
+        // /// <returns></returns>
+        // [HttpPost]
+        // [Route("AddTag")]
+        // public async Task<IActionResult> AddTag()
+        // {
+        //     StringValues tagID = new StringValues(), tagRelation = new StringValues();
+        //     if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
+        //     if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
+        //     Tag tag = new Tag(Convert.ToInt64(tagID));
 
-            await _userService.AppendTagRelation(_user,tag, tagRelation.ToString());
+        //     await _userService.AppendTagRelation(_user,tag, tagRelation.ToString());
 
-            return new JsonResult("add tag succeed");
-        }
+        //     return new JsonResult("add tag succeed");
+        // }
 
-        /// <summary>
-        /// 删除个人标签
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("RemoveTag")]
-        public async Task<IActionResult> RemoveTag()
-        {
-            StringValues tagID = new StringValues(), tagRelation = new StringValues();
-            if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
-            Tag tag = new Tag(Convert.ToInt64(tagID));
+        // /// <summary>
+        // /// 删除个人标签
+        // /// </summary>
+        // /// <returns></returns>
+        // [HttpPost]
+        // [Route("RemoveTag")]
+        // public async Task<IActionResult> RemoveTag()
+        // {
+        //     StringValues tagID = new StringValues(), tagRelation = new StringValues();
+        //     if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
+        //     if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
+        //     Tag tag = new Tag(Convert.ToInt64(tagID));
 
-            await _userService.RemoveTagRelation(_user,tag,tagRelation.ToString());
+        //     await _userService.RemoveTagRelation(_user,tag,tagRelation.ToString());
 
-            return new JsonResult("remove tag succeed");
-        }
+        //     return new JsonResult("remove tag succeed");
+        // }
         #endregion
 
 

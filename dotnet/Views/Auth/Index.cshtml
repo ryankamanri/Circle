@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圈</title>
+    <title>校友互助共享圈</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-    
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/Auth/Index.css">
 </head>
 
@@ -151,37 +151,36 @@
                         <div class="service">
                             <i class="icon fas fa-paint-brush"></i>
                             <h4>发帖</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <p>Post Online.</p>
                         </div>
                         <div class="service">
                             <i class="icon fas fa-pager"></i>
                             <h4>匹配</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <p>Match With Mates.</p>
                         </div>
                         <div class="service">
                             <i class="icon fas fa-database"></i>
                             <h4>私聊</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <p>Chat Individually.</p>
                         </div>
                         <div class="service">
                             <i class="icon fab fa-android"></i>
                             <h4>动态</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <p>Share Moments.</p>
                         </div>
                         <div class="service">
                             <i class="icon fas fa-credit-card"></i>
                             <h4>标签</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <p>Attach Tags.</p>
                         </div>
                         <div class="service">
                             <i class="icon fas fa-keyboard"></i>
-                            <h4>Edit Texts</h4>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            <h4>问答</h4>
+                            <p>Q & A</p>
                         </div>
                     </div>
                 </div>
             </section>
-
             <!-- Education -->
             <!--<section id="education">
     <div class="inner-width">
@@ -312,76 +311,16 @@
 
 </html>
 
-<script src="/lib/jquery/dist/jquery.js"></script>
 <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/js/Show.js"></script>
-<script src="/js/My.js"></script>
+<script type="module">
+    import Show from '/js/Show.js'
+    Show.Show();
+</script>
 <script>
-    
-    
-
-    
-
-
-    @* let critical = new Critical(0, 0, 2);
-
-    $(window).on("load", async (event) => {
-        $(".container>.jumbotron").animate({
-            paddingRight: "0px",
-            opacity: 1
-        }, 1000);
-
-        await Sleep(1000);
-
-        $("#posts>div").each(async (index, elem) => {
-
-            critical.GetData(1, async () => {
-                elem.style.position = "relative";
-
-                $(elem).animate({
-                    top: "-100px",
-                    opacity: 1
-                }, 1500);
-
-                await Sleep(500);
-
-            });
-
-        });
-    })
-
-
-    let visited = [false, false, false, false, false, false];
-
-    $(window).on("scroll", event => {
-        //console.log($(window).scrollTop());
-
-        if ($(window).scrollTop() >= 148 && visited[0] == false) {
-            critical.PutData(1, value => console.log(value));
-            visited[0] = true;
-        }
-        if ($(window).scrollTop() >= 484 && visited[1] == false && visited[0] == true) {
-            critical.PutData(2, value => console.log(value));
-            visited[1] = true;
-        }
-        if ($(window).scrollTop() >= 950 && visited[2] == false && visited[1] == true) {
-            critical.PutData(2, value => console.log(value));
-            visited[2] = true;
-        }
-        if ($(window).scrollTop() >= 1306 && visited[3] == false && visited[2] == true) {
-            critical.PutData(2, value => console.log(value));
-            visited[3] = true;
-        }
-        if ($(window).scrollTop() >= 1353 && visited[4] == false && visited[3] == true) {
-            critical.PutData(2, value => console.log(value));
-            visited[4] = true;
-        }
-        if ($(window).scrollTop() >= 1353 && visited[5] == false && visited[4] == true) {
-            critical.PutData(2, value => console.log(value));
-            console.log("stop");
-        }
 
 
 
-    }); *@
+
+
+
 </script>

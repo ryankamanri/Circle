@@ -77,8 +77,12 @@
 
 </body>
 <script src="/lib/jquery/dist/jquery.js"></script>
-@* <script src="/js/Show.js"></script> *@
-<script src="/js/Auth/SelectCircle.js"></script>
+
+<script type="module">
+    import SelectCircle from '/js/Auth/SelectCircle.js'
+    SelectCircle.SelectCircle();
+</script>
+
 </html>
 
 

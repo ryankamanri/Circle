@@ -1,42 +1,65 @@
 
+import Tag from '../Shared/Tag.js'
 
-function FlushTagTree()
+let tagRoot;
+
+function TagTree()
 {
-    let tagTreeNodes = document.querySelectorAll("#tagRoot .tagNode");
+    FlushTagTree();
+
+    tagRoot = document.querySelector("#tagRoot");
+    tagRoot.onmousewheel = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        tagRoot.scrollLeft += event.deltaY;
+    }
+}
+
+function FlushTagTree() {
+    let tagTreeNodes = document.querySelectorAll("#tagRoot .ceiledTagNode");
     tagTreeNodes.forEach(tagTreeNode => {
         tagTreeNode.ondblclick = event => {
             event.preventDefault();
             event.stopPropagation();
-            FindChildTags(event.target.parentElement.parentElement,tagTreeNode);
+            FindChildTags(event.target.parentElement.parentElement, tagTreeNode);
         }
     })
 }
 
-function AppendChildTree(parentTag, childTags) 
-{
+
+function AppendChildTree(parentTag, childTags) {
     for (let i in childTags) {
-        resultItem = document.createElement("div");
+        let resultItem = document.createElement("div");
         resultItem.innerHTML = childTags[i];
-        resultItem.setAttribute("class", "tagNode");
+        resultItem.setAttribute("class", "ceiledTagNode");
         parentTag.append(resultItem);
+        resultItem.ondblclick = event => {
+            event.preventDefault();
+            event.stopPropagation();
+            FindChildTags(event.target.parentElement.parentElement, resultItem);
+        }
     }
 }
 
-function FindChildTags(parentTag,tagTreeNode)
-{
+function FindChildTags(parentTag, tagTreeNode) {
     let tagID = tagTreeNode.querySelector(".ID").innerText;
     $.ajax({
-        url : "/Home/FindChildTags",
-        type : "POST",
-        data : {
-            tagID : tagID
+        url: "/Home/FindChildTags",
+        type: "POST",
+        data: {
+            tagID: tagID
         }
     }).done(resData => {
-        AppendChildTree(parentTag,JSON.parse(resData));
-        FlushTagTree();
-        FlushDrugEvent();
+        AppendChildTree(parentTag, JSON.parse(resData));
+        //FlushTagTree(parentTag);
+        parentTag.ondblclick = undefined;
+        Tag.FlushDrugEvent();
+        Tag.FlushDropEvent();
     });
 }
+export default{
+    TagTree,FlushTagTree,AppendChildTree,FindChildTags
+}
 
-FlushTagTree();
+
 

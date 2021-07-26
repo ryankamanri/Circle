@@ -1,27 +1,24 @@
-let userContainer = document.querySelector(".user-container");
-let searchResult = document.querySelector("#search-result").innerHTML;
-let searchString = document.querySelector("input#search").value;
+import SearchUserInfo from '../Shared/SearchUserInfo.js'
 
-// userContainer.addEventListener("mousewheel",event => 
-// {
-//     event.preventDefault();
-//     event.stopPropagation();
-//     userContainer.scrollLeft += event.deltaY;
-// });
-
-userContainer.onmousewheel = event =>
+let userContainer,searchResult,searchString;
+function SearchResult()
 {
-    event.preventDefault();
-    event.stopPropagation();
-    userContainer.scrollLeft += event.deltaY;
-}
+    
+    ///由于这一部分作用为替换关键字为高亮,将部分dom元素进行了替换,所以在此之前绑定过的监听元素会失效
+    ///如需绑定监听元素,请在此段之后
+    searchResult = document.querySelector("#search-result").innerHTML;
+    searchString = document.querySelector("input#search").value;
+    
+    let divMatchStrings = searchResult.match(/<div.*>.*<\/div>/g);
+    if(divMatchStrings != undefined) divMatchStrings.forEach(matchString => HignlightReplace(matchString));
+    let spanMatchStrings = searchResult.match(/<span.*>.*<\/span>/g);
+    if(spanMatchStrings != undefined) spanMatchStrings.forEach(matchString => HignlightReplace(matchString));
+    document.querySelector("#search-result").innerHTML = searchResult;
+    ///
 
-//searchResult.innerText.replaceAll(searchString,`<span color="yellow">${searchString}</span>`);
-let divMatchStrings = searchResult.match(/<div.*>.*<\/div>/g);
-if(divMatchStrings != undefined) divMatchStrings.forEach(matchString => HignlightReplace(matchString));
-let spanMatchStrings = searchResult.match(/<span.*>.*<\/span>/g);
-if(spanMatchStrings != undefined) spanMatchStrings.forEach(matchString => HignlightReplace(matchString));
-document.querySelector("#search-result").innerHTML = searchResult;
+    SearchUserInfo.SearchUserInfo();
+
+}
 
 function HignlightReplace(matchString)
 {
@@ -30,6 +27,11 @@ function HignlightReplace(matchString)
     let matchStringReplace = matchString.replace(matchAttr,matchAttrReplace);
     searchResult = searchResult.replace(matchString,matchStringReplace);
 }
+
+export default{
+    SearchResult
+}
+
 
 
 

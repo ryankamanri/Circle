@@ -317,7 +317,9 @@ namespace dotnet.Services.Database
         {
             dynamic Tke = tke,Tve = tve;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            string SQLStatement = $"delete from {tableName} where {tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
+            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            string SQLStatement = $"delete from {tableName} where {selectWay}";
             await _sql.Execute(SQLStatement);
         }
 
@@ -385,7 +387,7 @@ namespace dotnet.Services.Database
                {
                    if (relation == null)
                    {   //两个实体之间的关系不存在,则新建关系,并取消update执行
-                       await Connect<TKeyEntity, TValueEntity>(tke, tve, relation => relation.Type = new List<string>() { relation.ToString() });
+                       await Connect<TKeyEntity, TValueEntity>(tke, tve, relation => ((IDictionary<string,Object>)relation).Add(relationName,new List<string>() { newRelation.ToString() }));
                        return false;
                    }
                    foreach (var properties in relation)

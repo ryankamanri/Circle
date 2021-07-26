@@ -13,8 +13,8 @@
 
     <div class="feed-item-bd">
         <div class="feed-hd-info">
-            <p> <span class="ml-2 mr-2">@authorInfo.NickName</span> <a href="javascript:void(0)" class="tag-label selected"><i
-                        class="icon-nc-check"></i>
+            <p> <span class="ml-2 mr-2">@authorInfo.NickName</span> <a key="@authorInfo.ID" href="javascript:void(0)"
+                    class="tag-label selected"><i class="icon-nc-check"></i>
                     + 关注
                 </a>
             </p>
@@ -42,7 +42,7 @@
         <div class="feed-tags">
             @foreach (var tag in tags)
             {
-                <div class="tagNode">@Html.PartialAsync("Tag",tag).Result</div>
+            <div class="tagNode">@Html.PartialAsync("Tag",tag).Result</div>
             }
         </div>
         <!---->

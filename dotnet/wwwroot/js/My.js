@@ -1,15 +1,12 @@
 
+
 var Site = {
     //设置每个按钮的post请求
     Post : (url,reqData,CallBack,FailHandler) =>
     {
         var resData = "";
-        var tokens = document.getElementById("tokens").value;
         $.ajax({
             url: url,
-            headers: {
-                "RequestVerificationToken": tokens
-            },
             type: "POST",
             data: reqData
             
@@ -21,13 +18,12 @@ var Site = {
             console.log(state);
             console.log(event);
             FailHandler(action,state,event);
-        })
+        });
     },
     GetJSONObject : jsonStr =>
     {
         return JSON.parse(unescape(jsonStr.replace(/\"/g,"").replace(/\\u0022/g,'"').replace(/\\u/g, "%u")));
     }
-    
 }
 
 function Sleep(value) {
@@ -148,4 +144,8 @@ function stringlify(obj){
 	var o=document.createElement("div");
 	o.appendChild(obj);
 	return o.innerHTML;
+}
+
+export{
+    Site,Sleep,Mutex,Critical,parseElement,stringlify
 }

@@ -1,12 +1,19 @@
-let mySelfTags = document.querySelector("#mySelfTags");
+import _Layout from '../Shared/_Layout.js'
+function Home()
+{
+    // let mySelfTags = document.querySelector("#mySelfTags");
 
-mySelfTags.addEventListener("dragstart", event => {
-    PostChange(event,"/Home/RemoveTag","Self");
-});
+    // mySelfTags.addEventListener("dragstart", event => {
+    //     _Layout.PostChange(event, "/Shared/RemoveTag", "Self");
+    // });
 
-mySelfTags.addEventListener("drop", event => {
-    PostChange(event,"/Home/AddTag","Self");
-});
+    // mySelfTags.addEventListener("drop", event => {
+    //     _Layout.PostChange(event, "/Shared/AddTag", "Self");
+    // });
+}
 
+export default{
+    Home
+}
 
 
