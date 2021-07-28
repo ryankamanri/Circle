@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using dotnet.Services.Extensions;
@@ -31,7 +32,7 @@ namespace dotnet.Services.Database
 
         private MySqlConnection connection;
 
-        public Mutex dataReaderMutex;
+        public Extensions.Mutex dataReaderMutex;
 
 
 
@@ -49,7 +50,8 @@ namespace dotnet.Services.Database
             {
                 connection = new MySqlConnection(options.ToString());
                 connection.Open();
-
+                KeepSession();
+                dataReaderMutex = new Extensions.Mutex();
             }
             catch (Exception e)
             {
@@ -57,7 +59,24 @@ namespace dotnet.Services.Database
                 throw e;
             }
 
-            dataReaderMutex = new Mutex();
+            
+        }
+
+        private void KeepSession()
+        {
+            Task sendMessageAtInterval = new Task(() => 
+            {
+                while(true)
+                {
+                    var result = Query("select * from tags where ID = -1").Result;
+                    result.Key.Close();
+                    result.Value.Signal();
+                    Thread.Sleep(4 * 60 * 60 * 1000);
+                }
+            });
+            sendMessageAtInterval.Start();
+            
+            
         }
 
 
@@ -84,7 +103,7 @@ namespace dotnet.Services.Database
         /// </summary>
         /// <param name="expression">SQL表达式</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<MySqlDataReader,Mutex>> Query(string expression)
+        public async Task<KeyValuePair<MySqlDataReader,Extensions.Mutex>> Query(string expression)
         {
             try
             {
@@ -92,8 +111,8 @@ namespace dotnet.Services.Database
                 await dataReaderMutex.Wait();
                 using (MySqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = $"{expression}";
-                    return new KeyValuePair<MySqlDataReader, Mutex>(command.ExecuteReader(),dataReaderMutex);
+                    command.CommandText = expression;
+                    return new KeyValuePair<MySqlDataReader, Extensions.Mutex>(command.ExecuteReader(),dataReaderMutex);
                 }
             }
             catch (Exception e)
@@ -114,9 +133,11 @@ namespace dotnet.Services.Database
             try
             {
                 if(connection.State == System.Data.ConnectionState.Closed) connection.Open();
-                using MySqlCommand command = connection.CreateCommand();
-                command.CommandText = $"{expression}";
-                await command.ExecuteNonQueryAsync();
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = expression;
+                    await command.ExecuteNonQueryAsync();
+                }
             }
             catch (Exception e)
             {

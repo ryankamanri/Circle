@@ -8,7 +8,7 @@
 
         .self-dropdown-item {
             display: none;
-
+            cursor: pointer;
         }
 
         .self-dropdown:hover .self-dropdown-item {

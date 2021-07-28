@@ -11,7 +11,7 @@ namespace dotnet.Services.Extensions
             {
                 while (this.mutex == true)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                     System.Console.WriteLine(Thread.GetCurrentProcessorId());
                 }
                 this.mutex = true;

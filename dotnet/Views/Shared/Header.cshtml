@@ -45,18 +45,20 @@
                         <input type="button" id="searchButton" class="btn btn-outline-info my-2 my-sm-0" value="🔍" />
                     </form>
 
+                    <div class="form-inline">
+                        <div class="self-dropdown"> <img src="@userInfo.HeadImage" class="drop"
+                                style="border-radius: 100px; height: 40px;width: 40px;float: right;">
+                            <ul class="self-dropdown-block" style="position:fixed;float: right;transform:translate(25%, 0); top:48px;right:3rem">
+                                <li class="self-dropdown-item">@Model.Account</li>
+                                <li class="self-dropdown-item">个人信息</li>
+                                <li class="self-dropdown-item">设置</li>
+                                <li class="self-dropdown-item" id="logout">注销</li>
+                            </ul>
 
-                    <ul class="self-dropdown"> <img src="@userInfo.HeadImage" class="drop"
-                            style="border-radius: 100px; height: 40px;width: 40px;float: right;">
-                        <div class="self-dropdown-block" style="float: right;transform:translate(25%, 0); top:56px;">
-                            <li class="self-dropdown-item">@Model.Account</li>
-                            <li class="self-dropdown-item">个人信息</li>
-                            <li class="self-dropdown-item">设置</li>
-                            <li class="self-dropdown-item" id="logout">注销</li>
                         </div>
-
-                    </ul>
-                    <div style="width: 40px;height: 40px;"></div>
+                    </div>
+                    
+                    
 
                 </div>
 
