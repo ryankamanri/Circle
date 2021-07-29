@@ -1,16 +1,20 @@
-import {Site} from '../My.js'
+import {Site,parseFunc} from '../My.js'
 import {PostChangeRelation} from './_Layout.js'
+
 
 let attentions;
 let privateChats;
-function SearchUserInfo()
+let thisVue;
+function SearchUserInfo(vue)
 {
+    thisVue = vue;
+
     attentions = document.querySelectorAll(".attention");
     privateChats = document.querySelectorAll(".private-chat");
 
     if(attentions.length > 0)
         attentions.forEach(attention => {
-            attention.onclick = event => AppendFocus(event);
+            JudgeFocus(attention);
         });
 
     if(privateChats.length > 0)
@@ -21,11 +25,23 @@ function SearchUserInfo()
     
 }
 
+function JudgeFocus(btn)
+{
+    if(btn.getAttribute("isFocus") == "False"){
+        btn.onclick = event => AppendFocus(event);
+    }else{
+        btn.onclick = event => RemoveFocus(event);
+        btn.classList.remove("btn-outline-info");
+        btn.classList.add("btn-info");
+        btn.value = "已关注";
+    }
+}
+
 function AppendFocus(event)
 {
     let btn = event.target;
     event.stopPropagation();
-    let keyID = btn.getAttribute("key");
+    let keyID = btn.getAttribute("ID");
     PostChangeRelation("/Shared/AppendRelation",
     keyID,"User","Type","Focus",
     resData => {
@@ -35,6 +51,7 @@ function AppendFocus(event)
         btn.classList.remove("btn-outline-info");
         btn.classList.add("btn-info");
         btn.value = "已关注";
+        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","关注成功","");
     },()=>{});
     
 }
@@ -43,7 +60,7 @@ function RemoveFocus(event,ChangeStyleAction)
 {
     let btn = event.target;
     event.stopPropagation();
-    let keyID = event.target.getAttribute("key");
+    let keyID = event.target.getAttribute("ID");
     PostChangeRelation("/Shared/RemoveRelation",
     keyID,"User","Type","Focus",
     resData =>{
@@ -52,6 +69,7 @@ function RemoveFocus(event,ChangeStyleAction)
         btn.classList.remove("btn-info");
         btn.classList.add("btn-outline-info");
         btn.value = "关注";
+        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","取关成功","");
     },()=>{});
     
 }

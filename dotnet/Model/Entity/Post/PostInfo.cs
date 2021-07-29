@@ -26,17 +26,17 @@ namespace dotnet.Model
 
         public override string InsertString()
         {
-            return $"{ID},{Content}";
+            return $"'{Content}'";
         }
 
         public override string UpdateString()
         {
-            return $"{TableName}.Content = {Content}";
+            return $"{TableName}.Content = '{Content}'";
         }
 
         public override string SelectString()
         {
-            return $"{TableName}.Content = {Content}";
+            return $"{TableName}.Content = '{Content}'";
         }
 
         public override PostInfo GetEntityFromDataReader(MySqlDataReader msdr)

@@ -1,5 +1,6 @@
-import { Mutex } from '/js/My.js'
+import { Mutex , Sleep} from '/js/My.js'
 
+let mutex = new Mutex();
 function Tag()
 {
     
@@ -21,34 +22,41 @@ function FlushDropEvent() {
     let tagNodes = document.querySelectorAll(".tagNode,.ceiledTagNode");
     let id;
     let moveTag, originTag;
-    let mutex = new Mutex();
     tagboxes.forEach(tagbox => {
         tagbox.ondragover = event => event.preventDefault();
         tagbox.ondrop = event => {
             id = event.dataTransfer.getData("id");
-            tagbox.appendChild(document.getElementById(id));
-            mutex.Signal();
+            let tag = document.getElementById(id);
+            if (tag != null) tagbox.appendChild(tag);
+            else tagbox.appendChild(document.querySelector("iframe.tag-tree").contentDocument.getElementById(id));
+            //mutex.Signal();
         };
-        tagNodes.forEach(tagNode => {
-            tagNode.ondragstart = async event => {
-                event.stopPropagation();
-                id = event.dataTransfer.getData("id");
-                moveTag = document.getElementById(id);
-                originTag = moveTag.cloneNode();
-                originTag.innerHTML = moveTag.innerHTML;
-                originTag.id++;
-                mutex.mutex = true;
-                await mutex.Wait();
-                //tagNode.appendChild(originTag);
-                //tagNode.children[0].insertBefore(originTag,this);
+        
+    });
+
+    tagNodes.forEach(tagNode => {
+        tagNode.ondragstart = async event => {
+            
+            event.stopPropagation();
+            id = event.dataTransfer.getData("id");
+            moveTag = document.getElementById(id);
+            //if (moveTag == null) moveTag = document.querySelector("iframe.tag-tree").contentDocument.getElementById(id);
+            originTag = moveTag.cloneNode();
+            originTag.innerHTML = moveTag.innerHTML;
+            originTag.id++;
+            mutex.mutex = true;
+            await Sleep(1000);
+            //await mutex.Wait();
+            //tagNode.appendChild(originTag);
+            //tagNode.children[0].insertBefore(originTag,this);
+            if(tagNode.children[0] == undefined)//标签已被取走
                 tagNode.insertBefore(originTag,tagNode.children[0]);
-                originTag.addEventListener("dragstart", event => {
-                    event.dataTransfer.setData("id", event.target.id);
-                });
+            originTag.addEventListener("dragstart", event => {
+                event.dataTransfer.setData("id", event.target.id);
+            });
 
 
-            };
-        });
+        };
     });
 }
 

@@ -1,16 +1,30 @@
 import Header from './Header.js'
 import Tag from './Tag.js'
 import Post from './Post.js'
+import MainVue from '../MainVue.js'
 
 
 
+let mySelfTags;
 let myInterestedTags;
+let vue;
 
 
 function _Layout()
 {
+    vue = MainVue.MainVue({
+        el : "main"
+    });
+
+    mySelfTags = document.querySelector("#mySelfTags");
     myInterestedTags = document.querySelector("#myInterestedTags");
 
+    mySelfTags.addEventListener("dragstart",event => {
+        PostChange(event,"/Shared/RemoveRelation","Tag","Type","Self");
+    });
+    mySelfTags.addEventListener("drop", event => {
+        PostChange(event,"/Shared/AppendRelation","Tag","Type","Self");
+    });
 
     myInterestedTags.addEventListener("dragstart", event => {
         PostChange(event,"/Shared/RemoveRelation","Tag","Type","Interested");
@@ -20,18 +34,18 @@ function _Layout()
         PostChange(event,"/Shared/AppendRelation","Tag","Type","Interested");
     });
 
-    let drake = dragula(document.querySelectorAll(".tagbox,.tagNode"));
+    // let drake = dragula(document.querySelectorAll(".tagbox,.tagNode"));
     
-    Header.Header();
-    Tag.Tag();
-    Post.Post();
+    Header.Header(vue);
+    Tag.Tag(vue);
+    Post.Post(vue);
 }
 
 function PostChange(event, url, entityType, relationName,relation) 
 {
     let DragTagCurrentID = event.dataTransfer.getData("id");
     let DragTag = document.getElementById(DragTagCurrentID);
-    let DragTagID = DragTag.childNodes[1].innerText;
+    let DragTagID = DragTag.children[0].innerText;
 
     PostChangeRelation(url,DragTagID,entityType,relationName,relation,resData =>{
         console.log(resData);

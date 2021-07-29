@@ -4,61 +4,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册 - 圈</title>
-    <script src="/lib/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/Auth/LogIn.css">
+    <link rel="stylesheet" href="/css/Auth/SignIn.css">
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
-    <div class="col-md-4" style="margin:auto;position:relative;top:50%;transform:translate(0,-50%);">
-        <h1>这里放注册框</h1>
-        <input type="text" id="account" class="form-control" placeholder="用户名(邮箱)">
-        <input type="password" id="password" class=" form-control" placeholder="密码">
-        <div class="input-group">
-            <input type="text" id="authcode" class="form-control" placeholder="验证码">
-            <input type="button" id="getauthcode" class="btn btn-primary" value="获取">
+    <div id="body" style="height: 100%;margin: 0;background-image: url('/Images/1.jpg');
+        background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
+        <div class="box">
+            <h2>注册</h2>
+            <form class="form-box">
+                <div class="inputBox">
+                    <input type="text" id="account" name="" required="">
+                    <label>用户名(邮箱)</label>
+                </div>
+                <div class="inputBox">
+                    <input type="password" id="password" name="" required="">
+                    <label>密码</label>
+                </div>
+                <div class="inputBox">
+                    <div class="inputBox1">
+                        <input type="text" id="authcode" name="" required="">
+                        <button class="box1" id="getauthcode">获取</button>
+                        <label>验证码</label>
+                    </div>
+                </div>
+                
+                <input class="btn btn-primary col-md-12" type="button" id="signin" name="" value="提交">
+
+            </form>
         </div>
-        
-        <input type="button" id="signin" value="提交" class="btn btn-primary">
     </div>
-
 </body>
-<script>
-    $("#getauthcode").on("click",() => 
-    {
-        let account = $("#account").val();
-        $.ajax({
-            url : "/GetAuthCode",
-            type : "POST",
-            data : {
-                User : [
-                    account
-                ]
-            }
-        }).done(data => {
-            alert(data);
-        });
-    });
 
-    $("#signin").on("click",() => {
-        let account = $("#account").val();
-        let password = $("#password").val();
-        let authCode = $("#authcode").val();
-        $.ajax({
-            url : "/SignInSubmit",
-            type : "POST",
-            data : {
-                User : [
-                    account,
-                    password,
-                    authCode
-                ]
-            }
-        }).done((data) => {
-            if(data == "signin succeed") window.location.href = "/Home";
-            alert("send succeed\n" + data);
-        }).fail(() =>
-            alert("send failure")
-        )
-    })
+<script type="module">
+    import SignIn from '/js/Auth/SignIn.js'
+    SignIn.SignIn();
 </script>
+
 </html>
+

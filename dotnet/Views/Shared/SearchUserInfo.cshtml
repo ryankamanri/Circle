@@ -7,8 +7,9 @@
     IList<Tag> userTags = _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"}).Result;
     IEnumerable<Tag> showTags = Model.Value.Union(userTags,new Tag());
     int count = 0;
-    double similarity = _userService.CarculateSimilarity(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"}).Result;
-    double interesty = _userService.CarculateSimilarity(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"}).Result;
+    bool isFocus = _userService.IsUserRelationExist(_user,new User(Model.Key.ID),"Type","Focus").Result;
+    double similarity = _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"}).Result;
+    double interesty = _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"}).Result;
 }
 <div class="user mt-4 mb-4 ml-4 mr-4">
     <link rel="stylesheet" href="/css/Shared/SearchUserInfo.css">
@@ -19,7 +20,7 @@
         <div class="sm-font col-md-12 text-center">
             @Model.Key.SchoolYear.Year 级 @Model.Key.Speciality
         </div>
-        <div class="tags col-md-12 pt-1 pb-1 text-center">
+        <div class="tags col-md-12 text-center" style="height: 70px;">
             
 
             @foreach (var showTag in showTags)
@@ -36,8 +37,8 @@
             我的感兴趣度 : @((int)(interesty * 100)) %
         </div>
         <div class="buttons col-md-12 text-center">
-            <input key="@Model.Key.ID" class="btn btn-sm sm-font btn-outline-info attention" type="button" value="关注">
-            <input key="@Model.Key.ID" class="btn btn-sm sm-font btn-info private-chat" type="button" value="私聊">
+            <input ID="@Model.Key.ID" isFocus="@isFocus.ToString()" class="btn btn-sm sm-font btn-outline-info attention" type="button" value="关注">
+            <input ID="@Model.Key.ID" class="btn btn-sm sm-font btn-info private-chat" type="button" value="私聊">
         </div>
         
 </div>

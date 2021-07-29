@@ -1,7 +1,9 @@
-
+import MainVue from '../MainVue.js';
+import { parseFunc } from '../My.js';
 
 function LogIn()
 {
+    let vue = MainVue.MainVue();
     $("#login").on("click",() => {
         let account = $("#account").val();
         let password = $("#password").val();
@@ -14,12 +16,19 @@ function LogIn()
                     password
                 ]
             }
-        }).done((data) => {
-            if(data == "login succeed") window.location.href = "/SelectCircle";
-            alert("send succeed\n" + data);
-        }).fail(() =>
-            alert("send failure")
-        )
+        }).done(async data => {
+            if(data == "登录成功") 
+            {   
+                await parseFunc(vue.$data.store.func.ShowMessage)("alert alert-success","😀",data);
+                window.location.href = "/SelectCircle";
+            }
+            else{
+                parseFunc(vue.$data.store.func.ShowMessage)("alert alert-warning","😥",data)
+            }
+            
+        }).fail(() =>{
+            parseFunc(vue.$data.store.func.ShowMessage)("alert alert-danger","😭","登录失败,请联系管理员");
+        });
     });
     return this;
 }

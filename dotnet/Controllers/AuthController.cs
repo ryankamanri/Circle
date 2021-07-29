@@ -57,7 +57,7 @@ namespace dotnet.Controllers
         {
             string account = "",password = "";
             StringValues authInfo = new StringValues();
-            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("bad request");
+            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("错误的请求");
 
             account = authInfo[0];
             password = authInfo[1];
@@ -69,10 +69,10 @@ namespace dotnet.Controllers
             user = _dbc.Select(user).Result;
 
             if(user == default)
-                return new JsonResult("account not found");
+                return new JsonResult("账号不存在");
 
             if(user.Password != password)
-                return new JsonResult("password is error");
+                return new JsonResult("账号或密码错误");
 
             var userClaims = new List<Claim>()
             {
@@ -88,7 +88,7 @@ namespace dotnet.Controllers
 
             _cookie.SignIn(HttpContext,claimsPrincipal);
 
-            return new JsonResult("login succeed");
+            return new JsonResult("登录成功");
         }
 
             
@@ -126,10 +126,10 @@ namespace dotnet.Controllers
                     account_authCode[account] = authCode;
                 account_authCode.Add(account,authCode);
 
-                return new JsonResult("auth succeed");
+                return new JsonResult("验证码发送成功");
             }catch(Exception)
             {
-                return new JsonResult("auth failure");
+                return new JsonResult("验证码发送失败");
             }
             
         }
@@ -139,17 +139,20 @@ namespace dotnet.Controllers
         public async Task<IActionResult> SignInSubmit()
         {
             StringValues authInfo = new StringValues();
-            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("bad request");
+            if(HttpContext.Request.Form.TryGetValue("User[]",out authInfo) == false) return new JsonResult("错误的请求");
 
             string account = authInfo[0];
             string password = authInfo[1];
             string authCode = authInfo[2];
+            string originAuthCode = default;
 
-            if(account_authCode.Count == 0 ) return new JsonResult("none");
+            // if(account_authCode.Count == 0 ) return new JsonResult("未发送验证码");
 
-            if(account_authCode[account] != authCode) return new JsonResult("auth code error");
+            if(!account_authCode.TryGetValue(account,out originAuthCode)) return new JsonResult("未发送验证码");
 
-            if(_dbc.SelectID(new Model.User(account,"")).Result != long.MinValue) return new JsonResult("account exist");
+            if(originAuthCode != authCode) return new JsonResult("验证码错误");
+
+            if(_dbc.SelectID(new Model.User(account,"")).Result != long.MinValue) return new JsonResult("账号已存在");
             
 
             //验证成功
@@ -173,7 +176,7 @@ namespace dotnet.Controllers
 
             _cookie.SignIn(HttpContext,claimsPrincipal);
 
-            return new JsonResult("signin succeed");
+            return new JsonResult("注册成功");
         }
             
         #endregion

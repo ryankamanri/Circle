@@ -83,7 +83,7 @@ namespace dotnet.Services.Database
         public async Task InsertWithID<TEntity>(TEntity te)
         {
             dynamic Te = te;
-            string SQLStatement = $"insert into {Te.TableName} ({Te.Columns}) values ({Te.InsertString()})";
+            string SQLStatement = $"insert into {Te.TableName} ({Te.Columns}) values ({Te.ID},{Te.InsertString()})";
             await _sql.Execute(SQLStatement);
         }
 
@@ -109,10 +109,10 @@ namespace dotnet.Services.Database
             string insertString = "",tableName = Tes[0].TableName,columns = Tes[0].Columns;
             for(int i = 1;i < Tes.Count - 1;i++)
             {
-                insertString += $"({Tes[i].InsertString()})";
+                insertString += $"({Tes[i].ID},{Tes[i].InsertString()})";
                 insertString += ",";
             }
-            insertString += $"({Tes[Tes.Count - 1].InsertString()})";
+            insertString += $"({Tes[Tes.Count - 1].ID},{Tes[Tes.Count - 1].InsertString()})";
             string SQLStatement = $"insert into {tableName} ({columns}) values {insertString}";
             await _sql.Execute(SQLStatement);
         }
@@ -344,6 +344,26 @@ namespace dotnet.Services.Database
             return resultList[0].Relations;
         }
 
+
+         /// <summary>
+        /// 获取两个实体之间的关系,根据关系名
+        /// </summary>
+        /// <param name="tke"></param>
+        /// <param name="tve"></param>
+        /// <param name="relationName"></param>
+        /// <param name="relationValue"></param>
+        /// <typeparam name="TKeyEntity"></typeparam>
+        /// <typeparam name="TValueEntity"></typeparam>
+        /// <returns></returns>
+        public async Task<object> SelectRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve, string relationName)
+        {
+            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
+            if(relation == null) return default;
+            foreach(var properties in relation)
+                if(properties.Key.ToString() == relationName) return properties.Value;
+            return default;
+
+        }
         /// <summary>
         /// 改变两个实体间的关系
         /// 注意!在Action<dynamic> SetRelation 中已有relation 的参数,
@@ -438,6 +458,8 @@ namespace dotnet.Services.Database
         }
 
 
+       
+
         /// <summary>
         /// 在数据库中匹配得到输入实体和对应的输出实体
         /// </summary>
@@ -452,7 +474,7 @@ namespace dotnet.Services.Database
         public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
         {
             dynamic i = input, o = outputExampleInstance;
-            string relationTableName = default,relationWay = default,connectedTable = default,SQLStatement = default,iTempTableName = default,oTempTableName = default;
+            string iTableName = i.TableName,relationTableName = default,relationWay = default,connectedTable = default,SQLStatement = default,iTempTableName = default,oTempTableName = default;
 
             if(type == ID_IDList.OutPutType.Key) relationTableName = $"{o.TableName}_{i.TableName}";
             else relationTableName = $"{i.TableName}_{o.TableName}";
@@ -479,6 +501,8 @@ namespace dotnet.Services.Database
             relationWay = $"{i.TableName}.ID = {relationTableName}.{i.TableName} and {o.TableName}.ID = {relationTableName}.{o.TableName}";
 
             SQLStatement = $"select {o.Columns},relations from {connectedTable} where {relationWay} and {i.TableName}.ID = {i.ID}";
+
+            i.TableName = iTableName;
 
             return o.GetRelationDictionary(await _sql.Query(SQLStatement));
 

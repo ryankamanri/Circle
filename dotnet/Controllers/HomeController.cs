@@ -30,14 +30,17 @@ namespace dotnet.Controllers
 
         private TagService _tagService;
 
+        private PostService _postService;
 
-        public HomeController(DataBaseContext dbc, ICookie cookie, User user, UserService userService,TagService tagService)
+
+        public HomeController(DataBaseContext dbc, ICookie cookie, User user, UserService userService,TagService tagService,PostService postService)
         {
             _dbc = dbc;
             _cookie = cookie;
             _user = user;
             _userService = userService;
             _tagService = tagService;
+            _postService = postService;
         }
 
 
@@ -46,44 +49,46 @@ namespace dotnet.Controllers
         [HttpGet]
         public IActionResult Home()
         {
-            return View();
+            return View("Home/Posts");
         }
 
-        // /// <summary>
-        // /// 添加个人标签
-        // /// </summary>
-        // /// <returns></returns>
-        // [HttpPost]
-        // [Route("AddTag")]
-        // public async Task<IActionResult> AddTag()
-        // {
-        //     StringValues tagID = new StringValues(), tagRelation = new StringValues();
-        //     if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
-        //     if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
-        //     Tag tag = new Tag(Convert.ToInt64(tagID));
+        [HttpGet]
+        [Route("Home/Posts")]
+        public IActionResult Posts()
+        {
+            return View("Home/Posts");
+        }
 
-        //     await _userService.AppendTagRelation(_user,tag, tagRelation.ToString());
+        [HttpGet]
+        [Route("Home/Zone")]
+        public IActionResult Zone()
+        {
+            return View("Home/Zone");
+        }
 
-        //     return new JsonResult("add tag succeed");
-        // }
+        [HttpGet]
+        [Route("Home/SendPost")]
+        public IActionResult SendPost()
+        {
+            return View("Home/SendPost");
+        }
 
-        // /// <summary>
-        // /// 删除个人标签
-        // /// </summary>
-        // /// <returns></returns>
-        // [HttpPost]
-        // [Route("RemoveTag")]
-        // public async Task<IActionResult> RemoveTag()
-        // {
-        //     StringValues tagID = new StringValues(), tagRelation = new StringValues();
-        //     if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
-        //     if (!HttpContext.Request.Form.TryGetValue("tagRelation", out tagRelation)) return new JsonResult("bad request");
-        //     Tag tag = new Tag(Convert.ToInt64(tagID));
+        [HttpPost]
+        [Route("SendPostSubmit")]
+        public async Task<IActionResult> SendPostSubmit()
+        {
+            StringValues Title = new StringValues(), Focus = new StringValues(),Summary = new StringValues(), Content = new StringValues(),TagIDs = new StringValues();
+            if (!HttpContext.Request.Form.TryGetValue("Title", out Title)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("Focus", out Focus)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("Summary", out Summary)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("Content", out Content)) return new JsonResult("bad request");
+            if (!HttpContext.Request.Form.TryGetValue("TagIDs", out TagIDs)) return new JsonResult("bad request");
 
-        //     await _userService.RemoveTagRelation(_user,tag,tagRelation.ToString());
+            await _postService.InsertPost(_user,Title,Focus,Summary,Content,TagIDs);
+            return new JsonResult("add succeed");
+        }
 
-        //     return new JsonResult("remove tag succeed");
-        // }
+       
         #endregion
 
 

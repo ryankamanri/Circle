@@ -1,0 +1,26 @@
+@using dotnet.Model
+@inject dotnet.Model.User _user
+@inject dotnet.Services.Database.DataBaseContext _dbc
+@inject dotnet.Services.TagService _tagService
+@inject dotnet.Services.UserService _userService
+
+
+@{
+    Layout = "Layout.cshtml";
+    ViewData["SecondTitle"] = "帖子";
+
+    var myInterestedPosts = _userService.MappingPostsByTag(_user,selection => selection.Type = new List<string>(){"Interested"}).Result;
+    var allPosts = _dbc.SelectAll<Post>(new Post()).Result;
+    IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
+    
+    int count = Math.Min(25,myPosts.Count);
+
+}
+
+
+@for(int i = 0;i < count;i ++)
+{
+    @Html.PartialAsync("Post",myPosts[i]).Result
+}
+
+

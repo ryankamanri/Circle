@@ -1,17 +1,25 @@
 @using dotnet.Model
 @using dotnet.Model.Relation
 @inject dotnet.Model.User _user
-@inject dotnet.Services.Database.DataBaseContext _dbc
+@inject dotnet.Services.UserService _userService
 @{
-    IList<Tag> myInterestedTags = _dbc.MappingSelect<User,Tag>(_user,new Tag(),ID_IDList.OutPutType.Value,
-        selection => selection.Type = new List<string>(){"Interested"}).Result;
+    IList<Tag> myInterestedTags = _userService.SelectTag(_user,selection => selection.Type = new List<string>(){"Interested"}).Result;
+    IList<Tag> mySelfTags = _userService.SelectTag(_user,selection => selection.Type = new List<string>(){"Self"}).Result;
 }
+
     <div class="container " style="padding-top: 5rem;">
+        <div style="display: inline-block;">我的个人标签 : </div>
+        <div id="mySelfTags" class="tagbox col-md-10" style="min-height: 30px;min-width: 50px; display: inline-block z-index:1">
+            @foreach (var tag in mySelfTags)
+            {
+                @Html.PartialAsync("Tag",tag).Result
+            }
+        </div>
         <div style="display: inline-block;">我的兴趣标签 : </div>
         <div id="myInterestedTags" class="tagbox col-md-10" style="min-height: 30px;min-width: 50px; display: inline-block z-index:1">
-        @foreach (var tag in myInterestedTags)
-        {
-            @Html.PartialAsync("Tag",tag).Result
-        }
+            @foreach (var tag in myInterestedTags)
+            {
+                @Html.PartialAsync("Tag",tag).Result
+            }
         </div>
     </div>

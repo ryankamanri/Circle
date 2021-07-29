@@ -14,9 +14,22 @@ let saver = {
 
 function MainVue(obj)
 {
+    if(obj == undefined)
+        obj = new Object({
+            data : {
+                store : {}
+            }
+        });
+
+    if(obj.data == undefined)
+        obj.data = new Object({
+            store : {}
+        })
     
     mainVue_store = JSON.parse(window.localStorage.getItem("mainVue_store"));
-    if(mainVue_store == undefined) mainVue_store = new Object();
+    if(mainVue_store == undefined) mainVue_store = new Object({
+        components : {}
+    });
     
     obj.data.store = new Proxy(mainVue_store,saver);
 

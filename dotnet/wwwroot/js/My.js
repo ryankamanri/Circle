@@ -146,6 +146,11 @@ function stringlify(obj){
 	return o.innerHTML;
 }
 
+function parseFunc(str)
+{
+    return new Function(`return ${str}`)();
+}
+
 export{
-    Site,Sleep,Mutex,Critical,parseElement,stringlify
+    Site,Sleep,Mutex,Critical,parseElement,stringlify,parseFunc
 }

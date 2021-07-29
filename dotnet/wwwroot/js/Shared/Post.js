@@ -1,9 +1,15 @@
 import {PostChangeRelation} from './_Layout.js'
-let contentItems, focusLabels;
-function Post() {
+import {parseFunc} from '../My.js';
+
+let contentItems, focusLabels ,thisVue;
+
+function Post(vue) {
+
+    thisVue = vue;
 
     contentItems = document.querySelectorAll(".post-content>.content-item");
     focusLabels = document.querySelectorAll("p>a.tag-label");
+
     if (contentItems.length > 0)
         contentItems.forEach(node => {
             node.onclick = event => {
@@ -14,27 +20,38 @@ function Post() {
         });
     if(focusLabels.length > 0)
         focusLabels.forEach(focusLabel => {
-            focusLabel.onclick = event => AppendFocus(event);
+            JudgeFocus(focusLabel);
         })
 
+}
+
+function JudgeFocus(focusLabel)
+{
+    if(focusLabel.getAttribute("isFocus") == "False"){
+        focusLabel.onclick = event => AppendFocus(event);
+    }else{
+        focusLabel.onclick = event => RemoveFocus(event);
+        focusLabel.innerText = "已关注";
+        focusLabel.style.color = "#25bb9b";
+        focusLabel.style.border = "1px solid #25bb9b";
+    }
 }
 
 function AppendFocus(event)
 {
     let btn = event.target;
     event.stopPropagation();
-    let keyID = btn.getAttribute("key");
+    let keyID = btn.getAttribute("ID");
     PostChangeRelation("/Shared/AppendRelation",
     keyID,"User","Type","Focus",
     resData => {
         console.log(resData);
         btn.onclick = event => RemoveFocus(event);//这种必须写成匿名函数形式,直接写一个函数名会发生不可预知的执行情况
-        // btn.classList.remove("btn-outline-info");
-        // btn.classList.add("btn-info");
-        // btn.value = "已关注";
         btn.innerText = "已关注";
         btn.style.color = "#25bb9b";
         btn.style.border = "1px solid #25bb9b";
+        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","关注成功","");
+        //ShowMessage("alert alert-info","关注成功","");
     },()=>{});
     
 }
@@ -43,21 +60,22 @@ function RemoveFocus(event)
 {
     let btn = event.target;
     event.stopPropagation();
-    let keyID = event.target.getAttribute("key");
+    let keyID = event.target.getAttribute("ID");
     PostChangeRelation("/Shared/RemoveRelation",
     keyID,"User","Type","Focus",
     resData =>{
         console.log(resData);
         event.target.onclick = event => AppendFocus(event);
-        // btn.classList.remove("btn-info");
-        // btn.classList.add("btn-outline-info");
-        // btn.value = "关注";
         btn.innerText = "+ 关注";
         btn.style.color = "";
         btn.style.border = "";
+        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","取关成功","");
+        //ShowMessage("alert alert-info","取关成功","");
     },()=>{});
     
 }
+
+
 
 function ShowContent(node, postID) {
     $.ajax({

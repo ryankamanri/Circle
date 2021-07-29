@@ -1,0 +1,30 @@
+@{
+    Layout = "Layout.cshtml";
+    ViewData["SecondTitle"] = "发帖";
+}
+<link rel="stylesheet" href="/lib/ckeditor/contents.css">
+
+<div class="input-group mb-1">
+    <label class="form-control col-md-2" for="title">文章标题</label>
+    <input id="title" class="form-control" type="text" placeholder="请输入文章标题...">
+</div>
+
+<div class="input-group mb-1">
+    <label class="form-control col-md-2" for="focus">关键词</label>
+    <input id="focus" class="form-control" type="text" placeholder="请输入你的文章关键词...">
+</div>
+
+<textarea name="edit" class="ckeditor" id="" ></textarea>
+
+<span>文章标签 : </span>
+<div id="post-tags" class="tagbox"></div>
+
+<span>标签树 : </span>
+<iframe class="tag-tree" src="/Home/TagTree" frameborder="0" style="width: 100%;"></iframe>
+
+<input id="submit" type="button" class="btn btn-info" value="发布">
+
+<script type="module">
+    import SendPost from '/js/Home/SendPost.js'
+    SendPost.SendPost();
+</script>

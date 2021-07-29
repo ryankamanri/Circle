@@ -5,6 +5,8 @@ let tagRoot;
 
 function TagTree()
 {
+    Tag.Tag();
+
     FlushTagTree();
 
     tagRoot = document.querySelector("#tagRoot");

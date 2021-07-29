@@ -1,5 +1,4 @@
 @using dotnet.Model
-@using dotnet.Model.Relation
 @inject dotnet.Model.User _user
 @inject dotnet.Services.Database.DataBaseContext _dbc
 @inject dotnet.Services.TagService _tagService
@@ -7,14 +6,8 @@
 
 
 @{
-    Layout = "../Shared/_Layout.cshtml";
-    ViewData["Title"] = "个人主页";
-
-    var myInterestedPosts = _userService.MappingInterestedPosts(_user).Result;
-    var allPosts = _dbc.SelectAll<Post>(new Post()).Result;
-    IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
-    
-    int count = Math.Min(25,myPosts.Count);
+    Layout = "../../Shared/_Layout.cshtml";
+    ViewData["Title"] = ViewData["SecondTitle"] + " - 个人主页";
 
 }
 
@@ -25,10 +18,10 @@
                 <div class="menu-box">
                     <ul class="menu clearfix">
                         <li class="selected">
-                            <a href="javascript:;">帖子</a>
+                            <a href="/Home/Home/Posts">帖子</a>
                         </li>
                         <li class="selected">
-                            <a href="javascript:;">动态</a>
+                            <a href="/Home/Home/Zone">动态</a>
                         </li>
                     </ul>
                 </div>
@@ -36,22 +29,13 @@
                 <div class="menu-box menu-line-box">
                     <ul class="menu clearfix">
                         <li class="selected">
-                            <a href="javascript:;">发帖子</a>
+                            <a href="/Home/Home/SendPost">发帖子</a>
                         </li>
                     </ul>
                 </div>
 
             </div>
-            @* @foreach (var post in myInterestedPosts)
-            {
-                @Html.PartialAsync("Post",post).Result
-            } *@
-            @for(int i = 0;i < count;i ++)
-            {
-                @Html.PartialAsync("Post",myPosts[i]).Result
-            }
-            
-
+            @RenderBody()
         </div>
     </div>
 
@@ -60,5 +44,4 @@
         Home.Home();
     </script>
 </div>
-
 
