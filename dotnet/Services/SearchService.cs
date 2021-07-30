@@ -21,7 +21,7 @@ namespace dotnet.Services
         public async Task<IList<Post>> SearchPost(string searchString)
         {
             if(searchString == "" || searchString == default) return new List<Post>();
-            searchString = searchString.Replace("'","\'").Replace(" ","%");
+            searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
             return await _dbc.SelectCustom<Post>(new Post(),
             $"Title like '%{searchString}%' or Summary like '%{searchString}%' or Focus like '%{searchString}%'");
         }
@@ -29,14 +29,14 @@ namespace dotnet.Services
         public async Task<IList<Tag>> SearchTag(string searchString)
         {
             if(searchString == "" || searchString == default) return new List<Tag>();
-            searchString = searchString.Replace("'","\'").Replace(" ","%");
+            searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
             return await _dbc.SelectCustom<Tag>(new Tag(),$"tag like '%{searchString}%'");
         }
 
         public async Task<IList<UserInfo>> SearchUserInfo(string searchString)
         {
             if(searchString == "" || searchString == default) return new List<UserInfo>();
-            searchString = searchString.Replace("'","\'").Replace(" ","%");
+            searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
             return await _dbc.SelectCustom<UserInfo>(new UserInfo(),
             $"NickName like '%{searchString}%' or RealName like '%{searchString}%' or University like '%{searchString}%' or School like '%{searchString}%' or Speciality like '%{searchString}%' or Introduction like '%{searchString}%'");
         }

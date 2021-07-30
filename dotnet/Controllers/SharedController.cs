@@ -51,29 +51,12 @@ namespace dotnet.Controllers
             
         }
 
-        // [HttpPost]
-        // [Route("AppendRelation")]
-        // public async Task<IActionResult> AppendRelation()
-        // {
-        //     StringValues entityType = new StringValues(), ID = new StringValues(), relation = new StringValues();
-        //     if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
-        //     if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
-        //     if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
-
-        //     dynamic entity;
-            
-        //     entityDictionary.TryGetValue(entityType,out entity);
-
-        //     if(entity == null) return new JsonResult("entity not found");
-
-        //     entity.ID = Convert.ToInt64(ID);
-            
-        //     if(entity.GetType() == typeof(Tag)) await _userService.AppendTagRelation(_user,entity, relation.ToString());
-
-        //     if(entity.GetType() == typeof(User)) await _userService.AppendFocusUser()
-
-            
-        // }
+        [HttpGet]
+        [Route("SharedTagTree")]
+        public IActionResult SharedTagTree()
+        {
+            return View("SharedTagTree");
+        }
 
         /// <summary>
         /// 添加个人标签

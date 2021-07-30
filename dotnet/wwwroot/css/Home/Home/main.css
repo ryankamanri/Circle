@@ -1,9 +1,8 @@
 body{
-    background-color: #96CDCD;
+    background-color: #96CDCD !important;
 }
 body, html {
     margin: 0;
-    height: 100%;
 }
 html {
     color: #333;
@@ -23,4 +22,8 @@ html {
 }
 element.style {
     color: rgb(37, 187, 155);
+}
+
+.content-item img{
+    width: 100%;
 }

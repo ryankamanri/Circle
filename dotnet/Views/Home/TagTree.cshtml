@@ -1,40 +1,7 @@
-@using System.Dynamic
-@using dotnet.Model
-@using dotnet.Model.Relation
-@using dotnet.Services.Cookie
-@using dotnet.Services.Database
-@inject dotnet.Model.User _user
-@inject ICookie _cookie
-@inject DataBaseContext _dbc
 
 @{
-    //Layout = "../Shared/_Layout.cshtml";
+    Layout = "../Shared/_Layout.cshtml";
     ViewData["Title"] = "标签树";
-    ICollection<Tag> fatherTags = _dbc.Mapping<Tag,Tag>(new Tag(-1),new Tag(),ID_IDList.OutPutType.Key).Result.Keys;
-    string msg = $"ID = {_user.ID}";
 }
-<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-<link rel="stylesheet" href="/css/Shared/Tag.css">
-<div class="col-md-12 text-center" style="background-color:darkseagreen;">
-    <div id="tagRoot">
-        @foreach (var tag in fatherTags)
-        {
-            <div class="ceiledTagNode">
-                @Html.PartialAsync("Tag",tag).Result
-            </div>
-        }
-    </div>
-    <link rel="stylesheet" href="/css/Home/TagTree.css">
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
-    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="module">
-        import TagTree from '/js/Home/TagTree.js'
-        TagTree.TagTree();
-    </script>
-</div>
 
-
-
-
-
-
+@Html.PartialAsync("SharedTagTree").Result

@@ -64,6 +64,10 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task InsertPost(User author,string title,string focus,string summary, string content,StringValues tagIDs)
         {
+            title = title.Replace("\'","\\\'");
+            focus = focus.Replace("\'","\\\'");
+            summary = summary.Replace("\'","\\\'");
+            content = content.Replace("\'","\\\'");
             dynamic tagIDList = JsonConvert.DeserializeObject(tagIDs);
             //1. 保存帖子信息
             // string
