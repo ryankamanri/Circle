@@ -4,7 +4,7 @@ let vue;
 function SignIn()
 {
     vue = MainVue.MainVue();
-
+    let ShowMessage = vue.$data.store.Function_ShowMessage;
     $("#getauthcode").on("click",() => 
     {
         let account = $("#account").val();
@@ -19,8 +19,8 @@ function SignIn()
         }).done(data => {
             console.log(data);
             if(data == "验证码发送成功")
-                parseFunc(vue.$data.store.func.ShowMessage)("alert alert-success","😀",data);
-            else parseFunc(vue.$data.store.func.ShowMessage)("alert alert-warning","😥",data);
+                ShowMessage("alert alert-success","😀",data);
+            else ShowMessage("alert alert-warning","😥",data);
         });
     });
 
@@ -41,13 +41,13 @@ function SignIn()
         }).done(async (data) => {
             if(data == "注册成功") 
             {
-                await parseFunc(vue.$data.store.func.ShowMessage)("alert alert-success","😀",data);
+                await ShowMessage("alert alert-success","😀",data);
                 window.location.href = "/Home";
             }
-            parseFunc(vue.$data.store.func.ShowMessage)("alert alert-warning","😥",data);
+            ShowMessage("alert alert-warning","😥",data);
         }).fail(() =>
             //alert("send failure");
-            parseFunc(vue.$data.store.func.ShowMessage)("alert alert-danger","😭","登录失败,请联系管理员")
+            ShowMessage("alert alert-danger","😭","登录失败,请联系管理员")
         );
     });
 }

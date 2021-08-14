@@ -50,7 +50,7 @@ function AppendFocus(event)
         btn.innerText = "已关注";
         btn.style.color = "#25bb9b";
         btn.style.border = "1px solid #25bb9b";
-        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","关注成功","");
+        thisVue.$data.store.Function_ShowMessage("alert alert-info","关注成功","");
         //ShowMessage("alert alert-info","关注成功","");
     },()=>{});
     
@@ -69,7 +69,7 @@ function RemoveFocus(event)
         btn.innerText = "+ 关注";
         btn.style.color = "";
         btn.style.border = "";
-        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","取关成功","");
+        thisVue.$data.store.Function_ShowMessage("alert alert-info","取关成功","");
         //ShowMessage("alert alert-info","取关成功","");
     },()=>{});
     

@@ -36,7 +36,7 @@ function SendPostSubmit()
         console.log(resData);
         if(resData == "add succeed")
         {
-            await parseFunc(vue.$data.store.func.ShowMessage)("alert alert-success","😀","发布成功");
+            await vue.$data.store.Function_ShowMessage("alert alert-success","😀","发布成功");
             window.location.href = "/Home";
         } 
     },()=>{});

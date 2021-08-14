@@ -8,18 +8,20 @@ let messageComponent = {
     props : ["id","class","message"]
 }
 
+let vue;
 
-function Index(vue)
+function Index()
 {
     Show.Show();
     vue = MainVue.MainVue();
 
-    vue.$data.store.components.message = messageComponent;
-    vue.$data.store.func = {
-        ShowMessage : ShowMessage.toString()
-    };
+    vue.$data.store.components_message = messageComponent;
+    // vue.$data.store.func = {
+    //     ShowMessage : ShowMessage.toString()
+    // };
+    vue.$data.store.Function_ShowMessage = ShowMessage;
     //ShowMessage("alert alert-info","","欢迎来到校友互助共享圈!");
-    parseFunc(vue.$data.store.func.ShowMessage)("alert alert-info","","欢迎来到校友互助共享圈!");
+    vue.$data.store.Function_ShowMessage("alert alert-info","","欢迎来到校友互助共享圈!");
 }
 
 async function ShowMessage(bootstrapClass,emphasis,message)

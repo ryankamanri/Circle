@@ -1,4 +1,5 @@
 import SearchUserInfo from '../Shared/SearchUserInfo.js'
+import Post from '../Shared/Post.js'
 import MainVue from '../MainVue.js'
 
 
@@ -24,6 +25,7 @@ function SearchResult()
     ///
 
     SearchUserInfo.SearchUserInfo(vue);
+    Post.Post(vue);
 
 }
 

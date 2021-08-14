@@ -51,7 +51,7 @@ function AppendFocus(event)
         btn.classList.remove("btn-outline-info");
         btn.classList.add("btn-info");
         btn.value = "已关注";
-        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","关注成功","");
+        thisVue.$data.store.Function_ShowMessage("alert alert-info","关注成功","");
     },()=>{});
     
 }
@@ -69,7 +69,7 @@ function RemoveFocus(event,ChangeStyleAction)
         btn.classList.remove("btn-info");
         btn.classList.add("btn-outline-info");
         btn.value = "关注";
-        parseFunc(thisVue.$data.store.func.ShowMessage)("alert alert-info","取关成功","");
+        thisVue.$data.store.Function_ShowMessage("alert alert-info","取关成功","");
     },()=>{});
     
 }
