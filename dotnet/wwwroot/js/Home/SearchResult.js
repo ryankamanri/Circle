@@ -5,8 +5,11 @@ import MainVue from '../MainVue.js'
 
 let userContainer,searchResult,searchString,splitedSearchStrings;
 let vue;
+let HasBeenExecuted = false;
 function SearchResult()
 {
+    if(HasBeenExecuted) return;
+
     vue = MainVue.MainVue();
 
     ///由于这一部分作用为替换关键字为高亮,将部分dom元素进行了替换,所以在此之前绑定过的监听元素会失效
@@ -15,10 +18,10 @@ function SearchResult()
     searchString = document.querySelector("input#search").value;
     splitedSearchStrings = searchString.split(" ");
     
-    let divMatchStrings = searchResult.match(/<div.*>\s*.*\s*<\/div>/g);
+    let divMatchStrings = searchResult.match(/<div.*>.*<\/div>/g);
     if(divMatchStrings != undefined) divMatchStrings.forEach(matchString => 
         splitedSearchStrings.forEach(splitedSearchString => HignlightReplace(matchString,splitedSearchString)));
-    let spanMatchStrings = searchResult.match(/<span.*>\s*.*\s*<\/span>/g);
+    let spanMatchStrings = searchResult.match(/<span.*>.*<\/span>/g);
     if(spanMatchStrings != undefined) spanMatchStrings.forEach(matchString => 
         splitedSearchStrings.forEach(splitedSearchString => HignlightReplace(matchString,splitedSearchString)));
     document.querySelector("#search-result").innerHTML = searchResult;
@@ -26,7 +29,8 @@ function SearchResult()
 
     SearchUserInfo.SearchUserInfo(vue);
     Post.Post(vue);
-
+    
+    HasBeenExecuted = true;
 }
 
 function HignlightReplace(matchString,searchString)

@@ -1,9 +1,10 @@
 import MainVue from '../MainVue.js';
-import { parseFunc } from '../My.js';
-
+import { ShowMessage } from '../Show.js';
+let Function_ShowMessage = ShowMessage;
 function LogIn()
 {
     let vue = MainVue.MainVue();
+    if(vue.$data.store.Function_ShowMessage === undefined) vue.$data.store.Function_ShowMessage = Function_ShowMessage;
     let ShowMessage = vue.$data.store.Function_ShowMessage;
     $("#login").on("click",() => {
         let account = $("#account").val();
