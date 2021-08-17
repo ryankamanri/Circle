@@ -4,19 +4,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using dotnet.Services.Extensions;
+using dotnet.Services.Self;
 
 namespace dotnet.Services.Cookie
 {
 
     public interface ICookie
     {
-        void SignIn(HttpContext httpContext,ClaimsPrincipal claimsPrincipal);
-
-        void SignOut(HttpContext httpContext);
-
-        ClaimsPrincipal GetAuth(HttpContext httpContext);
-
         void AppendCookie(HttpContext httpContext,string key,string value);
 
         void DeleteCookie(HttpContext httpContext,string key);
@@ -26,35 +20,6 @@ namespace dotnet.Services.Cookie
     
     public class Cookie : ICookie
     {
-
-
-        private string cookieName { get; } = "SelfLogIn";
-
-
-        public void SignIn(HttpContext httpContext,ClaimsPrincipal claimsPrincipal)
-        {
-            AuthenticationScheme scheme = new AuthenticationScheme("name", "displayName", typeof(Scheme));
-            var ticket = new AuthenticationTicket(claimsPrincipal, scheme.Name);
-            httpContext.Response.Cookies.Append(cookieName, Base64.EncodeBase64(Scheme.Serialize(ticket)));
-
-            httpContext.SignInAsync(claimsPrincipal);
-        }
-        public void SignOut(HttpContext httpContext)
-        {
-            httpContext.Response.Cookies.Delete(cookieName);
-            httpContext.SignOutAsync();
-        }
-
-        public ClaimsPrincipal GetAuth(HttpContext httpContext)
-        {
-            AuthenticationTicket ticket;
-            string content = httpContext.Request.Cookies[cookieName];
-            if(content == default || content == "") return new ClaimsPrincipal();
-            ticket = Scheme.Deserialize(Base64.DecodeBase64(content));
-            return ticket.Principal;
-        }
-
-        
 
         public void AppendCookie(HttpContext httpContext,string key,string value)
         {

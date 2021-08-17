@@ -27,7 +27,7 @@ namespace dotnet.Middlewares
         }
         public async Task Invoke(HttpContext context,User user,Dictionary<string,string> dict)
         {
-            ClaimsPrincipal claimsPrincipal = _cookie.GetAuth(context);
+            ClaimsPrincipal claimsPrincipal = context.User;
             foreach(var c in claimsPrincipal.Claims)
             {
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Cookie;
 using dotnet.Services.Database;
+using dotnet.Services.Http;
 
 namespace dotnet
 {
@@ -42,6 +44,10 @@ namespace dotnet
             {
                 options.AddPolicy("any", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
+
+            //添加跨域api访问
+            services.AddSingleton(new Api("http://192.168.0.120:5003"));
+
 
             
             services.AddScoped<User>();

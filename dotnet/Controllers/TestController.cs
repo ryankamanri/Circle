@@ -8,8 +8,9 @@ using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Model.Relation;
 using dotnet.Services;
+using dotnet.Services.Http;
 using dotnet.Services.Database;
-using dotnet.Services.Extensions;
+using dotnet.Services.Self;
 
 
 namespace dotnet.Controllers
@@ -26,14 +27,17 @@ namespace dotnet.Controllers
 
         private User _user;
 
+        private Api _api;
 
 
-        public TestController(SQL sql,DataBaseContext dbc,TagService tagService,User user)
+
+        public TestController(SQL sql,DataBaseContext dbc,TagService tagService,User user,Api api)
         {
             _sql = sql;
             _dbc = dbc;
             _tagService = tagService;
             _user = user;
+            _api = api;
         }
 
         [HttpGet]
@@ -44,6 +48,23 @@ namespace dotnet.Controllers
             return new JsonResult("OK");
         }
 
+        [HttpGet]
+        [Route("getapi")]
+        public async Task<string> GetApi()
+        {
+            return await _api.Get("/api/get");
+        }
+
+        [HttpGet]
+        [Route("postapi")]
+        public async Task<string> PostApi()
+        {
+            return await _api.Post("/api/post",
+            new Dictionary<string,object>()
+            {
+                {"Type","1"}
+            });
+        }
         
     }
 }

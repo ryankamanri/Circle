@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Authentication;
 using dotnet.Model;
 using dotnet.Services.Cookie;
 using dotnet.Services.Database;
-using dotnet.Services.Extensions;
+using dotnet.Services.Self;
 
 
 namespace dotnet.Controllers
@@ -86,7 +87,7 @@ namespace dotnet.Controllers
 
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
-            _cookie.SignIn(HttpContext,claimsPrincipal);
+            HttpContext.SignInAsync(claimsPrincipal);
 
             return new JsonResult("登录成功");
         }
@@ -174,7 +175,8 @@ namespace dotnet.Controllers
 
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
-            _cookie.SignIn(HttpContext,claimsPrincipal);
+
+            await HttpContext.SignInAsync(claimsPrincipal);
 
             return new JsonResult("注册成功");
         }
@@ -209,9 +211,9 @@ namespace dotnet.Controllers
 
         [HttpPost]
         [Route("LogOutSubmit")]
-        public IActionResult LogOutSubmit()
+        public async Task<IActionResult> LogOutSubmit()
         {
-            _cookie.SignOut(HttpContext);
+            await HttpContext.SignOutAsync();
             return new JsonResult("logout succeed");
         }
 
@@ -221,7 +223,7 @@ namespace dotnet.Controllers
         {
             string result = "";
 
-            ClaimsPrincipal claimsPrincipal =  _cookie.GetAuth(HttpContext);
+            ClaimsPrincipal claimsPrincipal =  HttpContext.User;
 
             foreach (var i in claimsPrincipal.Identities)
             {
