@@ -2,10 +2,8 @@ using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using dotnet.Services.Self;
-using dotnet.Services.Database;
 
 
 
@@ -42,24 +40,7 @@ namespace dotnet.Model.Relation
         }
 
 
-        public override string ToString()
-        {
-            return $"{ID}  {ID_2} ";
-        }
-
-        
-        public ID_IDList GetList(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
-        {
-            ID_IDList ID_IDs = new ID_IDList();
-            while (msdr_mutex.Key.Read())
-            {
-                ID_IDs.Add(new ID_ID((long)msdr_mutex.Key[0], (long)msdr_mutex.Key[1],(string)msdr_mutex.Key["relations"]));
-            }
-            msdr_mutex.Key.Close();
-            msdr_mutex.Value.Signal();
-            return ID_IDs;
-        }
-
+    
             // override object.Equals
         public bool Equals(ID_ID other)
         {

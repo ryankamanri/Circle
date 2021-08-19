@@ -7,28 +7,37 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Services;
-using dotnet.Services.Database;
+using dotnet.Services.Http;
+
 
 namespace dotnet.Services
 {
     public class PostService
     {
-        private DataBaseContext _dbc;
 
-        private UserService _userService;
+        private Api _api;
+
 
         
-        public PostService(DataBaseContext dbc,UserService userService)
+        public PostService(Api api)
         {
-            _dbc = dbc;
-            _userService = userService;
+            _api = api;
         }
 
         #region Get
 
+        public async Task<IList<Post>> GetAllPost()
+        {
+            return await _api.Get<IList<Post>>("/Post/GetAllPost");
+        }
+
         public async Task<PostInfo> GetPostInfo(Post post)
         {
-            return await _dbc.Select<PostInfo>(new PostInfo(post.ID));
+            //return await _dbc.Select<PostInfo>(new PostInfo(post.ID));
+            return await _api.Post<PostInfo>("/Post/GetPostInfo",new JsonObject()
+            {
+                {"Post", post}
+            });
         }
         
         #endregion
@@ -38,17 +47,19 @@ namespace dotnet.Services
         
         public async Task<UserInfo> SelectAuthorInfo(Post post)
         { 
-            ICollection<User> authorCollection = (await _dbc.Mapping<Post,User>(post,new User(),Model.Relation.ID_IDList.OutPutType.Key)).Keys;
-            IEnumerator<User> userEnumerator = authorCollection.GetEnumerator();
-            if(!userEnumerator.MoveNext()) return new UserInfo();
-            User user = userEnumerator.Current;
-            return await _userService.GetUserInfo(user);
 
+            return await _api.Post<UserInfo>("/Post/SelectAuthorInfo",new JsonObject()
+            {
+                {"Post", post}
+            });
         }
 
         public async Task<ICollection<Tag>> SelectTags(Post post)
         {
-            return (await _dbc.Mapping<Post,Tag>(post,new Tag(),Model.Relation.ID_IDList.OutPutType.Value)).Keys;
+            return await _api.Post<ICollection<Tag>>("/Post/SelectTags",new JsonObject()
+            {
+                {"Post", post}
+            });
         }
 
         #endregion
@@ -62,32 +73,18 @@ namespace dotnet.Services
         /// <param name="content"></param>
         /// <param name="tagIDs"></param>
         /// <returns></returns>
-        public async Task InsertPost(User author,string title,string focus,string summary, string content,StringValues tagIDs)
+        public async Task<bool> InsertPost(User author,string title,string focus,string summary, string content,string tagIDs)
         {
-            title = title.Replace("\'","\\\'");
-            focus = focus.Replace("\'","\\\'");
-            summary = summary.Replace("\'","\\\'");
-            content = content.Replace("\'","\\\'");
-            dynamic tagIDList = JsonConvert.DeserializeObject(tagIDs);
-            //1. 保存帖子信息
-            // string
-            Post post = new Post(title,summary,focus,DateTime.Now);
-            await _dbc.Insert<Post>(post);
-            //2. 获取帖子ID in 数据库
-            long ID = await _dbc.SelectID<Post>(post);
-            //3. 保存帖子内容
-            PostInfo postInfo = new PostInfo(ID,content);
-            await _dbc.InsertWithID<PostInfo>(postInfo);
-            //4. 保存帖子与标签关系
-            foreach(var tagIDStr in tagIDList)
+            var TagIDs = JsonConvert.DeserializeObject<IList<long>>(tagIDs);
+            return await _api.Post<bool>("/Post/InsertPost",new JsonObject()
             {
-                await _dbc.Connect<Post,Tag>(post,new Tag(Convert.ToInt64(tagIDStr)), relations => {});
-            }
-            
-            //5. 保存帖子与作者关系
-
-            await _dbc.Connect<User,Post>(author,post,relations => {});
-            
+                {"Author", author},
+                {"Title", title},
+                {"Focus", focus},
+                {"Summary", summary},
+                {"Content", content},
+                {"TagIDs", TagIDs}
+            });
         }
     }
 }

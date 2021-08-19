@@ -1,14 +1,13 @@
 @model string
 @using dotnet.Model
-@inject dotnet.Services.Database.DataBaseContext _dbc
 @inject dotnet.Services.SearchService _search
 @{
     Layout = "../Shared/_Layout.cshtml";
     ViewData["Title"] = "搜索结果";
     ViewData["searchString"] = Model;
     //IList<Tag> tagList = new Tag().GetList(_sql.Query($"select * from tags where tag like '%{Model}%'"));
-    var userInfo_tagLists = _search.SearchUserInfoAndTags(Model).Result;
-    var posts = _search.SearchPosts(Model).Result;
+    var userInfo_tagLists = await _search.SearchUserInfoAndTags(Model);
+    var posts = await _search.SearchPosts(Model);
 }
 
 <div id="search-result" class="col-md-12 pb-5">
@@ -17,7 +16,7 @@
             <div class="user-container">
             @foreach (var userInfo_tagList in userInfo_tagLists)
             {
-                @Html.PartialAsync("SearchUserInfo",userInfo_tagList).Result
+                @await Html.PartialAsync("SearchUserInfo",userInfo_tagList)
             }
             </div>
 
@@ -26,7 +25,7 @@
     <p>所有帖子 : </p>
     @foreach (var post in posts)
     {
-        @Html.PartialAsync("Post",post).Result
+        @await Html.PartialAsync("Post",post)
     }
 
 

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Linq;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 using dotnetApi.Model;
 using dotnetApi.Model.Relation;
 using dotnetApi.Services.Database;
-using dotnetApi.Services.Cookie;
 
 namespace dotnetApi.Services
 {
@@ -47,6 +47,13 @@ namespace dotnetApi.Services
         #endregion
 
         #region Get
+
+        public User GetUser(string account)
+        {
+            return (from userItem in Users
+            where userItem.Account == account
+            select userItem).FirstOrDefault<User>();
+        }
             
         
         public async Task<UserInfo> GetUserInfo(User user)
@@ -118,6 +125,16 @@ namespace dotnetApi.Services
 
         #endregion
 
+        #region Change
+        
+        public async Task<long> InsertUser(User user)
+        {
+            await _dbc.Insert<User>(user);
+            user.ID = await _dbc.SelectID<User>(user);
+            Users.Add(user);
+            return user.ID;
+        }
+        #endregion
 
         #region JudgeRelation
 
@@ -145,7 +162,7 @@ namespace dotnetApi.Services
             
         
         /// <summary>
-        /// 新增本用户与实体之间的关系
+        /// 新增本用户与实体之间的一个关系
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="tagRelation"></param>
@@ -168,7 +185,7 @@ namespace dotnetApi.Services
 
 
         /// <summary>
-        /// 移除本用户与实体之间的关系
+        /// 移除本用户与实体之间的一个关系
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="tagRelation"></param>
@@ -190,31 +207,7 @@ namespace dotnetApi.Services
 
         #endregion
 
-        /// <summary>
-        /// 添加关注的人
-        /// </summary>
-        /// <param name="yourself"></param>
-        /// <param name="focusUser"></param>
-        /// <param name="relationName"></param>
-        /// <param name="userRelation"></param>
-        /// <returns></returns>
-        public async Task AppendFocusUser(User yourself,User focusUser,string userRelation)
-        {
-            await _dbc.AppendRelation<User,User>(yourself,focusUser,"Focus",userRelation);
-        }
 
-        /// <summary>
-        /// 取消关注
-        /// </summary>
-        /// <param name="yourself"></param>
-        /// <param name="focusUser"></param>
-        /// <param name="relationName"></param>
-        /// <param name="userRelation"></param>
-        /// <returns></returns>
-        public async Task RemoveFocusUser(User yourself,User focusUser,string userRelation)
-        {
-            await _dbc.RemoveRelation<User,User>(yourself,focusUser,"Focus",userRelation);
-        }
 
         #endregion 
 

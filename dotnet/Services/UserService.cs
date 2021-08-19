@@ -1,4 +1,5 @@
 using System;
+using System.Dynamic;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -6,59 +7,46 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 using dotnet.Model;
 using dotnet.Model.Relation;
-using dotnet.Services.Database;
 using dotnet.Services.Cookie;
+using dotnet.Services.Http;
 
 namespace dotnet.Services
 {
     public class UserService
     {
-        private DataBaseContext _dbc;
 
-        private ICookie _cookie;
+        private Api _api;
 
-        private TagService _tagService;
 
-        private IDictionary<string,Object> entityDictionary;
-
-        public IList<User> Users{get;private set;}
 
         #region Init
             
         
-        public UserService(DataBaseContext dbc,ICookie cookie,TagService tagService)
+        public UserService(Api api)
         {
-            _dbc = dbc;
-            _cookie = cookie;
-            _tagService = tagService;
-            InitUsers().Wait();
+            _api = api;
 
-            entityDictionary = new Dictionary<string,object>();
-            entityDictionary.Add("Comment",new Comment());
-            entityDictionary.Add("Post",new Post());
-            entityDictionary.Add("PostInfo",new PostInfo());
-            entityDictionary.Add("User",new User());
-            entityDictionary.Add("UserInfo",new UserInfo());
-            entityDictionary.Add("Tag",new Tag());
         }
 
-        private async Task InitUsers()
-        {
-            Users = await _dbc.SelectAll<User>(new User());
-        }
+
 
         #endregion
 
         #region Get
             
-        
+        public async Task<User> GetUser(string account)
+        {
+            return await _api.Post<User>("/User/GetUser",new JsonObject()
+            {
+                {"Account", account}
+            });
+        }
         public async Task<UserInfo> GetUserInfo(User user)
         {
-            var userInfo = await _dbc.Select<UserInfo>(new UserInfo(user.ID));
-
-            if(userInfo == default) return new UserInfo(user.ID);
-
-            return userInfo;
+            return await _api.Post<UserInfo>("/User/GetUserInfo",new JsonObject()
+            {
+                {"User", user}
+            });
         }
 
         #endregion
@@ -74,12 +62,24 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<IList<Tag>> SelectTag(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,Tag>(user,new Tag(),ID_IDList.OutPutType.Value,SetSelections);
+            dynamic selections = new ExpandoObject();
+            SetSelections(selections);
+            return await _api.Post<IList<Tag>>("/User/SelectTag",new JsonObject()
+            {
+                {"User", user},
+                {"Selections", selections}
+            });
         }
 
         public async Task<IList<Post>> SelectPost(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,Post>(user,new Post(),ID_IDList.OutPutType.Value,SetSelections);
+            dynamic selections = new ExpandoObject();
+            SetSelections(selections);
+            return await _api.Post<IList<Post>>("/User/SelectPost",new JsonObject()
+            {
+                {"User", user},
+                {"Selections", selections}
+            });
         }
 
         /// <summary>
@@ -90,7 +90,13 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<IList<User>> SelectUserInitiative(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,User>(user,new User(),ID_IDList.OutPutType.Value,SetSelections);
+            dynamic selections = new ExpandoObject();
+            SetSelections(selections);
+            return await _api.Post<IList<User>>("/User/SelectUserInitiative",new JsonObject()
+            {
+                {"User", user},
+                {"Selections", selections}
+            });
         }
 
         /// <summary>
@@ -101,7 +107,13 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<IList<User>> SelectUserPassive(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,User>(user,new User(),ID_IDList.OutPutType.Key,SetSelections);
+            dynamic selections = new ExpandoObject();
+            SetSelections(selections);
+            return await _api.Post<IList<User>>("/User/SelectUserPassive",new JsonObject()
+            {
+                {"User", user},
+                {"Selections", selections}
+            });
         }
 
         #endregion
@@ -112,15 +124,29 @@ namespace dotnet.Services
         
         public async Task<ICollection<Post>> MappingPostsByTag(User user,Action<dynamic> SetUserTagRelation)
         {
-            IList<Tag> interestedTags = await _dbc.MappingSelect<User,Tag>(user,new Tag(),ID_IDList.OutPutType.Value,SetUserTagRelation);
-            Key_ListValue_Pairs<Post, KeyValuePair<Tag, dynamic>> interestedPosts = await _dbc.MappingUnionStatistics<Tag,Post>(interestedTags,new Post(),ID_IDList.OutPutType.Key);
-            return interestedPosts.Keys;
+            dynamic selections = new ExpandoObject();
+            SetUserTagRelation(selections);
+            return await _api.Post<ICollection<Post>>("/User/MappingPostsByTag",new JsonObject()
+            {
+                {"User", user},
+                {"Selections", selections}
+            });
         }
 
 
 
         #endregion
 
+        #region Change
+        
+        public async Task<long> InsertUser(User user)
+        {
+            return await _api.Post<long>("/User/InsertUser",new JsonObject()
+            {
+                {"User",user}
+            });
+        }
+        #endregion
 
         #region JudgeRelation
 
@@ -134,9 +160,13 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<bool> IsUserRelationExist(User keyUser,User valueUser,string relationName,string relationValue)
         {
-            IList<object> relationValueList = (IList<object>)await _dbc.SelectRelation<User,User>(keyUser,valueUser,relationName);
-            if (relationValueList == default) return false;
-            return relationValueList.Contains(relationValue);
+            return await _api.Post<bool>("/User/IsUserRelationExist",new JsonObject()
+            {
+                {"KeyUser", keyUser},
+                {"ValueUser", valueUser},
+                {"RelationName", relationName},
+                {"RelationValue", relationValue}
+            });
         }
             
         #endregion
@@ -155,17 +185,14 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<bool> AppendRelation(User user,string entityType,long ID,string relationName,string newRelation)
         {
-            dynamic entity;
-            
-            entityDictionary.TryGetValue(entityType,out entity);
-
-            if(entity == null) return false;
-
-            entity.ID = Convert.ToInt64(ID);
-            
-            await _dbc.AppendRelation(user,entity,relationName,newRelation);
-
-            return true;
+            return await _api.Post<bool>("/User/AppendRelation",new JsonObject()
+            {
+                {"User",user},
+                {"EntityType",entityType},
+                {"ID",ID},
+                {"RelationName",relationName},
+                {"Relation",newRelation}
+            });
         }
 
 
@@ -178,46 +205,19 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<bool> RemoveRelation(User user,string entityType,long ID,string relationName,string oldRelation)
         {
-            dynamic entity;
-            
-            entityDictionary.TryGetValue(entityType,out entity);
-
-            if(entity == null) return false;
-
-            entity.ID = Convert.ToInt64(ID);
-            
-            await _dbc.RemoveRelation(user,entity,relationName,oldRelation);
-
-            return true;
+            return await _api.Post<bool>("/User/RemoveRelation",new JsonObject()
+            {
+                {"User",user},
+                {"EntityType",entityType},
+                {"ID",ID},
+                {"RelationName",relationName},
+                {"Relation",oldRelation}
+            });
         }
 
         #endregion
 
-        /// <summary>
-        /// 添加关注的人
-        /// </summary>
-        /// <param name="yourself"></param>
-        /// <param name="focusUser"></param>
-        /// <param name="relationName"></param>
-        /// <param name="userRelation"></param>
-        /// <returns></returns>
-        public async Task AppendFocusUser(User yourself,User focusUser,string userRelation)
-        {
-            await _dbc.AppendRelation<User,User>(yourself,focusUser,"Focus",userRelation);
-        }
 
-        /// <summary>
-        /// 取消关注
-        /// </summary>
-        /// <param name="yourself"></param>
-        /// <param name="focusUser"></param>
-        /// <param name="relationName"></param>
-        /// <param name="userRelation"></param>
-        /// <returns></returns>
-        public async Task RemoveFocusUser(User yourself,User focusUser,string userRelation)
-        {
-            await _dbc.RemoveRelation<User,User>(yourself,focusUser,"Focus",userRelation);
-        }
 
         #endregion 
 
@@ -225,35 +225,30 @@ namespace dotnet.Services
         #region Carculate
             
         
-        public async Task<double> CarculateSimilarity(User user1,User user2,Action<dynamic> SetMyTagsType)
+        public async Task<double> CarculateSimilarity(User user_1,User user_2,Action<dynamic> SetMyTagsType)
         {
-            IList<Tag> tagsOfU1 = await SelectTag(user1,SetMyTagsType);
-            IList<Tag> tagsOfU2 = await SelectTag(user2,selection => selection.Type = new List<string>{"Self"});
-
-            double tagSimilarity = 0,tagSimilarityMax = 0,tagSimilaritySum = 0;
-            double tagCrossJoin = tagsOfU1.Count * tagsOfU2.Count;
-            foreach(var tagOfU1 in tagsOfU1)
+            dynamic selections = new ExpandoObject();
+            SetMyTagsType(selections);
+            return await _api.Post<double>("/User/CarculateSimilarity",new JsonObject()
             {
-                tagSimilarityMax = 0;
-                foreach(var tagOfU2 in tagsOfU2)
-                {
-                    tagSimilarity = _tagService.CalculateSimilarity(tagOfU1,tagOfU2);
-                    tagSimilarityMax = Math.Max(tagSimilarity,tagSimilarityMax);
-                    
-                }
-                tagSimilaritySum += tagSimilarityMax * tagsOfU2.Count;
-            }
-
-            return (tagSimilaritySum / tagCrossJoin) * ((double)Math.Min(tagsOfU1.Count,tagsOfU2.Count)/(double)Math.Max(tagsOfU1.Count,tagsOfU2.Count));
-            
+                {"User_1", user_1},
+                {"User_2", user_2},
+                {"Selections", selections}
+            });
         }
 
 
-        public async Task<double> CarculateSimilarityFix(User user1,User user2,Action<dynamic> SetMyTagsType)
+        public async Task<double> CarculateSimilarityFix(User user_1,User user_2,Action<dynamic> SetMyTagsType)
         {
-            double result = await CarculateSimilarity(user1,user2,SetMyTagsType);
 
-            return Math.Sqrt(result * ( 2 - result));//圆形修正相似度
+            dynamic selections = new ExpandoObject();
+            SetMyTagsType(selections);
+            return await _api.Post<double>("/User/CarculateSimilarity",new JsonObject()
+            {
+                {"User_1", user_1},
+                {"User_2", user_2},
+                {"Selections", selections}
+            });
         }
         #endregion
     }

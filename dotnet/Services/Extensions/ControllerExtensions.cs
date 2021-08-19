@@ -42,5 +42,7 @@ namespace dotnet.Services.Extensions
                 return writer.GetStringBuilder().ToString();
             }
         }
+
+            
     }
 }

@@ -7,13 +7,13 @@
     Layout = "Layout.cshtml";
     ViewData["SecondTitle"] = "动态";
 
-    IList<User> myFocusUsers = _userService.SelectUserInitiative(_user,
-        selections => selections.Type = new List<string>(){"Focus"}).Result;
+    IList<User> myFocusUsers = await _userService.SelectUserInitiative(_user,
+        selections => selections.Type = new List<string>(){"Focus"});
 
     List<Post> myFocusPosts = new List<Post>();
     foreach(var myFocusUser in myFocusUsers)
     {
-        IList<Post> myFocusUserPosts = _userService.SelectPost(myFocusUser,selection => {}).Result;
+        IList<Post> myFocusUserPosts = await _userService.SelectPost(myFocusUser,selection => {});
         foreach(var myFocusUserPost in myFocusUserPosts)
         {
             myFocusPosts.Add(myFocusUserPost);
@@ -35,5 +35,5 @@
         <div class="date mt-4">@myFocusPost.PostDateTime.ToString("D",CultureInfo.CreateSpecificCulture("zh-CN"))</div>
         dateTemp = myFocusPost.PostDateTime;
     }
-    @Html.PartialAsync("Post",myFocusPost).Result
+    @await Html.PartialAsync("Post",myFocusPost)
 }

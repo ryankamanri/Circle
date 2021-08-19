@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Dynamic;
 using System.Linq;
 using System.Collections.Generic;
@@ -8,8 +9,8 @@ using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Model.Relation;
 using dotnet.Services;
+using dotnet.Services.Extensions;
 using dotnet.Services.Http;
-using dotnet.Services.Database;
 using dotnet.Services.Self;
 
 
@@ -20,10 +21,6 @@ namespace dotnet.Controllers
     public class TestController : Controller
     {
 
-        private SQL _sql;
-        private DataBaseContext _dbc;
-
-        private TagService _tagService;
 
         private User _user;
 
@@ -31,11 +28,8 @@ namespace dotnet.Controllers
 
 
 
-        public TestController(SQL sql,DataBaseContext dbc,TagService tagService,User user,Api api)
+        public TestController(User user,Api api)
         {
-            _sql = sql;
-            _dbc = dbc;
-            _tagService = tagService;
             _user = user;
             _api = api;
         }
@@ -52,18 +46,36 @@ namespace dotnet.Controllers
         [Route("getapi")]
         public async Task<string> GetApi()
         {
-            return await _api.Get("/api/get");
+            return await _api.Get<string>("/api/get");
         }
 
         [HttpGet]
         [Route("postapi")]
         public async Task<string> PostApi()
         {
-            return await _api.Post("/api/post",
-            new Dictionary<string,object>()
+            return await _api.Post<string>("/User/SelectPost",
+            new JsonObject()
             {
-                {"Type","1"}
+                {"User",_user},
+                {"Selection",new JsonObject()
+                {
+                    
+                }}
             });
+        }
+
+        [HttpGet]
+        [Route("directory")]
+        public string GetDirectory()
+        {
+            return Path.Combine( Directory.GetParent(Directory.GetCurrentDirectory()).FullName,"StaticFiles");
+        }
+
+        [HttpGet]
+        [Route("getattr")]
+        public string GetAttr()
+        {
+            return _user.Get<string>("Account");
         }
         
     }

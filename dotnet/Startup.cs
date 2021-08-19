@@ -1,25 +1,31 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using dotnet.Model;
 using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Cookie;
-using dotnet.Services.Database;
 using dotnet.Services.Http;
 
 namespace dotnet
 {
     public class Startup
     {
+
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         //ConfigureServices方法添加需要的服务
@@ -46,7 +52,7 @@ namespace dotnet
             });
 
             //添加跨域api访问
-            services.AddSingleton(new Api("http://192.168.0.120:5003"));
+            services.AddSingleton(new Api(Configuration["Api"]));
 
 
             
@@ -56,19 +62,6 @@ namespace dotnet
 
             //增加字典服务,用于注册验证,保存cookie
             services.AddSingleton<Dictionary<string,string>>();
-
-            //增加单例服务,数据库访问
-            services.AddSingleton(new SQL(options =>
-            {
-                options.Server = "127.0.0.1";
-                options.Port = "3306";
-                options.Database = "dotnet_ubuntu";
-                options.Uid = "root";
-                options.Pwd = "123456";
-            }));
-
-            //增加数据库上下文服务
-            services.AddSingleton<DataBaseContext>();
 
             //增加标签索引,匹配服务
             services.AddSingleton<TagService>();
@@ -95,6 +88,14 @@ namespace dotnet
             app.UseRouting();
             //可访问静态文件,位于wwwroot/
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                RequestPath = new PathString("/StaticFiles"),
+                ServeUnknownFileTypes = true,
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName,"StaticFiles")),
+            });
             //使用认证服务
             app.UseAuthentication();
             //使用授权服务
@@ -102,7 +103,7 @@ namespace dotnet
             //允许跨域访问
             app.UseCors("any");
             //获取用户登录信息
-            app.UseMiddleware<GetUserInfoMiddleware>();
+            app.UseMiddleware<UserMiddleware>();
             //定位到对应的服务
             app.UseEndpoints(endpoints =>
             {

@@ -1,14 +1,12 @@
-@using System.Dynamic
+
 @using dotnet.Model
-@using dotnet.Model.Relation
-@using dotnet.Services.Cookie
-@using dotnet.Services.Database
 @inject dotnet.Model.User _user
-@inject ICookie _cookie
-@inject DataBaseContext _dbc
+@inject dotnet.Services.Cookie.ICookie _cookie
+@inject dotnet.Services.TagService _tagService
 
 @{
-    ICollection<Tag> fatherTags = _dbc.Mapping<Tag,Tag>(new Tag(-1),new Tag(),ID_IDList.OutPutType.Key).Result.Keys;
+    //ICollection<Tag> fatherTags = (await _dbc.Mapping<Tag,Tag>(new Tag(-1),new Tag(),ID_IDList.OutPutType.Key)).Keys;
+    ICollection<Tag> fatherTags = (await _tagService.FindChildTag(new Tag(-1)));
     string msg = $"ID = {_user.ID}";
 }
 <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
@@ -18,7 +16,7 @@
         @foreach (var tag in fatherTags)
         {
             <div class="ceiledTagNode">
-                @Html.PartialAsync("Tag",tag).Result
+                @await Html.PartialAsync("Tag",tag)
             </div>
         }
     </div>

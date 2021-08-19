@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Authentication;
 using dotnet.Model;
+using dotnet.Services;
 using dotnet.Services.Cookie;
-using dotnet.Services.Database;
+using dotnet.Services.Http;
 using dotnet.Services.Self;
 
 
@@ -17,16 +18,20 @@ namespace dotnet.Controllers
     public class AuthController : Controller
     {
         private ICookie _cookie;
-        private DataBaseContext _dbc;
+
+        private Api _api;
 
         private User _user;
 
+        private UserService _userService;
+
         //保存账号跟验证码
         private Dictionary<string,string> account_authCode;
-        public AuthController(DataBaseContext dbc,ICookie cookie,Dictionary<string, string> account_authCode)
+        public AuthController(Api api,UserService userService,ICookie cookie,Dictionary<string, string> account_authCode)
         {
-            _dbc = dbc;
+            _api = api;
             _cookie = cookie;
+            _userService = userService;
             _user = new User();
             this.account_authCode = account_authCode;
         }
@@ -54,7 +59,7 @@ namespace dotnet.Controllers
 
         [HttpPost]
         [Route("LogInSubmit")]
-        public IActionResult LogInSubmit()
+        public async Task<IActionResult> LogInSubmit()
         {
             string account = "",password = "";
             StringValues authInfo = new StringValues();
@@ -63,11 +68,8 @@ namespace dotnet.Controllers
             account = authInfo[0];
             password = authInfo[1];
 
-            User user = new User(account);
 
-            _dbc.SelectID(user).Wait();
-
-            user = _dbc.Select(user).Result;
+            User user = await _userService.GetUser(account);
 
             if(user == default)
                 return new JsonResult("账号不存在");
@@ -87,7 +89,7 @@ namespace dotnet.Controllers
 
             var claimsPrincipal = new ClaimsPrincipal(userIdentities);
 
-            HttpContext.SignInAsync(claimsPrincipal);
+            await HttpContext.SignInAsync(claimsPrincipal);
 
             return new JsonResult("登录成功");
         }
@@ -147,21 +149,22 @@ namespace dotnet.Controllers
             string authCode = authInfo[2];
             string originAuthCode = default;
 
-            // if(account_authCode.Count == 0 ) return new JsonResult("未发送验证码");
 
             if(!account_authCode.TryGetValue(account,out originAuthCode)) return new JsonResult("未发送验证码");
 
             if(originAuthCode != authCode) return new JsonResult("验证码错误");
 
-            if(_dbc.SelectID(new Model.User(account,"")).Result != long.MinValue) return new JsonResult("账号已存在");
+            User user = await _userService.GetUser(account);
+
+            if(user.ID != long.MinValue) return new JsonResult("账号已存在");
+
             
 
             //验证成功
 
             User newUser = new User(account,password);
 
-            await _dbc.Insert<User>(newUser);
-            _dbc.SelectID<User>(newUser).Wait();
+            newUser.ID = await _userService.InsertUser(newUser);
 
             var userClaims = new List<Claim>()
             {

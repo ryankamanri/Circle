@@ -2,7 +2,7 @@
 @inject Dictionary<string,string> _dict
 @inject dotnet.Services.UserService _userService
 @{
-    var userInfo = _userService.GetUserInfo(Model).Result;
+    var userInfo = await _userService.GetUserInfo(Model);
 }
 
 

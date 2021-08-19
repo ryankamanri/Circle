@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Dynamic;
 using Newtonsoft.Json;
-using dotnetApi.Services.Extensions;
 using dotnetApi.Services.Database;
 
 

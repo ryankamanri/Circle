@@ -12,8 +12,8 @@ using dotnet.Model;
 using dotnet.Model.Relation;
 using dotnet.Services;
 using dotnet.Services.Extensions;
-using dotnet.Services.Database;
 using dotnet.Services.Cookie;
+using dotnet.Services.Http;
 
 
 
@@ -24,8 +24,6 @@ namespace dotnet.Controllers
     [Route("Shared/")]
     public class MappingController : Controller
     {
-        private DataBaseContext _dbc;
-        private SQL _sql;
 
         private User _user;
 
@@ -38,17 +36,14 @@ namespace dotnet.Controllers
         private ICookie _cookie;
 
 
-        public MappingController(SQL sql,DataBaseContext dbc,ICookie cookie,User user,UserService userService,TagService tagService,PostService postService)
+        public MappingController(ICookie cookie,User user,UserService userService,TagService tagService,PostService postService)
         {
-            _sql = sql;
-            _dbc = dbc;
             _cookie = cookie;
             _user = user;
             _tagService = tagService;
             _userService = userService;
             _postService = postService;
 
-            
         }
 
         [HttpGet]
@@ -66,11 +61,10 @@ namespace dotnet.Controllers
         [Route("AppendRelation")]
         public async Task<IActionResult> AppendRelation()
         {
-            StringValues entityType = new StringValues(), ID = new StringValues(), relationName = new StringValues(),relation = new StringValues();
-            if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("relationName", out relationName)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
+            string entityType = HttpContext.Request.Form["entityType"];
+            string ID = HttpContext.Request.Form["ID"];
+            string relationName = HttpContext.Request.Form["relationName"];
+            string relation = HttpContext.Request.Form["relation"];
 
             if(!await _userService.AppendRelation(_user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult("entity is not exist");
 
@@ -85,14 +79,14 @@ namespace dotnet.Controllers
         [Route("RemoveRelation")]
         public async Task<IActionResult> RemoveRelation()
         {
-            StringValues entityType = new StringValues(), ID = new StringValues(), relationName = new StringValues(),relation = new StringValues();
-            if (!HttpContext.Request.Form.TryGetValue("entityType", out entityType)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("ID", out ID)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("relationName", out relationName)) return new JsonResult("bad request");
-            if (!HttpContext.Request.Form.TryGetValue("relation", out relation)) return new JsonResult("bad request");
+            string entityType = HttpContext.Request.Form["entityType"];
+            string ID = HttpContext.Request.Form["ID"];
+            string relationName = HttpContext.Request.Form["relationName"];
+            string relation = HttpContext.Request.Form["relation"];
 
             if(!await _userService.RemoveRelation(_user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult("entity is not exist");
 
+            
             return new JsonResult("remove succeed");
         }
 
@@ -112,9 +106,9 @@ namespace dotnet.Controllers
 
             search = searchInfo;
 
-            if(!_tagService.TagIndex.ContainsKey(search)) return new JsonResult(JsonConvert.SerializeObject(tagsString));
+            //if(!_tagService.TagIndex.ContainsKey(search)) return new JsonResult(JsonConvert.SerializeObject(tagsString));
             
-            var tagList = _tagService.TagIndex[search];
+            var tagList = await _tagService.TagIndex(search);
 
             
             foreach(var tag in tagList)

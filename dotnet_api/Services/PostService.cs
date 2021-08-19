@@ -26,6 +26,11 @@ namespace dotnetApi.Services
 
         #region Get
 
+        public async Task<IList<Post>> GetAllPost()
+        {
+            return await _dbc.SelectAll<Post>(new Post());
+        }
+
         public async Task<PostInfo> GetPostInfo(Post post)
         {
             return await _dbc.Select<PostInfo>(new PostInfo(post.ID));
@@ -62,13 +67,12 @@ namespace dotnetApi.Services
         /// <param name="content"></param>
         /// <param name="tagIDs"></param>
         /// <returns></returns>
-        public async Task InsertPost(User author,string title,string focus,string summary, string content,StringValues tagIDs)
+        public async Task<bool> InsertPost(User author,string title,string focus,string summary, string content,IList<long> tagIDs)
         {
             title = title.Replace("\'","\\\'");
             focus = focus.Replace("\'","\\\'");
             summary = summary.Replace("\'","\\\'");
             content = content.Replace("\'","\\\'");
-            dynamic tagIDList = JsonConvert.DeserializeObject(tagIDs);
             //1. 保存帖子信息
             // string
             Post post = new Post(title,summary,focus,DateTime.Now);
@@ -79,14 +83,16 @@ namespace dotnetApi.Services
             PostInfo postInfo = new PostInfo(ID,content);
             await _dbc.InsertWithID<PostInfo>(postInfo);
             //4. 保存帖子与标签关系
-            foreach(var tagIDStr in tagIDList)
+            foreach(var tagID in tagIDs)
             {
-                await _dbc.Connect<Post,Tag>(post,new Tag(Convert.ToInt64(tagIDStr)), relations => {});
+                await _dbc.Connect<Post,Tag>(post,new Tag(tagID), relations => relations.Type = "Owned");
             }
             
             //5. 保存帖子与作者关系
 
-            await _dbc.Connect<User,Post>(author,post,relations => {});
+            await _dbc.Connect<User,Post>(author,post,relations => relations.Type = "Owned");
+
+            return true;
             
         }
     }

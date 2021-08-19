@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Logging;
 using dotnetApi.Model;
 using dotnetApi.Services;
@@ -43,11 +44,11 @@ namespace dotnetApi
             //增加单例服务,数据库访问
             services.AddSingleton(new SQL(options =>
             {
-                options.Server = "127.0.0.1";
-                options.Port = "3306";
-                options.Database = "dotnet_ubuntu";
-                options.Uid = "root";
-                options.Pwd = "123456";
+                options.Server = Configuration["SQL:Server"];
+                options.Port = Configuration["SQL:Port"];
+                options.Database = Configuration["SQL:Database"];
+                options.Uid = Configuration["SQL:Uid"];
+                options.Pwd = Configuration["SQL:Pwd"];
             }));
 
             //增加数据库上下文服务

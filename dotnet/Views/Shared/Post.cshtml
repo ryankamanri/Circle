@@ -4,10 +4,10 @@
 @inject dotnet.Services.PostService _postService
 @inject dotnet.Services.UserService _userService
 @{
-    UserInfo authorInfo = _postService.SelectAuthorInfo(Model).Result;
-    ICollection<Tag> tags = _postService.SelectTags(Model).Result;
+    UserInfo authorInfo = await _postService.SelectAuthorInfo(Model);
+    ICollection<Tag> tags = await _postService.SelectTags(Model);
     
-    bool isFocus = _userService.IsUserRelationExist(_user, new dotnet.Model.User(authorInfo.ID), "Type","Focus").Result;
+    bool isFocus = await _userService.IsUserRelationExist(_user, new dotnet.Model.User(authorInfo.ID), "Type","Focus");
 }
 
 <div class="feed-item-box clearfix col-md-12">
@@ -47,7 +47,7 @@
         <div class="feed-tags">
             @foreach (var tag in tags)
             {
-            <div class="tagNode">@Html.PartialAsync("Tag",tag).Result</div>
+            <div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
             }
         </div>
         <!---->

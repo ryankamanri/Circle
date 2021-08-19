@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Middlewares;
 using dotnet.Services;
-using dotnet.Services.Database;
 using dotnet.Services.Extensions;
 using dotnet.Services.Cookie;
 
@@ -24,7 +23,6 @@ namespace dotnet.Controllers
     {
         private User _user;
         private ICookie _cookie;
-        private DataBaseContext _dbc;
 
         private UserService _userService;
 
@@ -33,9 +31,8 @@ namespace dotnet.Controllers
         private PostService _postService;
 
 
-        public HomeController(DataBaseContext dbc, ICookie cookie, User user, UserService userService,TagService tagService,PostService postService)
+        public HomeController(ICookie cookie, User user, UserService userService,TagService tagService,PostService postService)
         {
-            _dbc = dbc;
             _cookie = cookie;
             _user = user;
             _userService = userService;
@@ -112,12 +109,12 @@ namespace dotnet.Controllers
 
         [HttpPost]
         [Route("FindChildTags")]
-        public IActionResult FindChildTags()
+        public async Task<IActionResult> FindChildTags()
         {
             StringValues tagID = new StringValues();
             if (!HttpContext.Request.Form.TryGetValue("tagID", out tagID)) return new JsonResult("bad request");
             
-            ICollection<Tag> childTags = _tagService.FindChildTag(new Tag(Convert.ToInt64(tagID)));
+            ICollection<Tag> childTags = await _tagService.FindChildTag(new Tag(Convert.ToInt64(tagID)));
 
             IList<string> resultJSON = new List<string>();
 

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Dynamic;
-using MySql.Data.MySqlClient;
-using dotnet.Services.Database;
 
 namespace dotnet.Model.Relation
 {

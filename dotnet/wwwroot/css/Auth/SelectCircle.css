@@ -2,7 +2,7 @@ body,
 html {
     height: 100%;
     background-color: rgb(234, 241, 241);
-    background: url("/Images/SelectCircleImage/16.jpg") no-repeat center;
+    background: url("/StaticFiles/Images/SelectCircleImage/16.jpg") no-repeat center;
     background-size: 100%;
 }
 

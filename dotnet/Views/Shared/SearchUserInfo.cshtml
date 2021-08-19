@@ -4,12 +4,12 @@
 @inject User _user
 @inject dotnet.Services.UserService _userService
 @{
-    IList<Tag> userTags = _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"}).Result;
+    IList<Tag> userTags = await _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"});
     IEnumerable<Tag> showTags = Model.Value.Union(userTags,new Tag());
     int count = 0;
-    bool isFocus = _userService.IsUserRelationExist(_user,new User(Model.Key.ID),"Type","Focus").Result;
-    double similarity = _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"}).Result;
-    double interesty = _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"}).Result;
+    bool isFocus = await _userService.IsUserRelationExist(_user,new User(Model.Key.ID),"Type","Focus");
+    double similarity = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"});
+    double interesty = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
 }
 <div class="user mt-4 mb-4 ml-4 mr-4">
     <link rel="stylesheet" href="/css/Shared/SearchUserInfo.css">
@@ -24,7 +24,7 @@
             @foreach (var showTag in showTags)
             {
                 if(count >= 4) break;
-                <div class="tagNode">@Html.PartialAsync("Tag",showTag).Result</div>
+                <div class="tagNode">@await Html.PartialAsync("Tag",showTag)</div>
                 count++;
             }
         </div>

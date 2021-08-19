@@ -6,7 +6,6 @@ using Microsoft.Extensions.Primitives;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using dotnetApi.Services.Database;
-using dotnetApi.Services.Extensions;
 
 
 namespace dotnetApi.Model

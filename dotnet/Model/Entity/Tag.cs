@@ -1,10 +1,6 @@
-using MySql.Data.MySqlClient;
+
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Dynamic;
-using Newtonsoft.Json;
-using dotnet.Services.Extensions;
-using dotnet.Services.Database;
+
 
 
 
@@ -17,7 +13,6 @@ namespace dotnet.Model
 
         public override string TableName { get ; set ;} = "tags";
 
-        public override string ColumnsWithoutID => $"{TableName}.tag";
 
 
         public Tag()
@@ -42,32 +37,7 @@ namespace dotnet.Model
 
 
 
-        public override string ToString()
-        {
-            return $"{ID},'{_Tag}'";
-        }
-
-        public override string InsertString()
-        {
-            return $"'{_Tag}'";
-        }
-
-        public override string UpdateString()
-        {
-            return $"{TableName}.tag = '{_Tag}'";
-        }
-
-        public override string SelectString()
-        {
-            return $"{TableName}.tag = '{_Tag}'";
-        }
-        
-
-        public override Tag GetEntityFromDataReader(MySqlDataReader msdr)
-        {
-            return new Tag((long)msdr["ID"], (string)msdr["tag"]);
-        }
-
+   
         public bool Equals(Tag tag_1,Tag tag_2)
         {
             return (tag_1.ID == tag_2.ID);
@@ -79,34 +49,6 @@ namespace dotnet.Model
         }
 
 
-        /// <summary>
-        /// 获取该标签的连续子集
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetContinuousSubset()
-        {
-            List<string> subset = new List<string>();
-            string subItem,subItemUpper,subItemLower;
-            //从长度为1开始截取
-            for(int i = 1;i <= _Tag.Length;i++)
-            {
-                //起始位置为j
-                for(int j = 0;j + i <= _Tag.Length;j++)
-                {
-                    subItem = _Tag.Substring(j,i);
-                    subItemUpper = subItem.ToUpper();
-                    subItemLower = subItem.ToLower();
-                    
-                    if(!subset.Contains(subItem))
-                        subset.Add(subItem);
-                    if(!subset.Contains(subItemUpper))
-                        subset.Add(subItemUpper);
-                    if(!subset.Contains(subItemLower))
-                        subset.Add(subItemLower);
-                }
-            }
-            return subset;
-        }
 
     }
 }
