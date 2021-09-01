@@ -9,7 +9,7 @@ namespace dotnetApi.Model.Relation
     /// </summary>
     /// <typeparam name="TKey">键</typeparam>
     /// <typeparam name="TValue">值</typeparam>
-    public class Key_ListValue_Pairs<TKey,TValue> : List<KeyValuePair<TKey,List<TValue>>>
+    public class Key_ListValue_Pairs<TKey,TValue> : List<KeyValuePair<TKey,IList<TValue>>>
     {
 
         public IList<TKey> Keys {get

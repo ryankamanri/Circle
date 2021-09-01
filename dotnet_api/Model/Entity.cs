@@ -77,14 +77,14 @@ namespace dotnetApi.Model
         /// </summary>
         /// <param name="msdr"></param>
         /// <returns></returns>
-        public IList<TEntity> GetList(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
+        public async Task<IList<TEntity>> GetList(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
         {
             IList<TEntity> entities = new List<TEntity>();
             while (msdr_mutex.Key.Read())
             {
                 entities.Add(GetEntityFromDataReader(msdr_mutex.Key));
             }
-            msdr_mutex.Key.Close();
+            await msdr_mutex.Key.CloseAsync();
             msdr_mutex.Value.Signal();
             return entities;
         }
@@ -94,7 +94,7 @@ namespace dotnetApi.Model
         /// </summary>
         /// <param name="msdr"></param>
         /// <returns></returns>
-        public IDictionary<TEntity,dynamic> GetRelationDictionary(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
+        public async Task<IDictionary<TEntity,dynamic>> GetRelationDictionary(KeyValuePair<MySqlDataReader,Mutex> msdr_mutex)
         {
             IDictionary<TEntity,dynamic> entity_Relations = new Dictionary<TEntity,dynamic>();
             while (msdr_mutex.Key.Read())
@@ -102,7 +102,7 @@ namespace dotnetApi.Model
                 entity_Relations.Add(GetEntityFromDataReader(msdr_mutex.Key),
                 JsonConvert.DeserializeObject<ExpandoObject>((string)msdr_mutex.Key["relations"]));
             }
-            msdr_mutex.Key.Close();
+            await msdr_mutex.Key.CloseAsync();
             msdr_mutex.Value.Signal();
             return entity_Relations;
         }

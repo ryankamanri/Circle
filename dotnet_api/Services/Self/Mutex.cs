@@ -5,14 +5,22 @@ namespace dotnetApi.Services.Self
     public class Mutex
     {
         public bool mutex { get;private set; } = false;
+
+        private int WaitTime = 5;
+
+        public Mutex(){}
+
+        public Mutex(int waitTime)
+        {
+            WaitTime = waitTime;
+        }
         public async Task Wait()
         {
             await Task.Run(() => 
             {
                 while (this.mutex == true)
                 {
-                    Thread.Sleep(100);
-                    System.Console.WriteLine(Thread.GetCurrentProcessorId());
+                    Thread.Sleep(WaitTime);
                 }
                 this.mutex = true;
             });

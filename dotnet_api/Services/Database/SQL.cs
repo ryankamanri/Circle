@@ -12,13 +12,15 @@ namespace dotnetApi.Services.Database
     public class SQL
     {
 
-        public class MySqlConnectOptions
+        public class SqlConnectOptions
         {
             public string Server { get; set; }
             public string Port { get; set; }
             public string Database { get; set; }
             public string Uid { get; set; }
             public string Pwd { get; set; }
+
+            public int NumberOfConnections { get; set; } = 3;
 
             public override string ToString()
             {
@@ -27,34 +29,38 @@ namespace dotnetApi.Services.Database
         }
 
 
-        private MySqlConnectOptions options;
+        private SqlConnectOptions options;
 
-        private MySqlConnection connection;
+        public List<KeyValuePair<MySqlConnection,Mutex>> connectionPool;
 
-        public Mutex dataReaderMutex;
+        private int currentConnectionNumber;
 
-
-
+        private const string defaultExpression = "select * from tags where ID = -1";
 
         /// <summary>
         /// 对数据库访问服务的初始化
         /// </summary>
         /// <param name="SetOptions">一个匿名函数,用于设置数据库连接字符串</param>
-        public SQL(Action<MySqlConnectOptions> SetOptions)
+        public SQL(Action<SqlConnectOptions> SetOptions)
         {
-            options = new MySqlConnectOptions();
+            options = new SqlConnectOptions();
             SetOptions(options);
 
             try
             {
-                connection = new MySqlConnection(options.ToString());
-                connection.Open();
+
+                //
+                connectionPool = new List<KeyValuePair<MySqlConnection,Mutex>>();
+                for(int i = 0;i < options.NumberOfConnections; i++)
+                {
+                    var conn = new MySqlConnection(options.ToString());
+                    conn.Open();
+                    connectionPool.Add(new KeyValuePair<MySqlConnection,Mutex>(conn,new Mutex(5)));
+                }
                 KeepSession();
-                dataReaderMutex = new Mutex();
             }
             catch (Exception e)
             {
-                connection.Close();
                 throw e;
             }
 
@@ -63,38 +69,56 @@ namespace dotnetApi.Services.Database
 
         private void KeepSession()
         {
-            Task sendMessageAtInterval = new Task(() => 
+            new Task(() =>
             {
-                while(true)
+                while (true)
                 {
-                    var result = Query("select * from tags where ID = -1").Result;
-                    result.Key.Close();
-                    result.Value.Signal();
+                    foreach (var connectionAndMutex in connectionPool)
+                    {
+                        try
+                        {
+                            connectionAndMutex.Value.Wait().Wait();
+                            using (MySqlCommand command = connectionAndMutex.Key.CreateCommand())
+                            {
+                                command.CommandText = defaultExpression;
+                                command.ExecuteReader().Close();
+                                connectionAndMutex.Value.Signal();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            connectionAndMutex.Value.Signal();
+                            throw e;
+                        }
+                    }
                     System.Threading.Thread.Sleep(4 * 60 * 60 * 1000);
                 }
-            });
-            sendMessageAtInterval.Start();
-            
-            
-        }
+            }).Start();
 
+        }
 
         /// <summary>
-        /// 关闭数据库连接
+        /// 连接池中分配空闲连接.
         /// </summary>
-        public void Close()
+        /// <returns></returns>
+        private KeyValuePair<MySqlConnection,Mutex> AssignConnection()
         {
-            try
+            for(int i = 0;i < options.NumberOfConnections; i++)
             {
-                connection.Close();
-
+                if(connectionPool[currentConnectionNumber].Value.mutex == false)
+                {
+                    Console.WriteLine($"Current Connection Number : {currentConnectionNumber}");
+                    return connectionPool[currentConnectionNumber];
+                }
+                currentConnectionNumber++;
+                currentConnectionNumber %= options.NumberOfConnections;
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
+            Console.WriteLine($"Current Connection Number : {currentConnectionNumber},All Connections Are Full Used");
+            return connectionPool[currentConnectionNumber];
+            
         }
+
+
 
         /// <summary>
         /// 执行查询语句
@@ -104,19 +128,19 @@ namespace dotnetApi.Services.Database
         /// <returns></returns>
         public async Task<KeyValuePair<MySqlDataReader,Mutex>> Query(string expression)
         {
+            var connectionAndMutex = AssignConnection();
             try
             {
-                if(connection.State == System.Data.ConnectionState.Closed) connection.Open();
-                await dataReaderMutex.Wait();
-                using (MySqlCommand command = connection.CreateCommand())
+                await connectionAndMutex.Value.Wait();
+                using (MySqlCommand command = connectionAndMutex.Key.CreateCommand())
                 {
                     command.CommandText = expression;
-                    return new KeyValuePair<MySqlDataReader,Mutex>(command.ExecuteReader(),dataReaderMutex);
+                    return new KeyValuePair<MySqlDataReader,Mutex>(command.ExecuteReader(),connectionAndMutex.Value);
                 }
             }
             catch (Exception e)
             {
-                dataReaderMutex.Signal();
+                connectionAndMutex.Value.Signal();
                 throw e;
             }
 
@@ -129,10 +153,10 @@ namespace dotnetApi.Services.Database
         /// <param name="expression">SQL表达式</param>
         public async Task Execute(string expression)
         {
+            var connectionAndMutex = AssignConnection();
             try
             {
-                if(connection.State == System.Data.ConnectionState.Closed) connection.Open();
-                using (MySqlCommand command = connection.CreateCommand())
+                using (MySqlCommand command = connectionAndMutex.Key.CreateCommand())
                 {
                     command.CommandText = expression;
                     await command.ExecuteNonQueryAsync();

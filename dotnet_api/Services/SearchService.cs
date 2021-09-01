@@ -60,12 +60,12 @@ namespace dotnetApi.Services
             Key_ListValue_Pairs<UserInfo,Tag> tagsGroupByUserInfoBase  = new Key_ListValue_Pairs<UserInfo,Tag>();
             foreach(var user_tags in tagsGroupByUser)
             {
-                tagsGroupByUserInfo.Add(new KeyValuePair<UserInfo, List<Tag>>(await _userService.GetUserInfo(user_tags.Key),user_tags.Value));
+                tagsGroupByUserInfo.Add(new KeyValuePair<UserInfo, IList<Tag>>(await _userService.GetUserInfo(user_tags.Key),user_tags.Value));
             }
 
             foreach(var userInfo in userInfosBase)
             {
-                tagsGroupByUserInfoBase.Add(new KeyValuePair<UserInfo, List<Tag>>(userInfo,new List<Tag>()));
+                tagsGroupByUserInfoBase.Add(new KeyValuePair<UserInfo, IList<Tag>>(userInfo,new List<Tag>()));
             }
             
             return tagsGroupByUserInfo.Union(tagsGroupByUserInfoBase);

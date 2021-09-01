@@ -172,7 +172,7 @@ namespace dotnetApi.Services.Database
         {
             dynamic Te = te;
             string SQLStatement = $"select * from {Te.TableName} where ID = {Te.ID}";
-            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
+            IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return default;
             te = result[0];
             return result[0];
@@ -188,7 +188,7 @@ namespace dotnetApi.Services.Database
         {
             dynamic Te = te;
             string SQLStatement = $"select * from {Te.TableName} where {Te.SelectString()}";
-            dynamic result = Te.GetList(await _sql.Query(SQLStatement));
+            dynamic result = await Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return long.MinValue;
             Te.ID = result[0].ID;
             return result[0].ID;
@@ -211,7 +211,7 @@ namespace dotnetApi.Services.Database
             }
             IDs += $"{Tes[Tes.Count - 1].ID}";
             string SQLStatement = $"select * from {Tes[0].TableName} where ID in ({IDs})";
-            IList<TEntity> result = Tes[0].GetList(await _sql.Query(SQLStatement));
+            IList<TEntity> result = await Tes[0].GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return new List<TEntity>();
             return result;
         }
@@ -233,7 +233,7 @@ namespace dotnetApi.Services.Database
             }
             constraints += $"({Tes[Tes.Count - 1].SelectString()})";
             string SQLStatement = $"select * from {Tes[0].TableName} where {constraints}";
-            List<TEntity> result = Tes[0].GetList(await _sql.Query(SQLStatement));
+            List<TEntity> result = await Tes[0].GetList(await _sql.Query(SQLStatement));
             return result;
         }
 
@@ -248,7 +248,7 @@ namespace dotnetApi.Services.Database
         {
             dynamic Te = exampleInstance;
             string SQLStatement = $"select * from {Te.TableName}";
-            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
+            IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return default;
             return result;
         }
@@ -265,7 +265,7 @@ namespace dotnetApi.Services.Database
         {
             dynamic Te = exampleInstance;
             string SQLStatement = $"select * from {Te.TableName} where {selectString}";
-            IList<TEntity> result = Te.GetList(await _sql.Query(SQLStatement));
+            IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement));
             if(result.Count == 0) return new List<TEntity>();
             return result;
         }
@@ -276,7 +276,7 @@ namespace dotnetApi.Services.Database
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string SQLStatement = $"select * from {tableName}";
 
-            return id_id.GetList(await _sql.Query(SQLStatement));
+            return await id_id.GetList(await _sql.Query(SQLStatement));
         }
 
 
@@ -339,7 +339,7 @@ namespace dotnetApi.Services.Database
             if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"select * from {tableName} where {selectWay}";
 
-            ID_IDList resultList = id_id.GetList(await _sql.Query(SQLStatement));
+            ID_IDList resultList = await id_id.GetList(await _sql.Query(SQLStatement));
             if(resultList.Count == 0) return default;
             return resultList[0].Relations;
         }
@@ -504,7 +504,7 @@ namespace dotnetApi.Services.Database
 
             i.TableName = iTableName;
 
-            return o.GetRelationDictionary(await _sql.Query(SQLStatement));
+            return await o.GetRelationDictionary(await _sql.Query(SQLStatement));
 
         }
 
@@ -605,7 +605,7 @@ namespace dotnetApi.Services.Database
                         dictionary[index].Value.Add(inputEntity_Relation);
 
                     else//如果不存在,则新建一个拥有该帖子的用户list
-                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, List<KeyValuePair<TInputEntity, dynamic>>>(target.Key,new List<KeyValuePair<TInputEntity, dynamic>>(){inputEntity_Relation}));
+                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, IList<KeyValuePair<TInputEntity, dynamic>>>(target.Key,new List<KeyValuePair<TInputEntity, dynamic>>(){inputEntity_Relation}));
                 }
             }
             return dictionary;
@@ -637,7 +637,7 @@ namespace dotnetApi.Services.Database
                         dictionary[index].Value.Add(input);
 
                     else//如果不存在,则新建一个拥有该帖子的用户list
-                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, List<TInputEntity>>(target,new List<TInputEntity>(){input}));
+                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, IList<TInputEntity>>(target,new List<TInputEntity>(){input}));
                 }
             }
             return dictionary;
