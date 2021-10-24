@@ -1,5 +1,7 @@
 using System;
+using System.Data.Common;
 using System.Collections.Generic;
+using Kamanri.Database.Model;
 
 
 
@@ -33,8 +35,9 @@ namespace dotnet.Model
 
         
 
-        public override string TableName { get ; set ;} = "posts";
- 
+        public override string TableName {get; set;} = "posts";
+        public override string ColumnsWithoutID() => $"{TableName}.Title,{TableName}.Summary,{TableName}.Focus,{TableName}.PostDateTime";
+        
         public Post()
         {
 
@@ -60,7 +63,27 @@ namespace dotnet.Model
             this.PostDateTime = PostDateTime;
         }
 
-  
+        public override string InsertString()
+        {
+            return $"'{Title}','{Summary}','{Focus}','{PostDateTime.ToString()}'";
+        }
+
+        public override string UpdateString()
+        {
+            return $"{TableName}.Title = '{Title}',{TableName}.Summary = '{Summary}',{TableName}.Focus = '{Focus}',{TableName}.PostDateTime = '{PostDateTime.ToString()}'";
+        }
+
+        public override string SelectString()
+        {
+            return $"{TableName}.Title = '{Title}' and {TableName}.Summary = '{Summary}' and {TableName}.Focus = '{Focus}' and {TableName}.PostDateTime = '{PostDateTime.ToString()}'";
+        }
+
+ 
+        public override Post GetEntityFromDataReader(DbDataReader msdr)
+        {
+            return new Post((long)msdr["ID"],(string)msdr["Title"],(string)msdr["Summary"],(string)msdr["Focus"],DateTime.Parse((string)msdr["PostDateTime"]));
+        }
+
         public bool Equals(Post post_1,Post post_2)
         {
             return post_1.ID == post_2.ID;

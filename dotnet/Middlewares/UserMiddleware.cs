@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using dotnet.Model;
 using dotnet.Services;
 using dotnet.Services.Extensions;
-using dotnet.Services.Http;
+using Kamanri.Http;
 using dotnet.Services.Cookie;
 namespace dotnet.Middlewares
 {

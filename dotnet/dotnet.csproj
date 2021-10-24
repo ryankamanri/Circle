@@ -2,10 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework> 
+    <RestoreSources>../Kamanri/bin/Debug</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mysql.Data" Version="8.0.26" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kamanri\Kamanri.csproj" />
   </ItemGroup>
 
 </Project>

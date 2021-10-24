@@ -151,6 +151,9 @@ function parseFunc(str)
     return new Function(`return ${str}`)();
 }
 
+import MyWebSocket from "./Kamanri/MyWebSocket.js";
+
+
 export{
-    Site,Sleep,Mutex,Critical,parseElement,stringlify,parseFunc
+    Site,Sleep,Mutex,Critical,parseElement,stringlify,parseFunc, MyWebSocket
 }

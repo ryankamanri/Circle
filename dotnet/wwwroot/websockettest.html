@@ -9,21 +9,23 @@
 <body>
     
 </body>
-<script>
-    var ws = new WebSocket('ws://localhost:5003/WebSocket/test1');
+<script type="module">
+    import { MyWebSocket } from '/js/My.js'
+    var mywebsocket = MyWebSocket.MyWebSocket("ws://127.0.0.1:5042");
 
-    ws.onopen = function (evt) {
-        console.log('Connection open ...');
-        ws.send('Hello WebSockets!');
-    };
-
-    ws.onmessage = function (evt) {
-        console.log('Received Message: ' + evt.data);
-        ws.close();
-    };
-
-    ws.onclose = function (evt) {
-        console.log('Connection closed.');
-    };
+    mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async(wsMessages) => 
+    {
+        console.log(wsMessages);
+        return [
+            new MyWebSocket.WebSocketMessage(
+            MyWebSocket.WebSocketMessageEvent.OnClientConnect, 
+            MyWebSocket.WebSocketMessageType.Text, 
+            "你你你"),
+            new MyWebSocket.WebSocketMessage(
+            MyWebSocket.WebSocketMessageEvent.OnClientConnect, 
+            MyWebSocket.WebSocketMessageType.Text, 
+            "我我我"),
+        ];
+    });
 </script>
 </html>

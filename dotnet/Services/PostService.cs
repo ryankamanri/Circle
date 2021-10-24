@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using dotnet.Model;
 using dotnet.Services;
-using dotnet.Services.Http;
+using Kamanri.Http;
 
 
 namespace dotnet.Services

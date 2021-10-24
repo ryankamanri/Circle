@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using dotnet.Services.Http;
-using dotnet.Model.Relation;
+using Kamanri.Http;
+using Kamanri.Database.Model.Relation;
 using dotnet.Model;
 namespace dotnet.Services
 {

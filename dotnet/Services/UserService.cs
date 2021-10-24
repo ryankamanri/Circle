@@ -6,9 +6,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 using dotnet.Model;
-using dotnet.Model.Relation;
 using dotnet.Services.Cookie;
-using dotnet.Services.Http;
+using Kamanri.Http;
 
 namespace dotnet.Services
 {

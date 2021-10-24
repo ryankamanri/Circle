@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using dotnet.Model;
 using dotnet.Services;
 using dotnet.Services.Cookie;
-using dotnet.Services.Http;
-using dotnet.Services.Self;
+using Kamanri.Http;
+using Kamanri.Self;
 
 
 namespace dotnet.Controllers

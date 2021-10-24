@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using dotnet.Services.Self;
+using Kamanri.Self;
 
 namespace dotnet.Services.Cookie
 {

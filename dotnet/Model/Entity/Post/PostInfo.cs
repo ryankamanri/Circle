@@ -1,3 +1,5 @@
+using System.Data.Common;
+using Kamanri.Database.Model;
 
 namespace dotnet.Model
 {
@@ -7,6 +9,7 @@ namespace dotnet.Model
 
         public override string TableName { get; set; } = "postsinfo";
 
+        public override string ColumnsWithoutID() => $"{TableName}.Content";
 
         public PostInfo(){}
 
@@ -22,7 +25,25 @@ namespace dotnet.Model
             this.Content = Content;
         }
 
+        public override string InsertString()
+        {
+            return $"'{Content}'";
+        }
 
+        public override string UpdateString()
+        {
+            return $"{TableName}.Content = '{Content}'";
+        }
+
+        public override string SelectString()
+        {
+            return $"{TableName}.Content = '{Content}'";
+        }
+
+        public override PostInfo GetEntityFromDataReader(DbDataReader msdr)
+        {
+            return new PostInfo((long)msdr["ID"],(string)msdr["Content"]);
+        }
     }
 }
 

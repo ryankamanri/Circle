@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using dotnet.Model;
-using dotnet.Model.Relation;
-using dotnet.Services;
-using dotnet.Services.Extensions;
-using dotnet.Services.Http;
-using dotnet.Services.Self;
+using Kamanri.Extensions;
+using Kamanri.Http;
+using Kamanri.Self;
 
 
 namespace dotnet.Controllers

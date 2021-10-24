@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using dotnet.Model;
-using dotnet.Services.Http;
+using Kamanri.Http;
 
 namespace dotnet.Services
 {
