@@ -92,19 +92,16 @@ namespace Kamanri.WebSockets
                         "Hello")
                     });
 
-                    _logger.LogInformation($"Open the WebSocket Connection,Ready To Send Message");
+                    _logger.LogInformation($"[{DateTime.Now}] : Open the WebSocket Connection,Ready To Send Message");
 
 
                     while(true) 
                         await webSocket.OnReceiveMessageAsync(async messages => await _wsmService.OnMessage(webSocket, messages));
 
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    netErr = " .Net发生错误" + ex.Message;
-
-
-
+                    throw new Exception($"Failed To Open The WebSocket Connection : {uri} \n Caused By : ");
                 }
                 finally
                 {

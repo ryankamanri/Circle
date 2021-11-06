@@ -64,7 +64,7 @@ namespace Kamanri.Database
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception($"Falied To Open The Connection To Database. Connect Options : {options} \n Caused By : ", e);
             }
         }
 
@@ -76,21 +76,23 @@ namespace Kamanri.Database
                 {
                     foreach (var connectionAndMutex in connectionPool)
                     {
-                        try
+
+                        connectionAndMutex.Value.Wait().Wait();
+                        using (DbCommand command = connectionAndMutex.Key.CreateCommand())
                         {
-                            connectionAndMutex.Value.Wait().Wait();
-                            using (DbCommand command = connectionAndMutex.Key.CreateCommand())
+                            try
                             {
                                 command.CommandText = defaultExpression;
                                 command.ExecuteReader().Close();
                                 connectionAndMutex.Value.Signal();
                             }
+                            catch (Exception e)
+                            {
+                                connectionAndMutex.Value.Signal();
+                                throw new Exception($"Failed To Send The Keep Session Sign \n Caused By : ", e);
+                            }
                         }
-                        catch (Exception e)
-                        {
-                            connectionAndMutex.Value.Signal();
-                            throw e;
-                        }
+
                     }
                     System.Threading.Thread.Sleep(4 * 60 * 60 * 1000);
                 }
@@ -108,13 +110,12 @@ namespace Kamanri.Database
             {
                 if(connectionPool[currentConnectionNumber].Value.mutex == false)
                 {
-                    // _logger.LogInformation($"Current Connection Number : {currentConnectionNumber}");
                     return connectionPool[currentConnectionNumber];
                 }
                 currentConnectionNumber++;
                 currentConnectionNumber %= options.NumberOfConnections;
             }
-            _logger.LogInformation($"Current Connection Number : {currentConnectionNumber}, All Connections Are Full Used");
+            _logger.LogInformation($"[{DateTime.Now}] : Current Connection Number : {currentConnectionNumber}, All Connections Are Full Used");
             return connectionPool[currentConnectionNumber];
             
         }
@@ -127,24 +128,26 @@ namespace Kamanri.Database
         /// </summary>
         /// <param name="expression">SQL表达式</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<DbDataReader,Mutex>> Query(string expression)
+        public async Task<KeyValuePair<DbDataReader, Mutex>> Query(string expression)
         {
             var connectionAndMutex = AssignConnection();
-            try
+
+            await connectionAndMutex.Value.Wait();
+            using (DbCommand command = connectionAndMutex.Key.CreateCommand())
             {
-                await connectionAndMutex.Value.Wait();
-                using (DbCommand command = connectionAndMutex.Key.CreateCommand())
+                try
                 {
                     command.CommandText = expression;
-                    _logger.LogInformation($"Execute The SQL Query Expression : '{expression}'");
-                    return new KeyValuePair<DbDataReader,Mutex>(command.ExecuteReader(),connectionAndMutex.Value);
+                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}'");
+                    return new KeyValuePair<DbDataReader, Mutex>(command.ExecuteReader(), connectionAndMutex.Value);
+                }
+                catch (Exception e)
+                {
+                    connectionAndMutex.Value.Signal();
+                    throw new Exception($"Failed To Execute The SQL Query Expression : '{expression}' \n Caused By : ", e);
                 }
             }
-            catch (Exception e)
-            {
-                connectionAndMutex.Value.Signal();
-                throw e;
-            }
+
 
 
         }
@@ -152,26 +155,32 @@ namespace Kamanri.Database
         public async Task<KeyValuePair<DbDataReader,Mutex>> Query(string expression, Func<DbCommand, ICollection<DbParameter>> SetParameter)
         {
             var connectionAndMutex = AssignConnection();
-            try
+
+            await connectionAndMutex.Value.Wait();
+            using (DbCommand command = connectionAndMutex.Key.CreateCommand())
             {
-                await connectionAndMutex.Value.Wait();
-                using (DbCommand command = connectionAndMutex.Key.CreateCommand())
+                try
                 {
                     command.CommandText = expression;
                     var parameters = SetParameter(command);
-                    foreach(var param in parameters)
+                    if (parameters != null)
                     {
-                        command.Parameters.Add(param);
+                        foreach (var param in parameters)
+                        {
+                            command.Parameters.Add(param);
+                        }
                     }
-                    _logger.LogInformation($"Execute The SQL Query Expression : '{expression}', Set Parameters");
-                    return new KeyValuePair<DbDataReader,Mutex>(command.ExecuteReader(),connectionAndMutex.Value);
+
+                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}', Set Parameters");
+                    return new KeyValuePair<DbDataReader, Mutex>(command.ExecuteReader(), connectionAndMutex.Value);
+                }
+                catch (Exception e)
+                {
+                    connectionAndMutex.Value.Signal();
+                    throw new Exception($"Failed To Execute The SQL Query Expression : '{expression}' \n Caused By : ", e);
                 }
             }
-            catch (Exception e)
-            {
-                connectionAndMutex.Value.Signal();
-                throw e;
-            }
+            
         }
 
         /// <summary>
@@ -186,13 +195,14 @@ namespace Kamanri.Database
                 using (DbCommand command = connectionAndMutex.Key.CreateCommand())
                 {
                     command.CommandText = expression;
-                    _logger.LogInformation($"Execute The SQL NonQuery Expression : '{expression}'");
+                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}'");
                     await command.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                connectionAndMutex.Value.Signal();
+                throw new Exception($"Failed To Execute The SQL NonQuery Expression : '{expression}' \n Caused By : ", e);
             }
         }
 
@@ -206,18 +216,21 @@ namespace Kamanri.Database
                 {
                     command.CommandText = expression;
                     var parameters = SetParameter(command);
-                    foreach(var param in parameters)
+                    if (parameters != null)
                     {
-                        command.Parameters.Add(param);
+                        foreach (var param in parameters)
+                        {
+                            command.Parameters.Add(param);
+                        }
                     }
-                    _logger.LogInformation($"Execute The SQL NonQuery Expression : '{expression}', Set Parameters");
+                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}', Set Parameters");
                     await command.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception e)
             {
                 connectionAndMutex.Value.Signal();
-                throw e;
+                throw new Exception($"Failed To Execute The SQL NonQuery Expression : '{expression}' \n Caused By : ", e);
             }
         }
     }

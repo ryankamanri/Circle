@@ -52,7 +52,6 @@ namespace Kamanri.WebSockets.Model
                 MessageType == WebSocketMessageType.Binary && message.GetType() != typeof(byte[]))
                 {
                     var exceptionInfo = $"WebSocketMessageError : The Required MessageType Is '{MessageType}' But Offered Unmatched Type '{message.GetType()}'";
-                    System.Console.WriteLine(exceptionInfo);
                     throw new FormatException(exceptionInfo);
                 }
                     

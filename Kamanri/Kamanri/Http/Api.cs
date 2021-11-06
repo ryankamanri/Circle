@@ -35,7 +35,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<object>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Get {url} \n Caused By : ", e);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<Type>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Get {url} \n Caused By : ", e);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<object>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Get {url} \n Caused By : ", e);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<Type>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Get {url} \n Caused By : ", e);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<object>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Post {url} \n Caused By : ", e);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<Type>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Post {url} \n Caused By : ", e);
             }
         }
 
@@ -131,7 +131,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<object>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Post {url} \n Caused By : ", e);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Kamanri.Http
                 return (await response.Content.ReadAsStringAsync()).ToObject<Type>();
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Execute Post {url} \n Caused By : ", e);
             }
         }
     }

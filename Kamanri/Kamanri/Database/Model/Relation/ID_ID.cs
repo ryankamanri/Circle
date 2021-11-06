@@ -29,7 +29,14 @@ namespace Kamanri.Database.Model.Relation
         {
             this.ID = ID;
             this.ID_2 = ID_2;
-            Relations = JsonConvert.DeserializeObject<ExpandoObject>(relationsJSON);
+            try 
+            {
+                Relations = JsonConvert.DeserializeObject<ExpandoObject>(relationsJSON);
+            }catch(Exception e)
+            {
+                throw new JsonException("Deserialize The ExpandoObject relationsJSON Failed \n Caused By : ", e);
+            }
+            
         }
 
         public ID_ID(long ID,long ID_2,Action<ExpandoObject> SetRelations)
@@ -68,8 +75,6 @@ namespace Kamanri.Database.Model.Relation
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            // TODO: write your implementation of GetHashCode() here
-            //throw new System.NotImplementedException();
             return base.GetHashCode();
         }
     }

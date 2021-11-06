@@ -19,7 +19,7 @@ namespace Kamanri.Extensions
                 return JsonConvert.DeserializeObject<T>(json);
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Deserialized Json To Object : {json} \n Caused By : ", e);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Kamanri.Extensions
                 return JsonConvert.DeserializeObject<T>(json);
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Deserialized Json To Object : {json} \n Caused By : ", e);
             }
         }
 
@@ -47,11 +47,15 @@ namespace Kamanri.Extensions
         /// <returns></returns>
         public static byte[] ToByteArray(this string str)
         {
+            try
+            {
+                byte[] originBytes = Encoding.UTF8.GetBytes(str);
+                return originBytes;
+            }catch(Exception e)
+            {
+                throw new Exception($"Failed To Deserialized String To ByteArray : {str} \n Caused By : ", e);
+            }
             
-            byte[] originBytes = Encoding.UTF8.GetBytes(str);
-            //byte[] sourceBytes = new byte[originBytes.Length + 1];
-            //originBytes.CopyTo(sourceBytes, 0);
-            return originBytes;
         }
     }
 }

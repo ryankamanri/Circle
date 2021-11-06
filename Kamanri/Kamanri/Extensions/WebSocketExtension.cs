@@ -34,19 +34,12 @@ namespace Kamanri.Extensions
                         new ArraySegment<byte>(buffer),
                         CancellationToken.None);
 
-                    //messages.Add(buffer.GetWebSocketMessage());
                     buffer.GetWebSocketMessages(messages);
                 }
                 catch (Exception e)
                 {
-                    await webSocket.SendAsync(
-                        new ArraySegment<byte>(e.ToString().ToByteArray()),
-                        WebSocketMessageType.Text,
-                        true,
-                        CancellationToken.None
-                    );
 
-                    throw e;
+                    throw new Exception($"Failed To Receive The Message Or Get WebSocketMessages From Messages, Buffer Bytes : \n {buffer.ShowArrayItems(0x30)} \n Caused By : ", e);
                 }
             } while (!result.EndOfMessage);
 
@@ -68,7 +61,7 @@ namespace Kamanri.Extensions
         /// <returns></returns>
         public static async Task SendMessageAsync(this WebSocket webSocket, IList<WebSocketMessage> sendMessages)
         {
-            byte[] sendBuffer;
+            byte[] sendBuffer = new byte[0];
             
             try
             {
@@ -97,7 +90,7 @@ namespace Kamanri.Extensions
 
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Send The Message, Buffer Bytes : \n {sendBuffer.ShowArrayItems()} \n Caused By : ", e);
             }
         }
 

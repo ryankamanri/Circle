@@ -19,7 +19,7 @@ namespace Kamanri.Extensions
                 return (T)obj.GetType().GetProperty(property).GetValue(obj);
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Get The Property {property} From {obj.ToString()} \n Caused By : ", e);
             }
             
         }
@@ -36,7 +36,7 @@ namespace Kamanri.Extensions
                 return JsonConvert.SerializeObject(obj);
             }catch(Exception e)
             {
-                throw e;
+                throw new Exception($"Failed To Serialized The Object {obj.ToString()} \n Caused By : ", e);
             }
             
         }

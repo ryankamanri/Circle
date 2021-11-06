@@ -22,8 +22,15 @@ namespace Kamanri.Self
 
         public static dynamic JsonToObject(string json)
         {
-            var jToken = JToken.Parse(json);
-            return JTokenToObject(jToken);
+            try
+            {
+                var jToken = JToken.Parse(json);
+                return JTokenToObject(jToken);
+            }catch(Exception e)
+            {
+                throw new InvalidCastException($"Failed To Convert The Json To Object : {json} \n Caused By : ", e);
+            }
+            
         }
 
         public static dynamic JTokenToObject(JToken jToken)

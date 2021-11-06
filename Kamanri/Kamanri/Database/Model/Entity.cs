@@ -88,7 +88,14 @@ namespace Kamanri.Database.Model
             IList<TEntity> entities = new List<TEntity>();
             while (msdr_mutex.Key.Read())
             {
-                entities.Add(GetEntityFromDataReader(msdr_mutex.Key));
+                try
+                {
+                    entities.Add(GetEntityFromDataReader(msdr_mutex.Key));
+                }catch(Exception e)
+                {
+                    throw new Exception("Failed To Get Entity From Data Reader \n Caused By : ", e);
+                }
+                
             }
             await msdr_mutex.Key.CloseAsync();
             msdr_mutex.Value.Signal();
@@ -105,8 +112,15 @@ namespace Kamanri.Database.Model
             IDictionary<TEntity,dynamic> entity_Relations = new Dictionary<TEntity,dynamic>();
             while (msdr_mutex.Key.Read())
             {
-                entity_Relations.Add(GetEntityFromDataReader(msdr_mutex.Key),
-                JsonConvert.DeserializeObject<ExpandoObject>((string)msdr_mutex.Key["relations"]));
+                try
+                {
+                    entity_Relations.Add(GetEntityFromDataReader(msdr_mutex.Key),
+                    JsonConvert.DeserializeObject<ExpandoObject>((string)msdr_mutex.Key["relations"]));
+                }catch(Exception e)
+                {
+                    throw new Exception($"Failed To Get Entity From Data Reader Or Deserialize The ExpandoObject msdr_mutex.Key['relations'] {(string)msdr_mutex.Key["relations"]} \n Caused By : ", e);
+                }
+                
             }
             await msdr_mutex.Key.CloseAsync();
             msdr_mutex.Value.Signal();
