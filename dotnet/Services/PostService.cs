@@ -33,7 +33,6 @@ namespace dotnet.Services
 
         public async Task<PostInfo> GetPostInfo(Post post)
         {
-            //return await _dbc.Select<PostInfo>(new PostInfo(post.ID));
             return await _api.Post<PostInfo>("/Post/GetPostInfo",new JsonObject()
             {
                 {"Post", post}

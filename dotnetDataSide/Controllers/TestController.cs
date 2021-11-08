@@ -26,7 +26,7 @@ namespace dotnetDataSide
         [Route("test")]
         public async Task<string> Test()
         {
-            var messages = await _dbc.SelectCustom<Message>(new Message(),$"SendUserID = 3");
+            var messages = await _dbc.SelectCustom<Message>($"SendUserID = 3");
             return messages.ToJson();
         }
 

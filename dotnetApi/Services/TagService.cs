@@ -48,7 +48,7 @@ namespace dotnetApi.Services
 
         private async Task InitTags()
         {
-            Tags = await _dbc.SelectAll<Tag>(new Tag());
+            Tags = await _dbc.SelectAll<Tag>();
         }
 
         
@@ -87,7 +87,7 @@ namespace dotnetApi.Services
         private async Task InitTagTree()
         {
             TagTree = new Dictionary<long, long>();
-            ID_IDList tagSon_tagParents = await _dbc.SelectAllRelations<Tag,Tag>(new Tag(),new Tag());
+            ID_IDList tagSon_tagParents = await _dbc.SelectAllRelations<Tag,Tag>();
             foreach(var tagSon_tagParent in tagSon_tagParents)
             {
                 TagTree.Add(tagSon_tagParent.ID,tagSon_tagParent.ID_2);

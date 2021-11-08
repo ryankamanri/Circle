@@ -233,9 +233,9 @@ namespace Kamanri.Database
         /// <param name="exampleInstance"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<IList<TEntity>> SelectAll<TEntity>(TEntity exampleInstance)
+        public async Task<IList<TEntity>> SelectAll<TEntity>()
         {
-            dynamic Te = exampleInstance;
+            dynamic Te = Construct.DefaultConstruct<TEntity>();
             string SQLStatement = $"select * from {Te.TableName}";
             IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement,command => Te.SetParameter(command)));
             if(result.Count == 0) return default;
@@ -250,18 +250,24 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<IList<TEntity>> SelectCustom<TEntity>(TEntity exampleInstance,string selectString)
+        public async Task<IList<TEntity>> SelectCustom<TEntity>(string selectString)
         {
-            dynamic Te = exampleInstance;
+            dynamic Te = Construct.DefaultConstruct<TEntity>();
             string SQLStatement = $"select * from {Te.TableName} where {selectString}";
             IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement, command => Te.SetParameter(command)));
             if(result.Count == 0) return new List<TEntity>();
             return result;
         }
 
-        public async Task<ID_IDList> SelectAllRelations<TKeyEntity,TValueEntity>(TKeyEntity keyExampleInstance,TValueEntity valueExampleInstance)
+        /// <summary>
+        /// 选择两个实体类间的所有关系
+        /// </summary>
+        /// <typeparam name="TKeyEntity"></typeparam>
+        /// <typeparam name="TValueEntity"></typeparam>
+        /// <returns></returns>
+        public async Task<ID_IDList> SelectAllRelations<TKeyEntity,TValueEntity>()
         {
-            dynamic Tke = keyExampleInstance,Tve = valueExampleInstance;
+            dynamic Tke = Construct.DefaultConstruct<TKeyEntity>(),Tve = Construct.DefaultConstruct<TValueEntity>();
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string SQLStatement = $"select * from {tableName}";
 
@@ -460,9 +466,9 @@ namespace Kamanri.Database
         /// <typeparam name="TInputEntity">输入实体</typeparam>
         /// <typeparam name="TOutputEntity">输出实体</typeparam>
         /// <returns></returns>
-        public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
+        public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(TInputEntity input, ID_IDList.OutPutType type)
         {
-            dynamic i = input, o = outputExampleInstance;
+            dynamic i = input, o = Construct.DefaultConstruct<TOutputEntity>();
             string iTableName = i.TableName,relationTableName = default,relationWay = default,connectedTable = default,SQLStatement = default,iTempTableName = default,oTempTableName = default;
 
             if(type == ID_IDList.OutPutType.Key) relationTableName = $"{o.TableName}_{i.TableName}";
@@ -507,9 +513,9 @@ namespace Kamanri.Database
         /// <typeparam name="TInputEntity"></typeparam>
         /// <typeparam name="TOutputEntity"></typeparam>
         /// <returns></returns>
-        public async Task<IList<TOutputEntity>> MappingSelect<TInputEntity,TOutputEntity>(TInputEntity input,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<IList<TOutputEntity>> MappingSelect<TInputEntity,TOutputEntity>(TInputEntity input, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
-            IDictionary<TOutputEntity,dynamic> mappingResults = await Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);
+            IDictionary<TOutputEntity,dynamic> mappingResults = await Mapping<TInputEntity,TOutputEntity>(input, type);
             IList<TOutputEntity> mappingResultsSelect = new List<TOutputEntity>();
             bool selectionFlag = default, flag = default,itemFlag = default;
             ID_ID key_value = new ID_ID();
@@ -576,7 +582,7 @@ namespace Kamanri.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>> MappingUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>> MappingUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs, ID_IDList.OutPutType type)
         {
             //以某些标签能够匹配到的其他用户为例
             Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>> dictionary = new Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>();
@@ -584,7 +590,7 @@ namespace Kamanri.Database
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IDictionary<TOutputEntity,dynamic> targets = await Mapping<TInputEntity,TOutputEntity>(input,outputExampleInstance,type);//找到拥有该标签的用户
+                IDictionary<TOutputEntity,dynamic> targets = await Mapping<TInputEntity,TOutputEntity>(input, type);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target.Key);
@@ -607,7 +613,7 @@ namespace Kamanri.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<Key_ListValue_Pairs<TOutputEntity,TInputEntity>> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs,TOutputEntity outputExampleInstance,ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,TInputEntity>> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
             //以某些标签能够匹配到的其他用户为例
             Key_ListValue_Pairs<TOutputEntity,TInputEntity> dictionary = new Key_ListValue_Pairs<TOutputEntity,TInputEntity>();
@@ -617,7 +623,7 @@ namespace Kamanri.Database
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IList<TOutputEntity> targets = await MappingSelect<TInputEntity,TOutputEntity>(input,outputExampleInstance,type,SetSelections);//找到拥有该标签的用户
+                IList<TOutputEntity> targets = await MappingSelect<TInputEntity,TOutputEntity>(input, type,SetSelections);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target);

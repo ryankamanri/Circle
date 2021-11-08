@@ -41,7 +41,7 @@ namespace dotnetApi.Services
 
         private async Task InitUsers()
         {
-            Users = await _dbc.SelectAll<User>(new User());
+            Users = await _dbc.SelectAll<User>();
         }
 
         #endregion
@@ -78,12 +78,12 @@ namespace dotnetApi.Services
         /// <returns></returns>
         public async Task<IList<Tag>> SelectTag(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,Tag>(user,new Tag(),ID_IDList.OutPutType.Value,SetSelections);
+            return await _dbc.MappingSelect<User,Tag>(user ,ID_IDList.OutPutType.Value,SetSelections);
         }
 
         public async Task<IList<Post>> SelectPost(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,Post>(user,new Post(),ID_IDList.OutPutType.Value,SetSelections);
+            return await _dbc.MappingSelect<User,Post>(user ,ID_IDList.OutPutType.Value,SetSelections);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace dotnetApi.Services
         /// <returns></returns>
         public async Task<IList<User>> SelectUserInitiative(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,User>(user,new User(),ID_IDList.OutPutType.Value,SetSelections);
+            return await _dbc.MappingSelect<User,User>(user, ID_IDList.OutPutType.Value,SetSelections);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace dotnetApi.Services
         /// <returns></returns>
         public async Task<IList<User>> SelectUserPassive(User user,Action<dynamic> SetSelections)
         {
-            return await _dbc.MappingSelect<User,User>(user,new User(),ID_IDList.OutPutType.Key,SetSelections);
+            return await _dbc.MappingSelect<User,User>(user, ID_IDList.OutPutType.Key,SetSelections);
         }
 
         #endregion
@@ -116,8 +116,8 @@ namespace dotnetApi.Services
         
         public async Task<ICollection<Post>> MappingPostsByTag(User user,Action<dynamic> SetUserTagRelation)
         {
-            IList<Tag> interestedTags = await _dbc.MappingSelect<User,Tag>(user,new Tag(),ID_IDList.OutPutType.Value,SetUserTagRelation);
-            Key_ListValue_Pairs<Post, KeyValuePair<Tag, dynamic>> interestedPosts = await _dbc.MappingUnionStatistics<Tag,Post>(interestedTags,new Post(),ID_IDList.OutPutType.Key);
+            IList<Tag> interestedTags = await _dbc.MappingSelect<User,Tag>(user, ID_IDList.OutPutType.Value,SetUserTagRelation);
+            Key_ListValue_Pairs<Post, KeyValuePair<Tag, dynamic>> interestedPosts = await _dbc.MappingUnionStatistics<Tag,Post>(interestedTags, ID_IDList.OutPutType.Key);
             return interestedPosts.Keys;
         }
 

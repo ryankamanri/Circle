@@ -29,7 +29,7 @@ namespace dotnetApi.Services
 
         public async Task<IList<Post>> GetAllPost()
         {
-            return await _dbc.SelectAll<Post>(new Post());
+            return await _dbc.SelectAll<Post>();
         }
 
         public async Task<PostInfo> GetPostInfo(Post post)
@@ -44,7 +44,7 @@ namespace dotnetApi.Services
         
         public async Task<UserInfo> SelectAuthorInfo(Post post)
         { 
-            ICollection<User> authorCollection = (await _dbc.Mapping<Post,User>(post,new User(),ID_IDList.OutPutType.Key)).Keys;
+            ICollection<User> authorCollection = (await _dbc.Mapping<Post,User>(post, ID_IDList.OutPutType.Key)).Keys;
             IEnumerator<User> userEnumerator = authorCollection.GetEnumerator();
             if(!userEnumerator.MoveNext()) return new UserInfo();
             User user = userEnumerator.Current;
@@ -54,7 +54,7 @@ namespace dotnetApi.Services
 
         public async Task<ICollection<Tag>> SelectTags(Post post)
         {
-            return (await _dbc.Mapping<Post,Tag>(post,new Tag(),ID_IDList.OutPutType.Value)).Keys;
+            return (await _dbc.Mapping<Post,Tag>(post, ID_IDList.OutPutType.Value)).Keys;
         }
 
         #endregion

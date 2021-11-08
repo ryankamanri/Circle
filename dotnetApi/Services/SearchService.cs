@@ -22,7 +22,7 @@ namespace dotnetApi.Services
         {
             if(searchString == "" || searchString == default) return new List<Post>();
             searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
-            return await _dbc.SelectCustom<Post>(new Post(),
+            return await _dbc.SelectCustom<Post>(
             $"Title like '%{searchString}%' or Summary like '%{searchString}%' or Focus like '%{searchString}%'");
         }
 
@@ -30,14 +30,14 @@ namespace dotnetApi.Services
         {
             if(searchString == "" || searchString == default) return new List<Tag>();
             searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
-            return await _dbc.SelectCustom<Tag>(new Tag(),$"tag like '%{searchString}%'");
+            return await _dbc.SelectCustom<Tag>($"tag like '%{searchString}%'");
         }
 
         public async Task<IList<UserInfo>> SearchUserInfo(string searchString)
         {
             if(searchString == "" || searchString == default) return new List<UserInfo>();
             searchString = searchString.Replace("\'","\\\'").Replace(" ","%");
-            return await _dbc.SelectCustom<UserInfo>(new UserInfo(),
+            return await _dbc.SelectCustom<UserInfo>(
             $"NickName like '%{searchString}%' or RealName like '%{searchString}%' or University like '%{searchString}%' or School like '%{searchString}%' or Speciality like '%{searchString}%' or Introduction like '%{searchString}%'");
         }
 
@@ -53,7 +53,7 @@ namespace dotnetApi.Services
             var userInfosBase = await SearchUserInfo(searchString);
             
             var tagsGroupByUser = await _dbc.MappingSelectUnionStatistics<Tag,User>(
-                await SearchTag(searchString),new User(),ID_IDList.OutPutType.Key,
+                await SearchTag(searchString), ID_IDList.OutPutType.Key,
                 selection => selection.Type = new List<string>(){"Self"});
 
             Key_ListValue_Pairs<UserInfo,Tag> tagsGroupByUserInfo  = new Key_ListValue_Pairs<UserInfo,Tag>();
@@ -84,7 +84,7 @@ namespace dotnetApi.Services
             IList<Post> postsBase = await SearchPost(searchString);
             
             var tagRelationsGroupByPost = await _dbc.MappingUnionStatistics<Tag,Post>(
-                await SearchTag(searchString),new Post(),ID_IDList.OutPutType.Key);
+                await SearchTag(searchString) ,ID_IDList.OutPutType.Key);
 
             var postsFindByTag = tagRelationsGroupByPost.Keys;
 
