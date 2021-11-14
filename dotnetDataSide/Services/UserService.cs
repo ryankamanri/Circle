@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using dotnetDataSide.Model;
+using dotnetDataSide.Models;
 using Kamanri.Extensions;
 namespace dotnetDataSide.Services
 {

@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Linq;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
-using dotnetApi.Model;
-using Kamanri.Database.Model.Relation;
+using dotnetApi.Models;
+using Kamanri.Database.Models.Relation;
 using Kamanri.Database;
 
 namespace dotnetApi.Services

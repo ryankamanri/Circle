@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Cookie;

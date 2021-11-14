@@ -62,7 +62,7 @@ function MyWebSocket(url)
     this.websocket.onopen = ev => 
     {
         console.log("The WebSocket Connection Opened");
-        SendMessages(this.websocket, [new WebSocketMessage(WebSocketMessageEvent.OnClientConnect , 0, "Hello")]);
+        SendMessages(this.websocket, [new WebSocketMessage(WebSocketMessageEvent.OnClientConnect , WebSocketMessageType.Text, "Hello")]);
     }
 
     this.websocket.onclose = ev =>
@@ -84,7 +84,7 @@ async function OnMessageHandler(ev, websocket, eventHandlers)
     var isEffective, eventCode, messageType, length, message, wsMessage;
     do
     {
-        isEffective = new DataView(bytes, byteOffSet, 1).getUint8(0);
+        isEffective = new DataView(bytes, byteOffSet, UINT8_LENGTH).getUint8(0);
         if(isEffective != IS_EFFECTIVE_CODE || bytes.length < HEADER_LENGTH)
         {
             console.error("The Stream Of ByteArray Is Not A Effective Message");
@@ -96,6 +96,7 @@ async function OnMessageHandler(ev, websocket, eventHandlers)
         if(messageType == WebSocketMessageType.Text)
         {
             message = new TextDecoder("utf-8").decode(message);
+            // length = message.length;
         }
         
         wsMessage = new WebSocketMessage({Code : eventCode}, messageType, message);
@@ -103,9 +104,15 @@ async function OnMessageHandler(ev, websocket, eventHandlers)
         byteOffSet += (length + HEADER_LENGTH);
     }while(byteOffSet < bytes.byteLength);
 
-    var sendMessage = await eventHandlers[eventCode](wsMessages);
+    try {
+        var sendMessage = await eventHandlers[eventCode](wsMessages);
+        await SendMessages(websocket, sendMessage);
+        
+    } catch (error) {
+        console.error(error)
+    }
 
-    await SendMessages(websocket, sendMessage);
+    
 
 
 
@@ -127,7 +134,7 @@ async function OnMessageHandler(ev, websocket, eventHandlers)
 function SetAMessage(bytes, startIndex, wsMessage) 
 {
 
-    new DataView(bytes, startIndex + IS_EFFECTIVE_LOCATION, UINT8_LENGTH).setUint8(0, 200);
+    new DataView(bytes, startIndex + IS_EFFECTIVE_LOCATION, UINT8_LENGTH).setUint8(0, IS_EFFECTIVE_CODE);
     new DataView(bytes, startIndex + MESSAGE_EVENT_CODE_LOCATION, UINT32_LENGTH).setInt32(0, wsMessage.eventCode.Code, true);
     new DataView(bytes, startIndex + MESSAGE_TYPE_LOCATION, UINT8_LENGTH).setUint8(0, wsMessage.MessageType);
     new DataView(bytes, startIndex + LENGTH_LOCATION, UINT32_LENGTH).setInt32(0, wsMessage.Length, true);

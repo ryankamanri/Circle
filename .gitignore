@@ -1,5 +1,8 @@
 .vs/
 .vscode/
+.idea/
+
+dotnet_ubuntu.sln.DotSettings.user
 
 dotnet/bin/
 dotnet/obj/
@@ -10,6 +13,7 @@ dotnetApi/bin/
 dotnetApi/obj/
 dotnetApi/appsettings.Development.json
 dotnetApi/appsettings.json
+dotnetApi/dotnetApi.csproj.user
 
 dotnetDataSide/bin/
 dotnetDataSide/obj/
@@ -20,6 +24,7 @@ dotnetPrivateChatApi/bin/
 dotnetPrivateChatApi/obj/
 dotnetPrivateChatApi/appsettings.Development.json
 dotnetPrivateChatApi/appsettings.json
+dotnetPrivateChatApi/dotnetPrivateChatApi.csproj.user
 
 Kamanri/bin/
 Kamanri/obj/

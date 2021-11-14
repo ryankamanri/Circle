@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Services.Cookie;
 using Kamanri.Http;
 

@@ -1,4 +1,4 @@
-@using dotnet.Model
+@using dotnet.Models
 @model Post
 @inject User _user
 @inject dotnet.Services.PostService _postService
@@ -7,7 +7,7 @@
     UserInfo authorInfo = await _postService.SelectAuthorInfo(Model);
     ICollection<Tag> tags = await _postService.SelectTags(Model);
     
-    bool isFocus = await _userService.IsUserRelationExist(_user, new dotnet.Model.User(authorInfo.ID), "Type","Focus");
+    bool isFocus = await _userService.IsUserRelationExist(_user, new dotnet.Models.User(authorInfo.ID), "Type","Focus");
 }
 
 <div class="feed-item-box clearfix col-md-12">

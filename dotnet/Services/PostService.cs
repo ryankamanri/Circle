@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Services;
 using Kamanri.Http;
 

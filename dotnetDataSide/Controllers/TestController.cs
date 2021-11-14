@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Kamanri.Extensions;
 using Kamanri.Database;
 using dotnetDataSide.Services;
-using dotnetDataSide.Model;
+using dotnetDataSide.Models;
 namespace dotnetDataSide
 {
     [Controller]

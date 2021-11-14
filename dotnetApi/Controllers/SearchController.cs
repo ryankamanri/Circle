@@ -2,7 +2,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnetApi.Model;
+using Kamanri.Extensions;
+using dotnetApi.Models;
 using dotnetApi.Services;
 
 namespace dotnetApi.Controller
@@ -19,16 +20,16 @@ namespace dotnetApi.Controller
 
         [HttpGet]
         [Route("SearchUserInfoAndTags")]
-        public async Task<IActionResult> SearchUserInfoAndTags(string searchString)
+        public async Task<string> SearchUserInfoAndTags(string searchString)
         {
-            return new JsonResult(await _searchService.SearchUserInfoAndTags(searchString));
+            return (await _searchService.SearchUserInfoAndTags(searchString)).ToJson();
         }
 
         [HttpGet]
         [Route("SearchPosts")]
-        public async Task<IActionResult> SearchPosts(string searchString)
+        public async Task<string> SearchPosts(string searchString)
         {
-            return new JsonResult(await _searchService.SearchPosts(searchString));
+            return (await _searchService.SearchPosts(searchString)).ToJson();
         }
 
 

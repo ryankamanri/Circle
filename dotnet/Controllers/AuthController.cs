@@ -5,7 +5,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Authentication;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Services;
 using dotnet.Services.Cookie;
 using Kamanri.Http;

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnetApi.Model;
+using dotnetApi.Models;
 using dotnetApi.Services;
 using Kamanri.Extensions;
 
@@ -21,35 +21,35 @@ namespace dotnetApi.Controller
 
         [HttpGet]
         [Route("TagIndex")]
-        public IActionResult TagIndex(string indexString)
+        public string TagIndex(string indexString)
         {
-            if(!_tagService.TagIndex.ContainsKey(indexString)) return new JsonResult(new List<Tag>());
-            return new JsonResult(_tagService.TagIndex[indexString]);
+            if(!_tagService.TagIndex.ContainsKey(indexString)) return (new List<Tag>()).ToJson();
+            return (_tagService.TagIndex[indexString]).ToJson();
         }
 
         [HttpPost]
         [Route("FindChildTag")]
-        public IActionResult FindChildTag()
+        public string FindChildTag()
         {
             Tag parentTag =  HttpContext.Request.Form["ParentTag"].ToObject<Tag>();
-            return new JsonResult(_tagService.FindChildTag(parentTag));
+            return (_tagService.FindChildTag(parentTag)).ToJson();
         }
 
         [HttpPost]
         [Route("FindParentTag")]
-        public IActionResult FindParentTag()
+        public string FindParentTag()
         {
             Tag childTag = HttpContext.Request.Form["ChildTag"].ToObject<Tag>();
-            return new JsonResult(_tagService.FindParentTag(childTag));
+            return (_tagService.FindParentTag(childTag)).ToJson();
         }
 
         [HttpPost]
         [Route("CalculateSimilarity")]
-        public IActionResult CalculateSimilarity()
+        public string CalculateSimilarity()
         {
             Tag tag_1 = HttpContext.Request.Form["tag_1"].ToObject<Tag>();
             Tag tag_2 = HttpContext.Request.Form["tag_2"].ToObject<Tag>();
-            return new JsonResult(_tagService.CalculateSimilarity(tag_1,tag_2));
+            return (_tagService.CalculateSimilarity(tag_1,tag_2)).ToJson();
         }
     }
 }

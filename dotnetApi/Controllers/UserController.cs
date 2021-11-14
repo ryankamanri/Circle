@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using dotnetApi.Model;
+using dotnetApi.Models;
 using dotnetApi.Services;
 using Kamanri.Self;
 using Kamanri.Extensions;
@@ -28,18 +28,18 @@ namespace dotnetApi.Controller
             
             [HttpPost]
             [Route("GetUser")]
-            public IActionResult GetUser()
+            public string GetUser()
             {
                 string account = HttpContext.Request.Form["Account"].ToObject<string>();
-                return new JsonResult(_userService.GetUser(account));
+                return (_userService.GetUser(account)).ToJson();
             }
 
             [HttpPost]
             [Route("GetUserInfo")]
-            public async Task<IActionResult> GetUserInfo()
+            public async Task<string> GetUserInfo()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
-                return new JsonResult(await _userService.GetUserInfo(user));
+                return (await _userService.GetUserInfo(user)).ToJson();
             }
 
         #endregion
@@ -48,50 +48,50 @@ namespace dotnetApi.Controller
             
             [HttpPost]
             [Route("SelectTag")]
-            public async Task<IActionResult> SelectTag()
+            public async Task<string> SelectTag()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.SelectTag(user,selections => 
+                return (await _userService.SelectTag(user,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
 
             [HttpPost]
             [Route("SelectPost")]
-            public async Task<IActionResult> SelectPost()
+            public async Task<string> SelectPost()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.SelectPost(user,selections => 
+                return (await _userService.SelectPost(user,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
 
             [HttpPost]
             [Route("SelectUserInitiative")]
-            public async Task<IActionResult> SelectUserInitiative()
+            public async Task<string> SelectUserInitiative()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.SelectUserInitiative(user,selections => 
+                return (await _userService.SelectUserInitiative(user,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
 
             [HttpPost]
             [Route("SelectUserPassive")]
-            public async Task<IActionResult> SelectUserPassive()
+            public async Task<string> SelectUserPassive()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.SelectUserPassive(user,selections => 
+                return (await _userService.SelectUserPassive(user,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
             
         #endregion
@@ -101,14 +101,14 @@ namespace dotnetApi.Controller
             
             [HttpPost]
             [Route("MappingPostsByTag")]
-            public async Task<IActionResult> MappingPostsByTag()
+            public async Task<string> MappingPostsByTag()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.MappingPostsByTag(user,selections => 
+                return (await _userService.MappingPostsByTag(user,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
         #endregion
 
@@ -116,10 +116,10 @@ namespace dotnetApi.Controller
             
             [HttpPost]
             [Route("InsertUser")]
-            public async Task<IActionResult> InsertUser()
+            public async Task<string> InsertUser()
             {
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
-                return new JsonResult(await _userService.InsertUser(user));
+                return (await _userService.InsertUser(user)).ToJson();
             }
         #endregion
 
@@ -127,13 +127,13 @@ namespace dotnetApi.Controller
 
             [HttpPost]
             [Route("IsUserRelationExist")]
-            public async Task<IActionResult> IsUserRelationExist()
+            public async Task<string> IsUserRelationExist()
             {
                 User keyUser = HttpContext.Request.Form["KeyUser"].ToObject<User>();
                 User valueUser = HttpContext.Request.Form["ValueUser"].ToObject<User>();
                 string relationName = HttpContext.Request.Form["RelationName"].ToObject<string>();
                 string relationValue = HttpContext.Request.Form["RelationValue"].ToObject<string>();
-                return new JsonResult(await _userService.IsUserRelationExist(keyUser,valueUser,relationName,relationValue));
+                return (await _userService.IsUserRelationExist(keyUser,valueUser,relationName,relationValue)).ToJson();
             }
             
         #endregion
@@ -147,7 +147,7 @@ namespace dotnetApi.Controller
         /// <returns></returns>
         [HttpPost]
         [Route("AppendRelation")]
-        public async Task<IActionResult> AppendRelation()
+        public async Task<string> AppendRelation()
         {
             User user = HttpContext.Request.Form["User"].ToObject<User>();
             string entityType = HttpContext.Request.Form["EntityType"].ToObject<string>();
@@ -155,10 +155,10 @@ namespace dotnetApi.Controller
             string relationName = HttpContext.Request.Form["RelationName"].ToObject<string>();
             string relation = HttpContext.Request.Form["Relation"].ToObject<string>();
 
-            if(!await _userService.AppendRelation(user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult(false);
+            if(!await _userService.AppendRelation(user,entityType,Convert.ToInt64(ID),relationName,relation)) return (false).ToJson();
             
 
-            return new JsonResult(true);
+            return (true).ToJson();
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace dotnetApi.Controller
         /// <returns></returns>
         [HttpPost]
         [Route("RemoveRelation")]
-        public async Task<IActionResult> RemoveRelation()
+        public async Task<string> RemoveRelation()
         {
             User user = HttpContext.Request.Form["User"].ToObject<User>();
             string entityType = HttpContext.Request.Form["EntityType"].ToObject<string>();
@@ -175,10 +175,10 @@ namespace dotnetApi.Controller
             string relationName = HttpContext.Request.Form["RelationName"].ToObject<string>();
             string relation = HttpContext.Request.Form["Relation"].ToObject<string>();
 
-            if(!await _userService.RemoveRelation(user,entityType,Convert.ToInt64(ID),relationName,relation)) return new JsonResult(false);
+            if(!await _userService.RemoveRelation(user,entityType,Convert.ToInt64(ID),relationName,relation)) return (false).ToJson();
             
 
-            return new JsonResult(true);
+            return (true).ToJson();
         }
 
             
@@ -191,30 +191,30 @@ namespace dotnetApi.Controller
 
             [HttpPost]
             [Route("CarculateSimilarity")]
-            public async Task<IActionResult> CarculateSimilarity()
+            public async Task<string> CarculateSimilarity()
             {
                 User user_1 = HttpContext.Request.Form["User_1"].ToObject<User>();
                 User user_2 = HttpContext.Request.Form["User_2"].ToObject<User>();
                 
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.CarculateSimilarity(user_1,user_2,selections => 
+                return (await _userService.CarculateSimilarity(user_1,user_2,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
 
             [HttpPost]
             [Route("CarculateSimilarityFix")]
-            public async Task<IActionResult> CarculateSimilarityFix()
+            public async Task<string> CarculateSimilarityFix()
             {
                 User user_1 = HttpContext.Request.Form["User_1"].ToObject<User>();
                 User user_2 = HttpContext.Request.Form["User_2"].ToObject<User>();
                 
                 var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string,object>>();
-                return new JsonResult(await _userService.CarculateSimilarityFix(user_1,user_2,selections => 
+                return (await _userService.CarculateSimilarityFix(user_1,user_2,selections => 
                 {
                     JsonDynamic.FillSelections(options,selections);
-                }));
+                })).ToJson();
             }
         #endregion
     }

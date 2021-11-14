@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using dotnet.Model;
+using dotnet.Models;
 using Kamanri.Extensions;
 using Kamanri.Http;
 using Kamanri.Self;

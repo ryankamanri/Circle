@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using dotnetDataSide.Model;
+using dotnetDataSide.Models;
 using Kamanri.Database;
 
 namespace dotnetDataSide.Services
@@ -37,7 +37,7 @@ namespace dotnetDataSide.Services
         public async Task<bool> AppendMessage(int eventCode, Message message)
         {
             messages.Add(message);
-            await _dbc.Insert<Message>(message);
+            await _dbc.Insert(message);
             _logger.LogInformation(eventCode, $"Append A Message, Which Type : {message.ContentType}");
             return true;
         }

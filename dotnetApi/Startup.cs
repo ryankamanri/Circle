@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Logging;
-using dotnetApi.Model;
+using dotnetApi.Models;
 using dotnetApi.Services;
 using Kamanri.Database;
 

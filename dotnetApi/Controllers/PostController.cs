@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnetApi.Model;
+using dotnetApi.Models;
 using dotnetApi.Services;
 using Kamanri.Extensions;
 
@@ -25,18 +25,18 @@ namespace dotnetApi.Controller
         
         [HttpGet]
         [Route("GetAllPost")]
-        public async Task<IActionResult> GetAllPost()
+        public async Task<string> GetAllPost()
         {
-            return new JsonResult(await _postService.GetAllPost());
+            return (await _postService.GetAllPost()).ToJson();
         }
 
 
         [HttpPost]
         [Route("GetPostInfo")]
-        public async Task<IActionResult> GetPostInfo()
+        public async Task<string> GetPostInfo()
         {
             Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
-            return new JsonResult(await _postService.GetPostInfo(post));
+            return (await _postService.GetPostInfo(post)).ToJson();
         }
             
         #endregion
@@ -45,24 +45,24 @@ namespace dotnetApi.Controller
 
         [HttpPost]
         [Route("SelectAuthorInfo")]
-        public async Task<IActionResult> SelectAuthorInfo()
+        public async Task<string> SelectAuthorInfo()
         {
             Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
-            return new JsonResult(await _postService.SelectAuthorInfo(post));
+            return (await _postService.SelectAuthorInfo(post)).ToJson();
         }
         [HttpPost]
         [Route("SelectTags")]
-        public async Task<IActionResult> SelectTags()
+        public async Task<string> SelectTags()
         {
             Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
-            return new JsonResult(await _postService.SelectTags(post));
+            return (await _postService.SelectTags(post)).ToJson();
         }
 
         #endregion
 
         [HttpPost]
         [Route("InsertPost")]
-        public async Task<IActionResult> InsertPost()
+        public async Task<string> InsertPost()
         {
             StringValues Author = new StringValues(), Title = new StringValues(), Focus = new StringValues(),Summary = new StringValues(), Content = new StringValues(),TagIDs = new StringValues();
 
@@ -72,16 +72,16 @@ namespace dotnetApi.Controller
             !HttpContext.Request.Form.TryGetValue("Summary", out Summary) ||
             !HttpContext.Request.Form.TryGetValue("Content", out Content) ||
             !HttpContext.Request.Form.TryGetValue("TagIDs", out TagIDs)) 
-            return new JsonResult(false);
+            return (false).ToJson();
 
 
-            return new JsonResult(await _postService.InsertPost(
+            return (await _postService.InsertPost(
                 Author.ToObject<User>(),
                 Title.ToObject<string>(),
                 Focus.ToObject<string>(), 
                 Summary.ToObject<string>(),
                 Content.ToObject<string>(),
-                TagIDs.ToObject<IList<long>>()));
+                TagIDs.ToObject<IList<long>>())).ToJson();
         }
     }
 }

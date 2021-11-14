@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.6.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet", "dotnet\dotnet.csproj", "{984A1C20-5945-4E09-A286-F0CE540F9706}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetDataSide", "dotnetDataSide\dotnetDataSide.csproj", "{0AEE4A6B-16AA-4E63-B951-42B984E38D7C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetPrivateChatApi", "dotnetPrivateChatApi\dotnetPrivateChatApi.csproj", "{AF23E4EC-35BC-41DB-A027-E4678DF35BDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kamanri", "Kamanri\Kamanri.csproj", "{6A89C08B-45C7-4C32-B16E-AF78457A305C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,18 @@ Global
 		{AF23E4EC-35BC-41DB-A027-E4678DF35BDB}.Release|x64.Build.0 = Release|Any CPU
 		{AF23E4EC-35BC-41DB-A027-E4678DF35BDB}.Release|x86.ActiveCfg = Release|Any CPU
 		{AF23E4EC-35BC-41DB-A027-E4678DF35BDB}.Release|x86.Build.0 = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|x64.Build.0 = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Debug|x86.Build.0 = Debug|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x64.ActiveCfg = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x64.Build.0 = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x86.ActiveCfg = Release|Any CPU
+		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

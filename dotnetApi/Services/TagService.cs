@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using dotnetApi.Model;
-using Kamanri.Database.Model.Relation;
+using dotnetApi.Models;
+using Kamanri.Database.Models.Relation;
 using Kamanri.Database;
 
 namespace dotnetApi.Services

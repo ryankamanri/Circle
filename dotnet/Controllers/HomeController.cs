@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Extensions;

@@ -3,7 +3,7 @@ using System.Net.WebSockets;
 using System.Collections.Generic;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
-using dotnetDataSide.Model;
+using dotnetDataSide.Models;
 
 namespace dotnetDataSide.Services.Extensions
 {

@@ -9,9 +9,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Kamanri.Extensions;
 using Kamanri.Database;
-using Kamanri.Database.Model.Relation;
+using Kamanri.Database.Models.Relation;
 using Kamanri.WebSockets.Model;
 using Kamanri.Self;
+using dotnetPrivateChatApi.Models;
 namespace dotnetPrivateChatApi.Controllers
 {
     [Controller]
@@ -39,25 +40,10 @@ namespace dotnetPrivateChatApi.Controllers
         [Route("jsontest")]
         public string Test()
         {
-            
-            var msgs = new Dictionary<string, object>()
-            {
-                {"key1", 1},
-                {"key2", new ID_IDList()
-                {
-                    new ID_ID(1, 2, "")
-                }}
-            };
-
-
-            var jstr = JsonConvert.SerializeObject(msgs);
-
-            //input jstr
-            var jToken = JToken.Parse(jstr);
-
-            dynamic obj = JsonDynamic.JTokenToObject(jToken);
-
-            return jToken["key2"][0]["ID"].ToString();
+            Tag tag = new Tag(1, "hahaha");
+            //return new JsonResult(JsonConvert.SerializeObject(tag));
+            //return new JsonResult(tag);
+            return tag.ToJson();
         }
         [Route("wsmtest")]
         public string WSMTest()

@@ -47,7 +47,7 @@ namespace dotnetPrivateChatApi.Controllers
         [Route("sendmsg")]
         public async Task SendMessage()
         {
-            
+            await Task.CompletedTask;
         }
     }
 }

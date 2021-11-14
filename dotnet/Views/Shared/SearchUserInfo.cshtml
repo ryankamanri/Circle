@@ -1,5 +1,5 @@
-@using dotnet.Model
-@model KeyValuePair<UserInfo,List<Tag>>
+@using dotnet.Models
+@model KeyValuePair<UserInfo,IList<Tag>>
 @inject User _user
 @inject dotnet.Services.UserService _userService
 @{
@@ -22,7 +22,7 @@
 
             @foreach (var showTag in showTags)
             {
-                if(count >= 4) break;
+                if(count >= 4){ break;}
                 <div class="tagNode">@await Html.PartialAsync("Tag",showTag)</div>
                 count++;
             }

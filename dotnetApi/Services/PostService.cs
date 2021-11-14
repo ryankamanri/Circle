@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using dotnetApi.Model;
+using dotnetApi.Models;
 using dotnetApi.Services;
 using Kamanri.Database;
-using Kamanri.Database.Model.Relation;
+using Kamanri.Database.Models.Relation;
 
 namespace dotnetApi.Services
 {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using dotnet.Model;
+using dotnet.Models;
 using dotnet.Services;
 using dotnet.Services.Extensions;
 using Kamanri.Http;

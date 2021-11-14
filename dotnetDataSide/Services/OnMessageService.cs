@@ -8,7 +8,7 @@ using Kamanri.WebSockets;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
 using Kamanri.Database;
-using dotnetDataSide.Model;
+using dotnetDataSide.Models;
 using dotnetDataSide.Services.Extensions;
 
 namespace dotnetDataSide.Services
@@ -96,7 +96,7 @@ namespace dotnetDataSide.Services
                 result.AddRange(tempMessage.ToWebSocketMessageList(WebSocketMessageEvent.OnClientConnect));
             }
 
-            return result;
+            return await Task.Run<IList<WebSocketMessage>>(() => result);
             
         }
 
@@ -130,15 +130,15 @@ namespace dotnetDataSide.Services
         }
 
         
-        public Task<IList<WebSocketMessage>> OnDataSideConnect(WebSocket webSocket, IList<WebSocketMessage> messages)
+        public async Task<IList<WebSocketMessage>> OnDataSideConnect(WebSocket webSocket, IList<WebSocketMessage> messages)
         {
             _logger.LogInformation(messages[0].MessageEvent.Code, "A Connection Request");
-            return Task.Run<IList<WebSocketMessage>>(() => messages);
+            return await Task.Run<IList<WebSocketMessage>>(() => messages);
         }
 
-        public Task<IList<WebSocketMessage>> OnDataSideDisconnect(WebSocket webSocket, IList<WebSocketMessage> messages)
+        public async Task<IList<WebSocketMessage>> OnDataSideDisconnect(WebSocket webSocket, IList<WebSocketMessage> messages)
         {
-            return Task.Run<IList<WebSocketMessage>>(() => messages);
+            return await Task.Run<IList<WebSocketMessage>>(() => messages);
         }
     }
 }

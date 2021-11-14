@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using dotnet.Model;
+using dotnet.Models;
 using Kamanri.Http;
 
 namespace dotnet.Services

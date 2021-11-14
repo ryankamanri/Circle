@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using Kamanri.Http;
-using Kamanri.Database.Model.Relation;
-using dotnet.Model;
+using Kamanri.Database.Models.Relation;
+using dotnet.Models;
 namespace dotnet.Services
 {
     public class SearchService

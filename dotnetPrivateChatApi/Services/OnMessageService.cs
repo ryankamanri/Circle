@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Kamanri.WebSockets;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
-using dotnetPrivateChatApi.Model;
+using dotnetPrivateChatApi.Models;
 using dotnetPrivateChatApi.Services.Extensions;
 namespace dotnetPrivateChatApi.Services
 {
@@ -124,10 +124,10 @@ namespace dotnetPrivateChatApi.Services
             {
                 new WebSocketMessage(WebSocketMessageEvent.OnServerConnect, 
                 WebSocketMessageType.Text, 
-                "Hello Client!"),
+                "Hello Client!你好客户端!"),
                 new WebSocketMessage(WebSocketMessageEvent.OnServerConnect, 
                 WebSocketMessageType.Text, 
-                "I Am Server!")
+                "I Am Server!我是服务端!")
             });
         }
 
