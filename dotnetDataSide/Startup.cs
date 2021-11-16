@@ -15,6 +15,7 @@ using dotnetDataSide.Services;
 using Kamanri.Extensions;
 using Kamanri.Database;
 using Kamanri.WebSockets;
+using dotnetDataSide.Middlewares;
 
 namespace dotnetDataSide
 {
@@ -33,11 +34,11 @@ namespace dotnetDataSide
 
             services.AddControllers();
 
-            var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+            // var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
             
             //增加单例服务,数据库访问
 
-            services.AddDataBase(options =>
+            services.AddKamanriDataBase(options =>
             {
                 options.Server = Configuration["SQL:Server"];
                 options.Port = Configuration["SQL:Port"];
@@ -47,11 +48,7 @@ namespace dotnetDataSide
 
             }, options => new MySql.Data.MySqlClient.MySqlConnection(options));
 
-
-            services.AddWebSocket((wsm, wsClient) => 
-            services.AddSingleton(new OnMessageService(wsm, wsClient, loggerFactory, 
-            services.BuildServiceProvider().GetService<DataBaseContext>())));
-
+            services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
 
             services.AddSingleton<MessageService>();
         }
@@ -74,6 +71,10 @@ namespace dotnetDataSide
             webSocketOptions.AllowedOrigins.Any();
 
             app.UseWebSockets(webSocketOptions);
+
+            app.UseKamanriWebSocket();
+
+            app.UseMiddleware<MyMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

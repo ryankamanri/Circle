@@ -7,22 +7,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Kamanri.Extensions;
 using Kamanri.WebSockets;
+using dotnetPrivateChatApi.Services;
 namespace dotnetPrivateChatApi.Controllers
 {
     public class IndexController : ControllerBase
     {
         ILogger<IndexController> _logger;
 
-        WebSocketClient _wsClient;
+        IWebSocketClient _wsClient;
 
-        WebSocketMessageService _wsmService;
-
-
-        public IndexController(ILoggerFactory loggerFactory, WebSocketClient wsClient, WebSocketMessageService wsmService)
+        public IndexController(ILoggerFactory loggerFactory, IWebSocketClient wsClient)
         {
             _logger = loggerFactory.CreateLogger<IndexController>();
             _wsClient = wsClient;
-            _wsmService = wsmService;
         }
 
         [HttpGet]

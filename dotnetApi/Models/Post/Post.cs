@@ -84,6 +84,11 @@ namespace dotnetApi.Models
             return new Post((long)msdr["ID"],(string)msdr["Title"],(string)msdr["Summary"],(string)msdr["Focus"],DateTime.Parse((string)msdr["PostDateTime"]));
         }
 
+        public override Post GetEntity()
+        {
+            return this;
+        }
+
         public bool Equals(Post post_1,Post post_2)
         {
             return post_1.ID == post_2.ID;

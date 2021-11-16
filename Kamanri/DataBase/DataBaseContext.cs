@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using Kamanri.Database.Models;
 using Kamanri.Database.Models.Relation;
 using Kamanri.Self;
 
@@ -56,9 +57,9 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task Insert<TEntity>(TEntity te)
+        public async Task Insert<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"insert into {Te.TableName} ({Te.ColumnNamesString()}) values ({Te.InsertValuesString()})";
             await _sql.Execute(SQLStatement,command => Te.SetParameter(command));
         }
@@ -69,17 +70,17 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task InsertWithID<TEntity>(TEntity te)
+        public async Task InsertWithID<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"insert into {Te.TableName} ({Te.Columns()}) values ({Te.ID},{Te.InsertValuesString()})";
             await _sql.Execute(SQLStatement, command => Te.SetParameter(command));
         }
 
-        public async Task Inserts<TEntity>(IList<TEntity> tes)
+        public async Task Inserts<TEntity>(IList<Entity<TEntity>> Tes)
         {
-            if(tes.Count == 0) return;
-            dynamic Tes = tes;
+            if(Tes.Count == 0) return;
+            
             string insertValuesString = "",tableName = Tes[0].TableName,columnNamesString = Tes[0].ColumnNamesString();
             for(int i = 1;i < Tes.Count - 1;i++)
             {
@@ -91,10 +92,10 @@ namespace Kamanri.Database
             await _sql.Execute(SQLStatement, command => Tes[0].SetParameter(command));
         }
 
-        public async Task InsertsWithID<TEntity>(IList<TEntity> tes)
+        public async Task InsertsWithID<TEntity>(IList<Entity<TEntity>> Tes)
         {
-            if(tes.Count == 0) return;
-            dynamic Tes = tes;
+            if(Tes.Count == 0) return;
+            
             string insertValuesString = "",tableName = Tes[0].TableName,columns = Tes[0].Columns();
             for(int i = 1;i < Tes.Count - 1;i++)
             {
@@ -112,9 +113,9 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task Delete<TEntity>(TEntity te)
+        public async Task Delete<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"delete from {Te.TableName} where ID = {Te.ID}";
             await _sql.Execute(SQLStatement, command => Te.SetParameter(command));
         }
@@ -125,9 +126,9 @@ namespace Kamanri.Database
         /// <param name="tes"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task Deletes<TEntity>(IList<TEntity> tes)
+        public async Task Deletes<TEntity>(IList<Entity<TEntity>> Tes)
         {
-            dynamic Tes = tes;
+            
             string IDs = default;
             for(int i = 0;i < Tes.Count - 1;i++)
             {
@@ -144,9 +145,9 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task Update<TEntity>(TEntity te)
+        public async Task Update<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"update {Te.TableName} set {Te.UpdateSetString()} where ID = {Te.ID}";
             await _sql.Execute(SQLStatement,command => Te.SetParameter(command));
         }
@@ -157,13 +158,13 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<TEntity> Select<TEntity>(TEntity te)
+        public async Task<TEntity> Select<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"select * from {Te.TableName} where ID = {Te.ID}";
             IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement,command => Te.SetParameter(command)));
             if(result.Count == 0) return default;
-            te = result[0];
+            Te = result[0] as Entity<TEntity>;
             return result[0];
         }
 
@@ -173,9 +174,9 @@ namespace Kamanri.Database
         /// <param name="te"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<long> SelectID<TEntity>(TEntity te)
+        public async Task<long> SelectID<TEntity>(Entity<TEntity> Te)
         {
-            dynamic Te = te;
+            
             string SQLStatement = $"select * from {Te.TableName} where {Te.CandidateKeySelectionString()}";
             dynamic result = await Te.GetList(await _sql.Query(SQLStatement,command => Te.SetParameter(command)));
             if(result.Count == 0) return long.MinValue;
@@ -190,9 +191,9 @@ namespace Kamanri.Database
         /// <param name="tes"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<IList<TEntity>> Selects<TEntity>(IList<TEntity> tes)
+        public async Task<IList<TEntity>> Selects<TEntity>(IList<Entity<TEntity>> Tes)
         {
-            dynamic Tes = tes;
+            
             string IDs = default;
             for(int i = 0;i < Tes.Count - 1;i++)
             {
@@ -211,9 +212,9 @@ namespace Kamanri.Database
         /// <param name="tes"></param>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public async Task<List<TEntity>> SelectIDs<TEntity>(IList<TEntity> tes)
+        public async Task<IList<TEntity>> SelectIDs<TEntity>(IList<Entity<TEntity>> Tes)
         {
-            dynamic Tes = tes;
+            
             string constraints = default;
             for(int i = 0; i < Tes.Count - 1;i++)
             {
@@ -222,7 +223,7 @@ namespace Kamanri.Database
             }
             constraints += $"({Tes[Tes.Count - 1].CandidateKeySelectionString()})";
             string SQLStatement = $"select * from {Tes[0].TableName} where {constraints}";
-            List<TEntity> result = await Tes[0].GetList(await _sql.Query(SQLStatement, command => Tes[0].SetParameter(command)));
+            var result = await Tes[0].GetList(await _sql.Query(SQLStatement, command => Tes[0].SetParameter(command)));
             return result;
         }
 
@@ -235,7 +236,9 @@ namespace Kamanri.Database
         /// <returns></returns>
         public async Task<IList<TEntity>> SelectAll<TEntity>()
         {
-            dynamic Te = Construct.DefaultConstruct<TEntity>();
+            if(!typeof(Entity<TEntity>).IsAssignableFrom(typeof(TEntity)))
+                throw new DataBaseModelException($"Model Type {typeof(TEntity)} Does Not Inherit From {typeof(Entity<TEntity>)}");
+            var Te = Construct.DefaultConstruct<TEntity>() as Entity<TEntity>;
             string SQLStatement = $"select * from {Te.TableName}";
             IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement,command => Te.SetParameter(command)));
             if(result.Count == 0) return default;
@@ -252,7 +255,9 @@ namespace Kamanri.Database
         /// <returns></returns>
         public async Task<IList<TEntity>> SelectCustom<TEntity>(string candidateKeySelectionString)
         {
-            dynamic Te = Construct.DefaultConstruct<TEntity>();
+            if(!typeof(Entity<TEntity>).IsAssignableFrom(typeof(TEntity)))
+                throw new DataBaseModelException($"Model Type {typeof(TEntity)} Does Not Inherit From {typeof(Entity<TEntity>)}");
+            var Te = Construct.DefaultConstruct<TEntity>() as Entity<TEntity>;
             string SQLStatement = $"select * from {Te.TableName} where {candidateKeySelectionString}";
             IList<TEntity> result = await Te.GetList(await _sql.Query(SQLStatement, command => Te.SetParameter(command)));
             if(result.Count == 0) return new List<TEntity>();
@@ -267,7 +272,12 @@ namespace Kamanri.Database
         /// <returns></returns>
         public async Task<ID_IDList> SelectAllRelations<TKeyEntity,TValueEntity>()
         {
-            dynamic Tke = Construct.DefaultConstruct<TKeyEntity>(),Tve = Construct.DefaultConstruct<TValueEntity>();
+            if (!typeof(Entity<TKeyEntity>).IsAssignableFrom(typeof(TKeyEntity)))
+                throw new DataBaseModelException($"Model Type {typeof(TKeyEntity)} Does Not Inherit From {typeof(Entity<TKeyEntity>)}");
+            if (!typeof(Entity<TValueEntity>).IsAssignableFrom(typeof(TValueEntity)))
+                throw new DataBaseModelException($"Model Type {typeof(TValueEntity)} Does Not Inherit From {typeof(Entity<TValueEntity>)}");
+            var Tke = Construct.DefaultConstruct<TKeyEntity>() as Entity<TKeyEntity>;
+            var Tve = Construct.DefaultConstruct<TValueEntity>() as Entity<TValueEntity>;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string SQLStatement = $"select * from {tableName}";
 
@@ -287,10 +297,10 @@ namespace Kamanri.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task Connect<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Action<dynamic> SetRelations)
+        public async Task Connect<TKeyEntity,TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve,Action<dynamic> SetRelations)
         {
             ID_ID key_value = new ID_ID();
-            dynamic Tke = tke,Tve = tve;
+            
             key_value.ID = Tke.ID;
             key_value.ID_2 = Tve.ID;
             SetRelations(key_value.Relations);
@@ -308,12 +318,12 @@ namespace Kamanri.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task Disconnect<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve) 
+        public async Task Disconnect<TKeyEntity,TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve) 
         {
-            dynamic Tke = tke,Tve = tve;
+            
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
-            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            if(Tke.GetType() == Tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"delete from {tableName} where {selectWay}";
             await _sql.Execute(SQLStatement);
         }
@@ -326,12 +336,12 @@ namespace Kamanri.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task<dynamic> SelectRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve)
+        public async Task<dynamic> SelectRelation<TKeyEntity,TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve)
         {
-            dynamic Tke = tke,Tve = tve;
+            
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
-            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            if(Tke.GetType() == Tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"select * from {tableName} where {selectWay}";
 
             ID_IDList resultList = await id_id.GetList(await _sql.Query(SQLStatement));
@@ -350,9 +360,9 @@ namespace Kamanri.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task<object> SelectRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve, string relationName)
+        public async Task<object> SelectRelation<TKeyEntity, TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve, string relationName)
         {
-            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
+            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(Tke,Tve);
             if(relation == null) return default;
             foreach(var properties in relation)
                 if(properties.Key.ToString() == relationName) return properties.Value;
@@ -373,17 +383,17 @@ namespace Kamanri.Database
         /// <typeparam name="TKeyEntity"></typeparam>
         /// <typeparam name="TValueEntity"></typeparam>
         /// <returns></returns>
-        public async Task ChangeRelation<TKeyEntity,TValueEntity>(TKeyEntity tke, TValueEntity tve,Func<dynamic,Task<bool>> SetRelation)
+        public async Task ChangeRelation<TKeyEntity,TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve,Func<dynamic,Task<bool>> SetRelation)
         {
-            dynamic Tke = tke,Tve = tve;
+            
             bool IsExecute = true;
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(tke,tve);
+            dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(Tke,Tve);
             IsExecute = await SetRelation(relation);
             if(IsExecute == false) return;
             string relationJSON = JsonConvert.SerializeObject(relation);
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
-            if(tke.GetType() == tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
+            if(Tke.GetType() == Tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"update {tableName} set relations = '{relationJSON}' where {selectWay}";
 
             await _sql.Execute(SQLStatement);
@@ -396,13 +406,13 @@ namespace Kamanri.Database
         /// <param name="tag"></param>
         /// <param name="relation"></param>
         /// <returns></returns>
-        public async Task AppendRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve, string relationName, string newRelation)
+        public async Task AppendRelation<TKeyEntity, TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve, string relationName, string newRelation)
         {
-            await ChangeRelation<TKeyEntity, TValueEntity>(tke, tve, async relation =>
+            await ChangeRelation<TKeyEntity, TValueEntity>(Tke, Tve, async relation =>
                {
                    if (relation == null)
                    {   //两个实体之间的关系不存在,则新建关系,并取消update执行
-                       await Connect<TKeyEntity, TValueEntity>(tke, tve, relation => ((IDictionary<string,Object>)relation).Add(relationName,new List<string>() { newRelation.ToString() }));
+                       await Connect<TKeyEntity, TValueEntity>(Tke, Tve, relation => ((IDictionary<string,Object>)relation).Add(relationName,new List<string>() { newRelation.ToString() }));
                        return false;
                    }
                    foreach (var properties in relation)
@@ -431,9 +441,9 @@ namespace Kamanri.Database
         /// <param name="tag"></param>
         /// <param name="relation"></param>
         /// <returns></returns>
-        public async Task RemoveRelation<TKeyEntity, TValueEntity>(TKeyEntity tke, TValueEntity tve,string relationName, string oldRelation)
+        public async Task RemoveRelation<TKeyEntity, TValueEntity>(Entity<TKeyEntity> Tke, Entity<TValueEntity> Tve,string relationName, string oldRelation)
         {
-            await ChangeRelation<TKeyEntity, TValueEntity>(tke, tve, async relation =>
+            await ChangeRelation<TKeyEntity, TValueEntity>(Tke, Tve, async relation =>
              {
                  //relation.Type.Remove(oldRelation.ToString());
                  foreach (var properties in relation)
@@ -443,7 +453,7 @@ namespace Kamanri.Database
                          properties.Value.Remove(oldRelation.ToString());
                          if (properties.Value.Count == 0)
                          {
-                             await Disconnect<TKeyEntity, TValueEntity>(tke, tve);
+                             await Disconnect<TKeyEntity, TValueEntity>(Tke, Tve);
                              return false;
                          }
                      }
@@ -466,9 +476,12 @@ namespace Kamanri.Database
         /// <typeparam name="TInputEntity">输入实体</typeparam>
         /// <typeparam name="TOutputEntity">输出实体</typeparam>
         /// <returns></returns>
-        public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(TInputEntity input, ID_IDList.OutPutType type)
+        public async Task<IDictionary<TOutputEntity,dynamic>> Mapping<TInputEntity,TOutputEntity>(Entity<TInputEntity> input, ID_IDList.OutPutType type)
         {
-            dynamic i = input, o = Construct.DefaultConstruct<TOutputEntity>();
+            if(!typeof(Entity<TOutputEntity>).IsAssignableFrom(typeof(TOutputEntity)))
+                throw new DataBaseModelException($"Model Type {typeof(TOutputEntity)} Does Not Inherit From {typeof(Entity<TOutputEntity>)}");
+            var i = input;
+            var o = Construct.DefaultConstruct<TOutputEntity>() as Entity<TOutputEntity>;
             string iTableName = i.TableName,relationTableName = default,relationWay = default,connectedTable = default,SQLStatement = default,iTempTableName = default,oTempTableName = default;
 
             if(type == ID_IDList.OutPutType.Key) relationTableName = $"{o.TableName}_{i.TableName}";
@@ -513,7 +526,7 @@ namespace Kamanri.Database
         /// <typeparam name="TInputEntity"></typeparam>
         /// <typeparam name="TOutputEntity"></typeparam>
         /// <returns></returns>
-        public async Task<IList<TOutputEntity>> MappingSelect<TInputEntity,TOutputEntity>(TInputEntity input, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<IList<TOutputEntity>> MappingSelect<TInputEntity,TOutputEntity>(Entity<TInputEntity> input, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
             IDictionary<TOutputEntity,dynamic> mappingResults = await Mapping<TInputEntity,TOutputEntity>(input, type);
             IList<TOutputEntity> mappingResultsSelect = new List<TOutputEntity>();
@@ -582,19 +595,19 @@ namespace Kamanri.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>> MappingUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs, ID_IDList.OutPutType type)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>> MappingUnionStatistics<TInputEntity,TOutputEntity>(IList<Entity<TInputEntity>> inputs, ID_IDList.OutPutType type)
         {
             //以某些标签能够匹配到的其他用户为例
-            Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>> dictionary = new Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>();
+            var dictionary = new Key_ListValue_Pairs<TOutputEntity,KeyValuePair<TInputEntity, dynamic>>();
             if (inputs.Count == 0) return dictionary;
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IDictionary<TOutputEntity,dynamic> targets = await Mapping<TInputEntity,TOutputEntity>(input, type);//找到拥有该标签的用户
+                var targets = await Mapping<TInputEntity,TOutputEntity>(input, type);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target.Key);
-                    KeyValuePair<TInputEntity, dynamic> inputEntity_Relation = new KeyValuePair<TInputEntity, dynamic>(input,target.Value);
+                    var inputEntity_Relation = new KeyValuePair<TInputEntity, dynamic>(input.GetEntity(), target.Value);
                     
                     if(index != int.MinValue)//如果字典中存在该帖子,则添加拥有该帖子的用户
                         dictionary[index].Value.Add(inputEntity_Relation);
@@ -613,26 +626,26 @@ namespace Kamanri.Database
         /// <param name="inputs"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<Key_ListValue_Pairs<TOutputEntity,TInputEntity>> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(IList<TInputEntity> inputs, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
+        public async Task<Key_ListValue_Pairs<TOutputEntity,TInputEntity>> MappingSelectUnionStatistics<TInputEntity,TOutputEntity>(IList<Entity<TInputEntity>> inputs, ID_IDList.OutPutType type,Action<dynamic> SetSelections)
         {
             //以某些标签能够匹配到的其他用户为例
-            Key_ListValue_Pairs<TOutputEntity,TInputEntity> dictionary = new Key_ListValue_Pairs<TOutputEntity,TInputEntity>();
+            var dictionary = new Key_ListValue_Pairs<TOutputEntity,TInputEntity>();
             if (inputs.Count == 0) return dictionary;
             ID_ID key_value = new ID_ID();
             dynamic selections = key_value.Relations;
 
             foreach(var input in inputs)//每一个input是一个标签的
             {
-                IList<TOutputEntity> targets = await MappingSelect<TInputEntity,TOutputEntity>(input, type,SetSelections);//找到拥有该标签的用户
+                var targets = await MappingSelect<TInputEntity,TOutputEntity>(input, type,SetSelections);//找到拥有该标签的用户
                 foreach(var target in targets)//每一个target是一个用户的id
                 {
                     int index = dictionary.KeyIndex(target);
                     
                     if(index != int.MinValue)//如果字典中存在该帖子,则添加拥有该帖子的用户
-                        dictionary[index].Value.Add(input);
+                        dictionary[index].Value.Add(input.GetEntity());
 
                     else//如果不存在,则新建一个拥有该帖子的用户list
-                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, IList<TInputEntity>>(target,new List<TInputEntity>(){input}));
+                        dictionary.Insert(0,new KeyValuePair<TOutputEntity, IList<TInputEntity>>(target,new List<TInputEntity>(){input.GetEntity()}));
                 }
             }
             return dictionary;

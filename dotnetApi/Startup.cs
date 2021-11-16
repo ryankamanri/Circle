@@ -11,6 +11,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Logging;
 using dotnetApi.Models;
 using dotnetApi.Services;
+using Kamanri.Extensions;
 using Kamanri.Database;
 
 namespace dotnetApi
@@ -32,9 +33,9 @@ namespace dotnetApi
 
             services.AddControllers();
             
-            services.AddSingleton<ILoggerFactory,LoggerFactory>();
+            // services.AddSingleton<ILoggerFactory,LoggerFactory>();
 
-            loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+            // loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
 
             services.AddCors(options => 
             {
@@ -44,11 +45,8 @@ namespace dotnetApi
 
             services.AddScoped<User>();
 
-
-
-
             //增加单例服务,数据库访问
-            services.AddSingleton(new SQL(options =>
+            services.AddKamanriDataBase(options =>
             {
                 options.Server = Configuration["SQL:Server"];
                 options.Port = Configuration["SQL:Port"];
@@ -56,8 +54,7 @@ namespace dotnetApi
                 options.Uid = Configuration["SQL:Uid"];
                 options.Pwd = Configuration["SQL:Pwd"];
 
-            }, options => new MySql.Data.MySqlClient.MySqlConnection(options)
-            ,loggerFactory));
+            }, options => new MySql.Data.MySqlClient.MySqlConnection(options));
 
             //增加数据库上下文服务
             services.AddSingleton<DataBaseContext>();

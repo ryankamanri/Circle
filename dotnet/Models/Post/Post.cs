@@ -7,7 +7,7 @@ using Kamanri.Database.Models;
 
 namespace dotnet.Models
 {
-    public class Post : Entity<Post>,IEqualityComparer<Post>
+    public class Post : EntityView, IEqualityComparer<Post>
     {
         /// <summary>
         /// 标题
@@ -33,10 +33,7 @@ namespace dotnet.Models
         /// <value>DateTime</value>
         public DateTime PostDateTime { get; set; }
 
-        
 
-        public override string TableName {get; set;} = "posts";
-        public override string ColumnNamesString() => $"{TableName}.Title,{TableName}.Summary,{TableName}.Focus,{TableName}.PostDateTime";
         
         public Post()
         {
@@ -62,27 +59,7 @@ namespace dotnet.Models
             this.Focus = Focus;
             this.PostDateTime = PostDateTime;
         }
-
-        public override string InsertValuesString()
-        {
-            return $"'{Title}','{Summary}','{Focus}','{PostDateTime.ToString()}'";
-        }
-
-        public override string UpdateSetString()
-        {
-            return $"{TableName}.Title = '{Title}',{TableName}.Summary = '{Summary}',{TableName}.Focus = '{Focus}',{TableName}.PostDateTime = '{PostDateTime.ToString()}'";
-        }
-
-        public override string CandidateKeySelectionString()
-        {
-            return $"{TableName}.Title = '{Title}' and {TableName}.Summary = '{Summary}' and {TableName}.Focus = '{Focus}' and {TableName}.PostDateTime = '{PostDateTime.ToString()}'";
-        }
-
- 
-        public override Post GetEntityFromDataReader(DbDataReader msdr)
-        {
-            return new Post((long)msdr["ID"],(string)msdr["Title"],(string)msdr["Summary"],(string)msdr["Focus"],DateTime.Parse((string)msdr["PostDateTime"]));
-        }
+        
 
         public bool Equals(Post post_1,Post post_2)
         {

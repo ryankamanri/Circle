@@ -24,6 +24,9 @@ namespace dotnetDataSide.Models
 
         public override Circle GetEntityFromDataReader(DbDataReader msdr) => new Circle((long)msdr["ID"], (string)msdr["Name"]);
 
+        public override Circle GetEntity() => this;
+
+
 
     }
 }

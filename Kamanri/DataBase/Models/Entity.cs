@@ -8,6 +8,10 @@ using Kamanri.Self;
 
 namespace Kamanri.Database.Models
 {
+    /// <summary>
+    /// 所有对应到数据库表实体的抽象实体类
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     [JsonObject(MemberSerialization.OptOut)]
     public abstract class Entity<TEntity> : IEquatable<Entity<TEntity>>
     {
@@ -73,11 +77,19 @@ namespace Kamanri.Database.Models
         public abstract TEntity GetEntityFromDataReader(DbDataReader msdr);
 
         /// <summary>
+        /// 从本实体抽象类的类实例中获取实体
+        /// </summary>
+        /// <returns></returns>
+        public abstract TEntity GetEntity();
+
+        /// <summary>
         /// 为SQL语句中的占位符设置参数(一般用于二进制数据)
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         public virtual ICollection<DbParameter> SetParameter(DbCommand command) => default;
+
+
 
 
         /// <summary>

@@ -68,6 +68,11 @@ namespace dotnetDataSide.Models
             return new Tag((long)msdr["ID"], (string)msdr["tag"]);
         }
 
+        public override Tag GetEntity()
+        {
+            return this;
+        }
+
         public bool Equals(Tag tag_1,Tag tag_2)
         {
             return (tag_1.ID == tag_2.ID);

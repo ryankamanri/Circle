@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 using dotnetApi.Models;
+using Kamanri.Database.Models;
 using Kamanri.Database.Models.Relation;
 using Kamanri.Database;
 
@@ -116,8 +117,10 @@ namespace dotnetApi.Services
         
         public async Task<ICollection<Post>> MappingPostsByTag(User user,Action<dynamic> SetUserTagRelation)
         {
-            IList<Tag> interestedTags = await _dbc.MappingSelect<User,Tag>(user, ID_IDList.OutPutType.Value,SetUserTagRelation);
-            Key_ListValue_Pairs<Post, KeyValuePair<Tag, dynamic>> interestedPosts = await _dbc.MappingUnionStatistics<Tag,Post>(interestedTags, ID_IDList.OutPutType.Key);
+            var interestedTags = await _dbc.MappingSelect<User,Tag>(user, ID_IDList.OutPutType.Value,SetUserTagRelation) as List<Tag>;
+            Key_ListValue_Pairs<Post, KeyValuePair<Tag, dynamic>> interestedPosts = await _dbc.MappingUnionStatistics<Tag,Post>(
+                interestedTags.ConvertAll<Entity<Tag>>(tag => tag as Entity<Tag>),
+                 ID_IDList.OutPutType.Key);
             return interestedPosts.Keys;
         }
 

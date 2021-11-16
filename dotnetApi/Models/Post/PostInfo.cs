@@ -44,6 +44,11 @@ namespace dotnetApi.Models
         {
             return new PostInfo((long)msdr["ID"],(string)msdr["Content"]);
         }
+
+        public override PostInfo GetEntity()
+        {
+            return this;
+        }
     }
 }
 

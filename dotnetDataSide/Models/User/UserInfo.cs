@@ -117,6 +117,11 @@ namespace dotnetDataSide.Models
             return new UserInfo((long)msdr["ID"],(string)msdr["NickName"],(string)msdr["RealName"],(string)msdr["University"],(string)msdr["school"],(string)msdr["Speciality"],DateTime.Parse((string)msdr["SchoolYear"]),(string)msdr["Introduction"],(string)msdr["HeadImage"]);
         }
 
+        public override UserInfo GetEntity()
+        {
+            return this;
+        }
+
         public bool Equals(UserInfo user_1,UserInfo user_2)
         {
             return user_1.ID == user_2.ID;

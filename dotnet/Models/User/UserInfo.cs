@@ -7,7 +7,7 @@ using Kamanri.Database.Models;
 
 namespace dotnet.Models
 {
-    public class UserInfo : Entity<UserInfo>,IEqualityComparer<UserInfo>
+    public class UserInfo : EntityView,IEqualityComparer<UserInfo>
     {
         /// <summary>
         /// 昵称
@@ -59,16 +59,6 @@ namespace dotnet.Models
         public string HeadImage{ get; set; }
 
 
-
-
-        public override string TableName { get; set; } = "usersinfo";
-
-        public override string ColumnNamesString() => 
-        $"{TableName}.NickName,{TableName}.RealName,{TableName}.University,{TableName}.School,{TableName}.Speciality,{TableName}.SchoolYear,{TableName}.Introduction,{TableName}.HeadImage";
-
-
-
-
         public UserInfo(){}
 
         public UserInfo(long ID) : base(ID){}
@@ -97,25 +87,7 @@ namespace dotnet.Models
             this.HeadImage = HeadImage;
         }
 
-        public override string InsertValuesString()
-        {
-            return $"{ID},'{NickName}','{RealName}','{University}','{School}','{Speciality}','{SchoolYear.ToString()}','{Introduction}','{HeadImage}'";
-        }
 
-        public override string UpdateSetString()
-        {
-            return $"{TableName}.NickName = '{NickName}',{TableName}.RealName = '{RealName}',{TableName}.University = '{University}',{TableName}.School = '{School}',{TableName}.Speciality = '{Speciality}',{TableName}.SchoolYear = '{SchoolYear.ToString()}',{TableName}.Introduction = '{Introduction}',{TableName}.HeadImage = '{HeadImage}'";
-        }
-
-        public override string CandidateKeySelectionString()
-        {
-            return $"{TableName}.NickName = '{NickName}' and {TableName}.RealName = '{RealName}' and {TableName}.University = '{University}' and {TableName}.School = '{School}' and {TableName}.Speciality = '{Speciality}' and {TableName}.SchoolYear = '{SchoolYear}'";
-        }
-
-        public override UserInfo GetEntityFromDataReader(DbDataReader msdr)
-        {
-            return new UserInfo((long)msdr["ID"],(string)msdr["NickName"],(string)msdr["RealName"],(string)msdr["University"],(string)msdr["school"],(string)msdr["Speciality"],DateTime.Parse((string)msdr["SchoolYear"]),(string)msdr["Introduction"],(string)msdr["HeadImage"]);
-        }
 
         public bool Equals(UserInfo user_1,UserInfo user_2)
         {

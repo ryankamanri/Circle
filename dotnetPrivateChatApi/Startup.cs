@@ -10,10 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using dotnetPrivateChatApi.Services;
 using Kamanri.Extensions;
 using Kamanri.Database;
 using Kamanri.WebSockets;
+using dotnetPrivateChatApi.Middlewares;
+using dotnetPrivateChatApi.Services;
 
 namespace dotnetPrivateChatApi
 {
@@ -32,30 +33,16 @@ namespace dotnetPrivateChatApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            
-
-            //services.AddSingleton<ILoggerFactory,LoggerFactory>();
-
-            loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
-
             services.AddControllersWithViews();
 
-            services.AddCors(options => 
+            services.AddCors(options =>
             {
-                options.AddPolicy("dotnet",builder => 
+                options.AddPolicy("dotnet", builder =>
                 builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true));
             });
 
-            // var webSocketMessageService = new WebSocketMessageService(loggerFactory);
 
-            // var webSocketClient = new WebSocketClient(Configuration["WebSocket:URL"], webSocketMessageService, loggerFactory);
-
-            // services.AddWebSocket(webSocketMessageService, webSocketClient, loggerFactory);
-
-            services.AddWebSocket(Configuration["WebSocket:URL"], 
-            (wsm, wsClient) => services.AddSingleton(new OnMessageService(wsm, wsClient, loggerFactory)));
-
-            // services.AddSingleton(new OnMessageService(services.BuildServiceProvider()));
+            services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,8 +51,6 @@ namespace dotnetPrivateChatApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // app.UseSwagger();
-                // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "dotnet_privatechat_api v1"));
             }
 
             //app.UseHttpsRedirection();
@@ -82,6 +67,10 @@ namespace dotnetPrivateChatApi
             webSocketOptions.AllowedOrigins.Any();
 
             app.UseWebSockets(webSocketOptions);
+
+            app.UseKamanriWebSocket();
+
+            app.UseMiddleware<MyMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

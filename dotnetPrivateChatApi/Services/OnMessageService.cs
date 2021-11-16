@@ -15,22 +15,23 @@ namespace dotnetPrivateChatApi.Services
     {
 
         private ILogger<OnMessageService> _logger;
-        private WebSocketMessageService _wsmService;
+        private IWebSocketMessageService _wsmService;
 
-        private WebSocketClient _wsClient;
+        private IWebSocketClient _wsClient;
 
         private long clientID;
 
 
-        public OnMessageService(WebSocketMessageService wsmService, WebSocketClient wsClient, ILoggerFactory loggerFactory)
+        public OnMessageService(IWebSocketMessageService wsmService, IWebSocketClient wsClient, ILoggerFactory loggerFactory)
         {
             _wsmService = wsmService;
             _wsClient = wsClient;
             _logger = loggerFactory.CreateLogger<OnMessageService>();
-            _wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect);
-            _wsmService.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect);
-            _wsmService.AddEventHandler(WSMsgEvt.OnSelf, OnDataSideDisconnect);
+            wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect);
+            wsmService.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect);
+            wsmService.AddEventHandler(WSMsgEvt.OnSelf, OnDataSideDisconnect);
         }
+
 
         /// <summary>
         /// 接受数据端连接事件, 消息协议

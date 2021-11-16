@@ -9,25 +9,25 @@ using Microsoft.Extensions.Logging;
 using Kamanri.Extensions;
 using Kamanri.Self;
 using Kamanri.WebSockets.Model;
-
+using Microsoft.Extensions.Configuration;
 
 namespace Kamanri.WebSockets
 {
 
-    interface IWebSocketClient
+    public interface IWebSocketClient
     {
         Task AcceptWebSocketInjection(WebSocket webSocket);
         Task ServerSendMessage(long webSocketID, IList<WebSocketMessage> sendMessages);
-        Task ClientSendMessage(long webSocketID, IList<WebSocketMessage> sendMessages);
+        Task ClientSendMessage(IList<WebSocketMessage> sendMessages);
     }
 
-    public sealed class WebSocketClient
+    public sealed class WebSocketClient : IWebSocketClient
     {
 
         ILogger<WebSocketClient> _logger;
         ClientWebSocket webSocket = null;
 
-        WebSocketMessageService _wsmService;
+        IWebSocketMessageService _wsmService;
 
         IDictionary<long, WebSocket> webSocketServerCollection = default;
         Uri uri = null;
@@ -35,29 +35,23 @@ namespace Kamanri.WebSockets
 
 
         /// <summary>
-        /// client端WebSocket构造函数
+        /// client/server端WebSocket构造函数
         /// </summary>
         /// <param name="webSocketUrl"></param>
         /// <param name="wsmService"></param>
         /// <param name="loggerFactory"></param>
-        public WebSocketClient(string webSocketUrl ,WebSocketMessageService wsmService, ILoggerFactory loggerFactory)
+        public WebSocketClient(IConfiguration config,IWebSocketMessageService wsmService, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<WebSocketClient>();
-            uri = new Uri(webSocketUrl);
-            webSocket = new ClientWebSocket();
-            _wsmService = wsmService;
-            Open();
-        }
-
-        /// <summary>
-        /// server端WebSocket构造函数
-        /// </summary>
-        /// <param name="wsmService"></param>
-        /// <param name="loggerFactory"></param>
-        public WebSocketClient(WebSocketMessageService wsmService, ILoggerFactory loggerFactory)
-        {
+            var webSocketUrl = config["WebSocket:URL"];
             _logger = loggerFactory.CreateLogger<WebSocketClient>();
             _wsmService = wsmService;
+            if(webSocketUrl != default)
+            {
+                uri = new Uri(webSocketUrl);
+                webSocket = new ClientWebSocket();
+                Open();
+            }
+            
         }
 
 

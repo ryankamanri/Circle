@@ -79,6 +79,11 @@ namespace dotnetDataSide.Models
                 (string)msdr["ContentType"],
                 (byte[])msdr["Content"]);
 
+        public override Message GetEntity()
+        {
+            return this;
+        }
+
         public int Compare(Message message_1, Message message_2) => 
             (message_1.Time - message_2.Time).Milliseconds;
     }

@@ -17,17 +17,17 @@ namespace dotnetDataSide.Services
     {
 
         private ILogger<OnMessageService> _logger;
-        private WebSocketMessageService _wsmService;
+        private IWebSocketMessageService _wsmService;
 
         private UserService _userService;
 
         private MessageService _messageService;
 
-        private WebSocketClient _wsClient;
+        private IWebSocketClient _wsClient;
 
 
 
-        public OnMessageService(WebSocketMessageService wsmService, WebSocketClient wsClient, ILoggerFactory loggerFactory, DataBaseContext dbc)
+        public OnMessageService(IWebSocketMessageService wsmService, IWebSocketClient wsClient, ILoggerFactory loggerFactory, DataBaseContext dbc)
         {
             _wsmService = wsmService;
             _wsClient = wsClient;
@@ -37,9 +37,11 @@ namespace dotnetDataSide.Services
 
             _wsmService.AddEventHandler(WebSocketMessageEvent.OnConnect,OnConnect);
             _wsmService.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect);
+            _wsmService.AddEventHandler(WebSocketMessageEvent.OnServerConnect, OnServerConnect);
             _wsmService.AddEventHandler(WebSocketMessageEvent.OnServerMessage, OnServerMessage);
             _wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect);
             _wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideDisconnect, OnDataSideDisconnect);
+            
         }
 
         /// <summary>
@@ -68,6 +70,8 @@ namespace dotnetDataSide.Services
             });
             
         }
+
+
         
         /// <summary>
         /// 添加用户端事件, 消息协议
@@ -98,6 +102,11 @@ namespace dotnetDataSide.Services
 
             return await Task.Run<IList<WebSocketMessage>>(() => result);
             
+        }
+
+        public Task<IList<WebSocketMessage>> OnServerConnect(WebSocket webSocket, IList<WebSocketMessage> messages)
+        {
+            return WebSocketMessageService.DefaultTask;
         }
 
         /// <summary>

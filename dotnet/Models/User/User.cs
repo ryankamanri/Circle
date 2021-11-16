@@ -11,14 +11,10 @@ using Kamanri.Database.Models;
 
 namespace dotnet.Models
 {
-    public class User : Entity<User>,IEqualityComparer<User>
+    public class User : EntityView,IEqualityComparer<User>
     {
         public string Account { get; set; }
         public string Password { get; set; }
-
-        public override string TableName { get ; set ;} = "users";
-
-        public override string ColumnNamesString() => $"{TableName}.Account,{TableName}.Password";
 
 
         public User()
@@ -54,27 +50,6 @@ namespace dotnet.Models
             return $"{ID} , '{Account}' , '{Password}' ";
         }
 
-        public override string InsertValuesString()
-        {
-            return $"'{Account}' , '{Password}'";
-        }
-
-        public override string UpdateSetString()
-        {
-            return $" {TableName}.Account = '{Account}' , {TableName}.Password = '{Password}'";
-        }
-
-        public override string CandidateKeySelectionString()
-        {
-            return $" {TableName}.Account = '{Account}'";
-        }
-
-
-
-        public override User GetEntityFromDataReader(DbDataReader msdr)
-        {
-            return new User((long)msdr["ID"], (string)msdr["Account"], (string)msdr["Password"]);
-        }
 
         public bool Equals(User user_1,User user_2)
         {

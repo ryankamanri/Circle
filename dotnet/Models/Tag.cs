@@ -10,14 +10,11 @@ using Kamanri.Database.Models;
 
 namespace dotnet.Models
 {
-    public class Tag : Entity<Tag>,IEqualityComparer<Tag>
+    public class Tag : EntityView,IEqualityComparer<Tag>
     {
         
         public string _Tag { get; set; }
 
-        public override string TableName { get ; set ;} = "tags";
-
-        public override string ColumnNamesString() => $"{TableName}.tag";
 
 
         public Tag()
@@ -47,26 +44,7 @@ namespace dotnet.Models
             return $"{ID},'{_Tag}'";
         }
 
-        public override string InsertValuesString()
-        {
-            return $"'{_Tag}'";
-        }
 
-        public override string UpdateSetString()
-        {
-            return $"{TableName}.tag = '{_Tag}'";
-        }
-
-        public override string CandidateKeySelectionString()
-        {
-            return $"{TableName}.tag = '{_Tag}'";
-        }
-        
-
-        public override Tag GetEntityFromDataReader(DbDataReader msdr)
-        {
-            return new Tag((long)msdr["ID"], (string)msdr["tag"]);
-        }
 
         public bool Equals(Tag tag_1,Tag tag_2)
         {

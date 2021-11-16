@@ -77,6 +77,11 @@ namespace dotnetDataSide.Models
             return new User((long)msdr["ID"], (string)msdr["Account"], (string)msdr["Password"]);
         }
 
+        public override User GetEntity()
+        {
+            return this;
+        }
+
         public bool Equals(User user_1,User user_2)
         {
             return user_1.ID == user_2.ID;

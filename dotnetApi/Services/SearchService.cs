@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using Kamanri.Database;
+using Kamanri.Database.Models;
 using Kamanri.Database.Models.Relation;
 using dotnetApi.Models;
 namespace dotnetApi.Services
@@ -51,9 +52,11 @@ namespace dotnetApi.Services
             if(searchString == "" || searchString == default) return new Key_ListValue_Pairs<UserInfo,Tag>();
             
             var userInfosBase = await SearchUserInfo(searchString);
+
+            var searchedTags = (await SearchTag(searchString)) as List<Tag>;
             
             var tagsGroupByUser = await _dbc.MappingSelectUnionStatistics<Tag,User>(
-                await SearchTag(searchString), ID_IDList.OutPutType.Key,
+                searchedTags.ConvertAll<Entity<Tag>>(tag => tag as Entity<Tag>), ID_IDList.OutPutType.Key,
                 selection => selection.Type = new List<string>(){"Self"});
 
             Key_ListValue_Pairs<UserInfo,Tag> tagsGroupByUserInfo  = new Key_ListValue_Pairs<UserInfo,Tag>();
@@ -82,9 +85,12 @@ namespace dotnetApi.Services
             if(searchString == "" || searchString == default) return new List<Post>();
 
             IList<Post> postsBase = await SearchPost(searchString);
+
+            var searchedTags = (await SearchTag(searchString)) as List<Tag>;
+
             
             var tagRelationsGroupByPost = await _dbc.MappingUnionStatistics<Tag,Post>(
-                await SearchTag(searchString) ,ID_IDList.OutPutType.Key);
+                searchedTags.ConvertAll<Entity<Tag>>(tag => tag as Entity<Tag>) ,ID_IDList.OutPutType.Key);
 
             var postsFindByTag = tagRelationsGroupByPost.Keys;
 

@@ -10,13 +10,14 @@ namespace Kamanri.WebSockets
 {
     
 
-    interface IWebSocketMessageService
+    public interface IWebSocketMessageService
     {
-        void AddEventHandler(WebSocketMessageEvent messageEvent, Func<WebSocket, IList<WebSocketMessage>,IList<WebSocketMessage>> EventHandler);
+        IWebSocketMessageService AddEventHandler(WebSocketMessageEvent messageEvent, Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> EventHandler);
+        Task<IList<WebSocketMessage>> OnMessage(WebSocket webSocket, IList<WebSocketMessage> messages);
     }
 
 
-    public sealed class WebSocketMessageService
+    public sealed class WebSocketMessageService : IWebSocketMessageService
     {
 
         public static Task<IList<WebSocketMessage>> DefaultTask = Task.Run<IList<WebSocketMessage>>(() => new List<WebSocketMessage>());
@@ -35,15 +36,16 @@ namespace Kamanri.WebSockets
         /// </summary>
         /// <param name="messageEvent">待处理事件</param>
         /// <param name="EventHandler">处理方法</param>
-        public void AddEventHandler(WebSocketMessageEvent messageEvent, Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> EventHandler)
+        public IWebSocketMessageService AddEventHandler(WebSocketMessageEvent messageEvent, Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> EventHandler)
         {
             Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> e;
             if(eventHandlerCollection.TryGetValue(messageEvent.Code, out e))
             {
                 _logger.LogError($"[{DateTime.Now}] : Add Event {messageEvent.Code} Failure : A Event Has Existed Or Have The Same Code With Your Event");
-                return;
+                return this;
             }
             eventHandlerCollection.Add(messageEvent.Code, EventHandler);
+            return this;
         }
 
 
