@@ -25,9 +25,9 @@ var WebSocketMessageEvent =
     OnClientMessage : {Code : 300}, 
     OnServerMessage : {Code : 301}, 
     OnDataSideMessage : {Code : 302}, 
-    OnClientKeepAlive : {Code : 400}, 
-    OnServerKeepAlive : {Code : 401},
-    OnDataSideKeepAlive : {Code : 402},
+    OnClientTempMessage : {Code : 400}, 
+    OnServerTempMessage : {Code : 401},
+    OnDataSideTempMessage : {Code : 402},
     OnClientPreviousMessage : {Code : 500},
     OnServerPreviousMessage : {Code : 501},
     OnDataSidePreviousMessage : {Code : 502}
@@ -40,9 +40,9 @@ var WebSocketMessageType =
     Close : 2
 }
 
-function WebSocketMessage(eventCode, messageType, message)
+function WebSocketMessage(messageEvent, messageType, message)
 {
-    this.eventCode = eventCode;
+    this.MessageEvent = messageEvent;
     this.MessageType = messageType;
     this.Message = message; 
     this.Length = this.MessageType == 0 ? new TextEncoder('utf-8').encode(message).length : message.length;
@@ -54,7 +54,7 @@ function MyWebSocket(url)
     this.websocket = new WebSocket(url);
     this.eventHandlers = [];
     this.OnMessageHandler = OnMessageHandler;
-    this.SendMessages = SendMessages;
+    this.SendMessages = (wsMessages) => SendMessages(this.websocket, wsMessages);
     this.AddEventHandler = (wsmEvent, Handler) => 
     {
         this.eventHandlers[wsmEvent.Code] = Handler;
@@ -62,7 +62,7 @@ function MyWebSocket(url)
     this.websocket.onopen = ev => 
     {
         console.log("The WebSocket Connection Opened");
-        SendMessages(this.websocket, [new WebSocketMessage(WebSocketMessageEvent.OnClientConnect , WebSocketMessageType.Text, "Hello")]);
+        SendMessages(this.websocket, [new WebSocketMessage(WebSocketMessageEvent.OnConnect, WebSocketMessageType.Text, "Hello")]);
     }
 
     this.websocket.onclose = ev =>
@@ -105,11 +105,13 @@ async function OnMessageHandler(ev, websocket, eventHandlers)
     }while(byteOffSet < bytes.byteLength);
 
     try {
+        if(eventHandlers[eventCode] == undefined) return;
         var sendMessage = await eventHandlers[eventCode](wsMessages);
         await SendMessages(websocket, sendMessage);
         
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        console.log(`eventCode : ${eventCode}`);
     }
 
     
@@ -135,7 +137,7 @@ function SetAMessage(bytes, startIndex, wsMessage)
 {
 
     new DataView(bytes, startIndex + IS_EFFECTIVE_LOCATION, UINT8_LENGTH).setUint8(0, IS_EFFECTIVE_CODE);
-    new DataView(bytes, startIndex + MESSAGE_EVENT_CODE_LOCATION, UINT32_LENGTH).setInt32(0, wsMessage.eventCode.Code, true);
+    new DataView(bytes, startIndex + MESSAGE_EVENT_CODE_LOCATION, UINT32_LENGTH).setInt32(0, wsMessage.MessageEvent.Code, true);
     new DataView(bytes, startIndex + MESSAGE_TYPE_LOCATION, UINT8_LENGTH).setUint8(0, wsMessage.MessageType);
     new DataView(bytes, startIndex + LENGTH_LOCATION, UINT32_LENGTH).setInt32(0, wsMessage.Length, true);
     var messageSegment = new DataView(bytes, startIndex + MESSAGE_LOCATION, wsMessage.Length);
@@ -158,6 +160,7 @@ function SetAMessage(bytes, startIndex, wsMessage)
 
 function SendMessages(websocket, wsMessages)
 {
+    if(wsMessages == undefined || wsMessages.length == 0) return;
     return new Promise(resolve => 
     {
         var totalLength = 0;

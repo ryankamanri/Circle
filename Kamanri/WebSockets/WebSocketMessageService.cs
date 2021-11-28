@@ -19,7 +19,7 @@ namespace Kamanri.WebSockets
 
     public sealed class WebSocketMessageService : IWebSocketMessageService
     {
-
+        // Return A Task Without Do Anything.
         public static Task<IList<WebSocketMessage>> DefaultTask = Task.Run<IList<WebSocketMessage>>(() => new List<WebSocketMessage>());
 
         private ILogger<WebSocketMessageService> _logger;
@@ -59,8 +59,8 @@ namespace Kamanri.WebSockets
             Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> EventHandler = default;
             if (!eventHandlerCollection.TryGetValue(firstMessage.MessageEvent.Code, out EventHandler))
             {
-                _logger.LogError($"[{DateTime.Now}] : The Corresponding Handler Of {firstMessage.MessageEvent.Code} Is Not Found, It Will Cause Exception");
-                throw new WebSocketException($"The Corresponding Handler Of {firstMessage.MessageEvent.Code} Is Not Found");
+                _logger.LogError($"[{DateTime.Now}] : The Corresponding Handler Of Event {{ Code = {firstMessage.MessageEvent.Code} }} Is Not Found, It Will Cause Exception");
+                throw new WebSocketException($"The Corresponding Handler Of Event {{ Code = {firstMessage.MessageEvent.Code} }} Is Not Found");
             }
             return await EventHandler(webSocket, messages);
             

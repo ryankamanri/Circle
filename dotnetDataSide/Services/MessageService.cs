@@ -25,20 +25,37 @@ namespace dotnetDataSide.Services
 
 
 
-        public IEnumerable<Message> SelectTempMessagesOfAUser(int eventCode, User user)
+        public IEnumerable<Message> SelectTempMessagesOfAUser(int eventCode, long userID)
         {
             var selectedMessages = from messageItem in messages
-            where messageItem.ReceiveID == user.ID 
+            where messageItem.ReceiveID == userID 
             select messageItem;
-            _logger.LogInformation(eventCode, $"Selected {selectedMessages.Count()} Temporary Messages Of User {user.ToString()}");
+            _logger.LogInformation(eventCode, $"Selected {selectedMessages.Count()} Temporary Messages Of User {userID.ToString()}");
             return selectedMessages;
         }
 
-        public async Task<bool> AppendMessage(int eventCode, Message message)
+        public async Task<IEnumerable<Message>> SelectPreviousMessagesOfClientUser(int eventCode, long clientUserID, long requestUserID )
+        {
+            var receivedMessages = await _dbc.SelectCustom<Message>($"{Message.RECEIVE_ID} = {clientUserID} and {Message.SEND_USER_ID} = {requestUserID}");
+            var sendedMessages = await _dbc.SelectCustom<Message>($"{Message.SEND_USER_ID} = {clientUserID} and {Message.RECEIVE_ID} = {requestUserID}");
+            var allMessages = receivedMessages.Union(sendedMessages, new Message());
+            _logger.LogInformation(eventCode, $"Select {allMessages.Count()} Messages Of User {clientUserID} With Request User {requestUserID}");
+            return allMessages;
+            
+        }
+
+        public bool AppendTemporaryMessage(int eventCode, Message message)
         {
             messages.Add(message);
+            _logger.LogInformation(eventCode, $"Append A Temporary Message, Which Type : {message.ContentType}");
+            return true;
+        }
+
+        public async Task<bool> AppendConstantMessage(int eventCode, Message message)
+        {
+            
             await _dbc.Insert(message);
-            _logger.LogInformation(eventCode, $"Append A Message, Which Type : {message.ContentType}");
+            _logger.LogInformation(eventCode, $"Append A Constant Message, Which Type : {message.ContentType}");
             return true;
         }
     }

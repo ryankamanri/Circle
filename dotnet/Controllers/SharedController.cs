@@ -13,8 +13,7 @@ using dotnet.Services;
 using dotnet.Services.Extensions;
 using dotnet.Services.Cookie;
 using Kamanri.Http;
-
-
+using Kamanri.Extensions;
 
 namespace dotnet.Controllers
 {
@@ -104,8 +103,6 @@ namespace dotnet.Controllers
             if(HttpContext.Request.Form.TryGetValue("search",out searchInfo) == false) return new JsonResult("bad request");
 
             search = searchInfo;
-
-            //if(!_tagService.TagIndex.ContainsKey(search)) return new JsonResult(JsonConvert.SerializeObject(tagsString));
             
             var tagList = await _tagService.TagIndex(search);
 
@@ -114,7 +111,7 @@ namespace dotnet.Controllers
             {
                 tagsString.Add(await this.RenderViewAsync<Tag>("Tag",tag,true));
             }
-            var resultJSON = JsonConvert.SerializeObject(tagsString);
+            var resultJSON = tagsString.ToJson();
             return new JsonResult(resultJSON);
             
         }
@@ -128,7 +125,7 @@ namespace dotnet.Controllers
 
             PostInfo postInfo = await _postService.GetPostInfo(new Post(Convert.ToInt64(postID.ToString())));
 
-            return new JsonResult(JsonConvert.SerializeObject(postInfo));
+            return new JsonResult(postInfo.ToJson());
         }
     }
 }

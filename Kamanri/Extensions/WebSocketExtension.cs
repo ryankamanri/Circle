@@ -24,7 +24,7 @@ namespace Kamanri.Extensions
         {
             IList<WebSocketMessage> messages = new List<WebSocketMessage>();
 
-            WebSocketReceiveResult result;
+            WebSocketReceiveResult result = default;
 
             do
             {
@@ -33,13 +33,27 @@ namespace Kamanri.Extensions
                     result = await webSocket.ReceiveAsync(
                         new ArraySegment<byte>(buffer),
                         CancellationToken.None);
+                    if (webSocket.CloseStatus.HasValue) throw new System.Net.WebSockets.WebSocketException();
 
                     buffer.GetWebSocketMessages(messages);
                 }
                 catch (Exception e)
                 {
-
-                    throw new WebSocketExtensionException($"Failed To Receive The Message Or Get WebSocketMessages From Messages, Buffer Bytes :\n{buffer.ShowArrayItems(0x30)}", e);
+                    if (e.GetType() == typeof(System.Net.WebSockets.WebSocketException))
+                    {
+                        messages = new List<WebSocketMessage>()
+                        {
+                            new WebSocketMessage()
+                            {
+                                MessageEvent = WebSocketMessageEvent.OnDisconnect,
+                                MessageType = WebSocketMessageType.Text,
+                                Message = "Client Had Disconnected"
+                            }
+                        };
+                        await OnMessage(messages);
+                        return;
+                    }
+                    else throw new WebSocketExtensionException($"Failed To Receive The Message Or Get WebSocketMessages From Messages, Buffer Bytes :\n{buffer.ShowArrayItems(0x30)}", e);
                 }
             } while (!result.EndOfMessage);
 

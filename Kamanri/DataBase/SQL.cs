@@ -115,7 +115,7 @@ namespace Kamanri.Database
                 currentConnectionNumber++;
                 currentConnectionNumber %= options.NumberOfConnections;
             }
-            _logger.LogInformation($"[{DateTime.Now}] : Current Connection Number : {currentConnectionNumber}, All Connections Are Full Used");
+            _logger.LogWarning($"[{DateTime.Now}] : Current Connection Number : {currentConnectionNumber}, All Connections Are Full Used");
             return connectionPool[currentConnectionNumber];
             
         }
@@ -198,6 +198,7 @@ namespace Kamanri.Database
                     _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}'");
                     await command.ExecuteNonQueryAsync();
                 }
+                connectionAndMutex.Value.Signal();
             }
             catch (Exception e)
             {
@@ -226,6 +227,7 @@ namespace Kamanri.Database
                     _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}', Set Parameters");
                     await command.ExecuteNonQueryAsync();
                 }
+                connectionAndMutex.Value.Signal();
             }
             catch (Exception e)
             {

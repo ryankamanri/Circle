@@ -33,7 +33,7 @@ namespace dotnetDataSide
         [Route("admsg")] 
         public async Task<IActionResult> AppendMessage()
         {
-           return new JsonResult(await _messageService.AppendMessage(0, new Message(3,2,false,DateTime.Now,MessageContentType.Text,"love permanently".ToByteArray())));
+           return new JsonResult(await _messageService.AppendConstantMessage(0, new Message(3,2,false,DateTime.Now,MessageContentType.Text,"love permanently".ToByteArray())));
             
         }
     }

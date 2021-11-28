@@ -24,7 +24,7 @@ namespace dotnetPrivateChatApi.Controllers
 
         [HttpGet]
         [Route("/")]
-        public async Task<IActionResult> Indexer()
+        public async Task Indexer()
         {
 
             if (HttpContext.WebSockets.IsWebSocketRequest)
@@ -33,8 +33,7 @@ namespace dotnetPrivateChatApi.Controllers
                 //注册WebSocket
                 await _wsClient.AcceptWebSocketInjection(webSocket);
             }
-
-            return new OkResult();
+            
             
         }
 

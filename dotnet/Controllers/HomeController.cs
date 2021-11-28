@@ -13,6 +13,7 @@ using dotnet.Middlewares;
 using dotnet.Services;
 using dotnet.Services.Extensions;
 using dotnet.Services.Cookie;
+using Kamanri.Extensions;
 
 namespace dotnet.Controllers
 {
@@ -123,7 +124,7 @@ namespace dotnet.Controllers
                 resultJSON.Add(this.RenderViewAsync("Tag",childTag,true).Result);
             }
 
-            return new JsonResult(JsonConvert.SerializeObject(resultJSON));
+            return new JsonResult(resultJSON.ToJson());
         }
             
         #endregion

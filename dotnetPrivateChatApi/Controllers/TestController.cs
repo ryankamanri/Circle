@@ -41,8 +41,6 @@ namespace dotnetPrivateChatApi.Controllers
         public string Test()
         {
             Tag tag = new Tag(1, "hahaha");
-            //return new JsonResult(JsonConvert.SerializeObject(tag));
-            //return new JsonResult(tag);
             return tag.ToJson();
         }
         [Route("wsmtest")]

@@ -14,6 +14,11 @@ namespace Kamanri.Self
         {
             WaitTime = waitTime;
         }
+
+        public Mutex(bool initialMutex = false)
+        {
+            this.mutex = initialMutex;
+        }
         public async Task Wait()
         {
             await Task.Run(() => 

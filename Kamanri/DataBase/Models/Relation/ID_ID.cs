@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using Newtonsoft.Json;
 using Kamanri.Self;
-
-
+using Kamanri.Extensions;
 
 namespace Kamanri.Database.Models.Relation
 {
@@ -31,7 +30,7 @@ namespace Kamanri.Database.Models.Relation
             this.ID_2 = ID_2;
             try 
             {
-                Relations = JsonConvert.DeserializeObject<ExpandoObject>(relationsJSON);
+                Relations = relationsJSON.ToObject<ExpandoObject>();
             }catch(Exception e)
             {
                 throw new DataBaseModelException("Deserialize The ExpandoObject relationsJSON Failed", e);

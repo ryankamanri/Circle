@@ -1,6 +1,7 @@
 using System;
 using System.Net.WebSockets;
 using System.Collections.Generic;
+using System.Linq;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
 using dotnetDataSide.Models;
@@ -9,44 +10,66 @@ namespace dotnetDataSide.Services.Extensions
 {
     public static class MessageExtension
     {
-        public static IList<WebSocketMessage> ToWebSocketMessageList(this Message message, WebSocketMessageEvent wsmEvent)
+        public static IList<WebSocketMessage> ToWebSocketMessageList(this IList<Message> messages, WebSocketMessageEvent wsmEvent)
         {
             var msgList = new List<WebSocketMessage>();
-            if(message.ContentType == MessageContentType.Text)
+            foreach (var message in messages)
             {
-                msgList.Add(new WebSocketMessage(
-                    wsmEvent, 
-                    WebSocketMessageType.Text, 
-                    message.ToJson()
-                ));
+                if(message.ContentType == MessageContentType.Text)
+                {
+                    msgList.Add(new WebSocketMessage(
+                        wsmEvent, 
+                        WebSocketMessageType.Text, 
+                        message.ToJson()
+                    ));
+                }
+                else
+                {
+                    var bytes = message.Content;
+                    message.Content = default;
+                    msgList.Add(new WebSocketMessage(
+                        wsmEvent,
+                        WebSocketMessageType.Text,
+                        message.ToJson()
+                    ));
+                    msgList.Add(new WebSocketMessage(
+                        wsmEvent, 
+                        WebSocketMessageType.Binary, 
+                        bytes
+                    ));
+                    message.Content = bytes;
+                }
             }
-            else
-            {
-                var bytes = message.Content;
-                message.Content = default;
-                msgList.Add(new WebSocketMessage(
-                    wsmEvent,
-                    WebSocketMessageType.Text,
-                    message.ToJson()
-                ));
-                msgList.Add(new WebSocketMessage(
-                    wsmEvent, 
-                    WebSocketMessageType.Binary, 
-                    bytes
-                ));
-                message.Content = bytes;
-            }
+            
             return msgList;
         }
 
-        public static Message ToMessage(this IList<WebSocketMessage> wsMessages)
+        public static IList<Message> ToMessages(this IList<WebSocketMessage> wsMessages, int offset = 0, int length = -1)
         {
-            var message = (wsMessages[0].Message as string).ToObject<Message>();
-            if(wsMessages.Count == 1) return message;
-            var bytesContent = (wsMessages[1].Message as byte[]);
-            message.Content = bytesContent;
-            return message;
+            var result = new List<Message>();
+            var _offset = offset;
+            while (_offset < wsMessages.Count && (_offset - offset < length || length == -1))
+            {
+                var message = (wsMessages[_offset].Message as string).ToObject<Message>();
+                if (message.ContentType != MessageContentType.Text)
+                {
+                    var bytesContent = (wsMessages[_offset + 1].Message as byte[]);
+                    message.Content = bytesContent;
+                    result.Add(message);
+                    _offset += 2;
+                }
+                else
+                {
+                    result.Add(message);
+                    _offset++;
+                }
+
+            }
+
+            return result;
+
         }
-        
     }
+        
+    
 }

@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "dotnet_privatechat_api": {
+    "dotnetApi": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": false,

@@ -8,7 +8,7 @@ using Kamanri.Database.Models;
 namespace dotnetPrivateChatApi.Models
 {
 
-    public class Message : Entity<Message>, IComparer<Message>
+    public class Message : EntityView, IComparer<Message>, IEqualityComparer<Message>
     {
         public long SendUserID { get; set; }
         public long ReceiveID { get; set; }
@@ -17,9 +17,7 @@ namespace dotnetPrivateChatApi.Models
         public DateTime Time { get; set; }
         public string ContentType { get; set; }
         public object Content;
-
-
-        public override string TableName { get ; set ; } = "message";
+        
         
         public Message(){}
 
@@ -46,46 +44,20 @@ namespace dotnetPrivateChatApi.Models
             Content = content;
         }
 
-        public override string ColumnNamesString() => 
-        $"{TableName}.SendUserID,{TableName}.ReceiveID, {TableName}.IsGroup, {TableName}.Time,{TableName}.ContentType,{TableName}.Content";
-
-        public override string InsertValuesString() =>
-        $"{SendUserID}, {ReceiveID}, {IsGroup}, '{Time.ToString()}', '{ContentType}', @Content";
-
-
-        public override string UpdateSetString() => throw new NotImplementedException();
-
-
-        public override string CandidateKeySelectionString() =>
-        $"{TableName}.SendUserID = {SendUserID} and {TableName}.ReceiveID = {ReceiveID} and {TableName}.Time = {Time.ToString()}";
-
-
-        public override ICollection<DbParameter> SetParameter(DbCommand command)
-        {
-            var param = command.CreateParameter();
-            param.DbType = System.Data.DbType.Binary;
-            param.ParameterName = "@Content";
-            param.Value = Content;
-            return new List<DbParameter>(){param};
-        }
-
-        public override Message GetEntityFromDataReader(DbDataReader msdr) => 
-            new Message(
-                (long)msdr["ID"],
-                (long)msdr["SendUserID"],
-                (long)msdr["ReceiveID"],
-                (bool)msdr["IsGroup"],
-                (DateTime)msdr["Time"],
-                (string)msdr["ContentType"],
-                (byte[])msdr["Content"]);
-
-        public override Message GetEntity()
-        {
-            return this;
-        }
+       
 
         public int Compare(Message message_1, Message message_2) => 
             (message_1.Time - message_2.Time).Milliseconds;
+        
+        public bool Equals(Message x, Message y)
+        {
+            return x.ID == y.ID;
+        }
+
+        public int GetHashCode(Message obj)
+        {
+            return (int)obj.ID;
+        }
     }
 
 

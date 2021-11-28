@@ -29,10 +29,10 @@ namespace Kamanri.WebSockets.Model
         public static WebSocketMessageEvent OnConnect = new WebSocketMessageEvent(1);
 
         /// <summary>
-        /// Code : 2 响应暂时存储消息的事件
+        /// Code : 2 
         /// </summary>
         /// <returns></returns>
-        public static WebSocketMessageEvent OnStore = new WebSocketMessageEvent(2);
+        public static WebSocketMessageEvent OnDisconnect = new WebSocketMessageEvent(2);
         /// <summary>
         /// Code : 100
         /// </summary>
@@ -86,17 +86,17 @@ namespace Kamanri.WebSockets.Model
         /// Code : 400
         /// </summary>
         /// <returns></returns>
-        public static WebSocketMessageEvent OnClientKeepAlive = new WebSocketMessageEvent(400);
+        public static WebSocketMessageEvent OnClientTempMessage = new WebSocketMessageEvent(400);
         /// <summary>
         /// Code : 401
         /// </summary>
         /// <returns></returns>
-        public static WebSocketMessageEvent OnServerKeepAlive = new WebSocketMessageEvent(401);
+        public static WebSocketMessageEvent OnServerTempMessage = new WebSocketMessageEvent(401);
         /// <summary>
         /// Code : 402
         /// </summary>
         /// <returns></returns>
-        public static WebSocketMessageEvent OnDataSideKeepAlive = new WebSocketMessageEvent(402);
+        public static WebSocketMessageEvent OnDataSideTempMessage = new WebSocketMessageEvent(402);
 
         /// <summary>
         /// Code : 500

@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Kamanri.Self;
+using Kamanri.Extensions;
 
 namespace Kamanri.Database.Models
 {
@@ -129,7 +130,7 @@ namespace Kamanri.Database.Models
                 try
                 {
                     entity_Relations.Add(GetEntityFromDataReader(msdr_mutex.Key),
-                    JsonConvert.DeserializeObject<ExpandoObject>((string)msdr_mutex.Key["relations"]));
+                    ((string)msdr_mutex.Key["relations"]).ToObject<ExpandoObject>());
                 }catch(Exception e)
                 {
                     throw new DataBaseModelException($"Failed To Get Entity From Data Reader Or Deserialize The ExpandoObject msdr_mutex.Key['relations'] {(string)msdr_mutex.Key["relations"]}", e);

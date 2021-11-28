@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Kamanri.Database.Models;
 using Kamanri.Database.Models.Relation;
 using Kamanri.Self;
-
+using Kamanri.Extensions;
 
 namespace Kamanri.Database
 {
@@ -305,7 +305,7 @@ namespace Kamanri.Database
             key_value.ID_2 = Tve.ID;
             SetRelations(key_value.Relations);
             string tableName = $"{Tke.TableName}_{Tve.TableName}";
-            string relationsJSON = JsonConvert.SerializeObject(key_value.Relations);
+            string relationsJSON = key_value.Relations.ToJson();
             string SQLStatement = $"insert into {tableName} values ({Tke.ID},{Tve.ID},'{relationsJSON}')";
             await _sql.Execute(SQLStatement);
         }

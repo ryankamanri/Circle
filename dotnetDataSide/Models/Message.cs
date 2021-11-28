@@ -4,14 +4,17 @@ using System.Data.Common;
 using System.IO;
 using MySql.Data.MySqlClient;
 using Kamanri.Database.Models;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace dotnetDataSide.Models
 {
 
-    public class Message : Entity<Message>, IComparer<Message>
+    public class Message : Entity<Message>, IComparer<Message>, IEqualityComparer<Message>
     {
         public long SendUserID { get; set; }
+        public static string SEND_USER_ID = "SendUserID";
         public long ReceiveID { get; set; }
+        public static string RECEIVE_ID = "ReceiveID";
 
         public bool IsGroup { get; set; } = false;
         public DateTime Time { get; set; }
@@ -19,7 +22,7 @@ namespace dotnetDataSide.Models
         public object Content;
 
 
-        public override string TableName { get ; set ; } = "message";
+        public override string TableName { get ; set ; } = "messages";
         
         public Message(){}
 
@@ -86,6 +89,16 @@ namespace dotnetDataSide.Models
 
         public int Compare(Message message_1, Message message_2) => 
             (message_1.Time - message_2.Time).Milliseconds;
+
+        public bool Equals(Message x, Message y)
+        {
+            return x.ID == y.ID;
+        }
+
+        public int GetHashCode(Message obj)
+        {
+            return (int)obj.ID;
+        }
     }
 
 

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using dotnet.Models;
 using dotnet.Services;
 using Kamanri.Http;
-
+using Kamanri.Extensions;
 
 namespace dotnet.Services
 {
@@ -74,7 +74,7 @@ namespace dotnet.Services
         /// <returns></returns>
         public async Task<bool> InsertPost(User author,string title,string focus,string summary, string content,string tagIDs)
         {
-            var TagIDs = JsonConvert.DeserializeObject<IList<long>>(tagIDs);
+            var TagIDs = tagIDs.ToObject<IList<long>>();
             return await _api.Post<bool>("/Post/InsertPost",new JsonObject()
             {
                 {"Author", author},

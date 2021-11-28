@@ -7,12 +7,12 @@ namespace dotnetDataSide.Services
 {
     public class UserService
     {
-        public Dictionary<User, long> OnlineUsers { get; }
+        public Dictionary<long, long> OnlineUserID_ServerID { get; }
         public ILogger<UserService> _logger;
         public UserService(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<UserService>();
-            OnlineUsers = new Dictionary<User, long>();
+            OnlineUserID_ServerID = new Dictionary<long, long>();
         }
 
         /// <summary>
@@ -20,32 +20,41 @@ namespace dotnetDataSide.Services
         /// </summary>
         /// <param name="user"></param>
         /// <param name="serviceID"></param>
-        public void AppendOnlineUser(int eventCode, User user, long serviceID)
+        public void AppendOnlineUser(int eventCode, long userID, long serviceID)
         {
-            var selectedUser = (from userItem in OnlineUsers.Keys 
-            where userItem.ID == user.ID 
-            select userItem).FirstOrDefault();
+            var selectedUser = (from userItemID in OnlineUserID_ServerID.Keys 
+            where userItemID == userID
+            select userItemID).FirstOrDefault();
             if(selectedUser != default)
             {
-                if(OnlineUsers[selectedUser] != serviceID)
+                if(OnlineUserID_ServerID[selectedUser] != serviceID)
                 {
-                    _logger.LogInformation(eventCode, $"Convert The Service ID Of ({user.ToJson()}) To {serviceID}");
-                    OnlineUsers[selectedUser] = serviceID;
+                    _logger.LogInformation(eventCode, $"Convert The Service ID Of ({userID.ToJson()}) To {serviceID}");
+                    OnlineUserID_ServerID[selectedUser] = serviceID;
                 }
             }
-            else OnlineUsers.Add(user, serviceID);
-            _logger.LogInformation(eventCode, $"Now OnlineUsers Count : {OnlineUsers.Count}");
+            else OnlineUserID_ServerID.Add(userID, serviceID);
+            _logger.LogInformation(eventCode, $"Now OnlineUserID_ServerID Count : {OnlineUserID_ServerID.Count}");
         }
 
-        public void RemoveOnlineUser(User user)
+        public void RemoveOnlineUser(int eventCode, long userID, long serviceID)
         {
-            OnlineUsers.Remove(user);
+            var selectedUser = (from userID_serviceID in OnlineUserID_ServerID
+                where userID_serviceID.Key == userID
+                select userID_serviceID.Key).FirstOrDefault();
+            if(selectedUser == default) _logger.LogError(eventCode, $"Cannot Remove The Inexistent User {{ ID = {userID} }}");
+            else
+            {
+                if(OnlineUserID_ServerID[selectedUser] != serviceID) _logger.LogError(eventCode, $"The User {{ ID = {userID} }} Has Conflict At Service ID : Stored Is `{OnlineUserID_ServerID[selectedUser]}` But Ordered `{serviceID}`");
+                OnlineUserID_ServerID.Remove(selectedUser);
+                _logger.LogInformation(eventCode, $"Removed Online User {{ ID = {userID} }}");
+            }
         }
 
         public long SelectServerIDByUserID(long userID)
         {
-            var selectedServerID = (from user_serverID in OnlineUsers
-            where user_serverID.Key.ID == userID
+            var selectedServerID = (from user_serverID in OnlineUserID_ServerID
+            where user_serverID.Key == userID
             select user_serverID.Value).FirstOrDefault();
             return selectedServerID;
         }

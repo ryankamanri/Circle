@@ -31,7 +31,7 @@ namespace Kamanri.WebSockets.Model
         /// 该消息种类 (Text, Binary, Close)
         /// </summary>
         /// <value></value>
-        public WebSocketMessageType MessageType { get; }
+        public WebSocketMessageType MessageType { get; set;}
 
         /// <summary>
         /// 该消息长度 (统一设置为 byte[] 的长度)

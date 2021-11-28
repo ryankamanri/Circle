@@ -19,6 +19,9 @@ namespace Kamanri.WebSockets
         Task AcceptWebSocketInjection(WebSocket webSocket);
         Task ServerSendMessage(long webSocketID, IList<WebSocketMessage> sendMessages);
         Task ClientSendMessage(IList<WebSocketMessage> sendMessages);
+        long GetWebSocketAssignedID(WebSocket webSocket);
+        Task ClientClose(long webSocketID, WebSocketCloseStatus closeStatus, string statusDescription);
+
     }
 
     public sealed class WebSocketClient : IWebSocketClient
@@ -45,6 +48,7 @@ namespace Kamanri.WebSockets
             var webSocketUrl = config["WebSocket:URL"];
             _logger = loggerFactory.CreateLogger<WebSocketClient>();
             _wsmService = wsmService;
+            webSocketServerCollection = new Dictionary<long, WebSocket>();
             if(webSocketUrl != default)
             {
                 uri = new Uri(webSocketUrl);
@@ -75,9 +79,6 @@ namespace Kamanri.WebSockets
                     webSocket = new ClientWebSocket();
                     await webSocket.ConnectAsync(uri, CancellationToken.None);
 
-                    // if (OnOpen != null)
-                    //     OnOpen(webSocket, new EventArgs());
-
                     await webSocket.SendMessageAsync(new List<WebSocketMessage>()
                     {
                         new WebSocketMessage(WebSocketMessageEvent.OnConnect,
@@ -99,7 +100,7 @@ namespace Kamanri.WebSockets
                 finally
                 {
                     if (!isUserClose)
-                        Close(webSocket.CloseStatus.Value, webSocket.CloseStatusDescription + netErr);
+                        await webSocket.CloseAsync(webSocket.CloseStatus.Value, webSocket.CloseStatusDescription + netErr, CancellationToken.None);
                 }
             });
 
@@ -115,7 +116,19 @@ namespace Kamanri.WebSockets
             if(webSocketServerCollection == default) webSocketServerCollection = new Dictionary<long, WebSocket>();
             long ID = RandomGenerator.GenerateID();
             this.webSocketServerCollection.Add(ID, webSocket);
+            _logger.LogInformation($"[{DateTime.Now}] : WebSocket Client {{ id = {ID} }} Has Connected, WebSocket Collection Count : {webSocketServerCollection.Count}");
             return ID;
+        }
+
+        private void DisposeWebSocket(WebSocket webSocket)
+        {
+            
+            var managedID_webSocket = (from id_socket in webSocketServerCollection
+                where id_socket.Value == webSocket
+                select id_socket).FirstOrDefault();
+            webSocketServerCollection.Remove(managedID_webSocket);
+            webSocket.Dispose();
+            _logger.LogInformation($"[{DateTime.Now}] : WebSocket Client {{ id = {managedID_webSocket.Key } }} Has Disposed, WebSocket Collection Count : {webSocketServerCollection.Count}");
         }
 
         /// <summary>
@@ -140,8 +153,11 @@ namespace Kamanri.WebSockets
                 ));
                 return _wsmService.OnMessage(webSocket, messages);
             });
-            while(true) 
+            while(webSocket.State == WebSocketState.Open) 
                 await webSocket.OnReceiveMessageAsync(messages => _wsmService.OnMessage(webSocket, messages));
+            // webSocket遭到中断, 关闭连接 (status 'Aborted')
+
+            DisposeWebSocket(webSocket);
 
         }
 
@@ -164,42 +180,52 @@ namespace Kamanri.WebSockets
         /// <returns></returns>
         public async Task ServerSendMessage(long webSocketID, IList<WebSocketMessage> sendMessages)
         {
-            await webSocketServerCollection[webSocketID].SendMessageAsync(sendMessages);
-        }
-
-
-
-
-        /// <summary>
-        /// 关闭连接
-        /// </summary>
-        public void Close()
-        {
-            isUserClose = true;
-            Close(WebSocketCloseStatus.NormalClosure, "用户手动关闭");
-        }
-
-        public void Close(WebSocketCloseStatus closeStatus, string statusDescription)
-        {
-            Task.Run(async () =>
+            WebSocket clientWebSocket = default;
+            if(!webSocketServerCollection.TryGetValue(webSocketID, out clientWebSocket))
+                _logger.LogError($"[{DateTime.Now}] : Cannot Find Client WebSocket By WebSocket ID {webSocketID}, Execute Default Task");
+            else
             {
-                try
-                {
-                    //关闭WebSocket（客户端发起）
-                    await webSocket.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                _logger.LogInformation($"[{DateTime.Now}] : Send To Client {webSocketID}");
+                await clientWebSocket.SendMessageAsync(sendMessages);
+            }
+        }
 
+        public long GetWebSocketAssignedID(WebSocket webSocket)
+        {
+            return (from ID_WebSocket in webSocketServerCollection
+                where ID_WebSocket.Value == webSocket
+                select ID_WebSocket.Key).FirstOrDefault();
+        }
+
+        public WebSocket GetWebSocket(long assignedID)
+        {
+            WebSocket websocket = default;
+            if(!webSocketServerCollection.TryGetValue(assignedID, out websocket))
+                _logger.LogWarning($"Cannot Get WebSocket By Assigned ID {assignedID}");
+            return websocket;
+        }
+
+
+        public async Task ClientClose(long webSocketID, WebSocketCloseStatus closeStatus, string statusDescription)
+        {
+            WebSocket clientWebSocket = default;
+            if (!webSocketServerCollection.TryGetValue(webSocketID, out clientWebSocket))
+            {
+                _logger.LogError($"[{DateTime.Now}] : Cannot Find Client WebSocket By WebSocket ID {webSocketID}");
+                return;
+            }
+            try
+            {
+                await clientWebSocket.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
+                clientWebSocket.Dispose();
+            }
+            catch (Exception e)
+            {
                 webSocket.Abort();
                 webSocket.Dispose();
-
-
-            });
+                _logger.LogError(e, $"Closed WebSocket {webSocketID} Abnormally");
+            }
         }
-
     }
 
 }

@@ -86,7 +86,7 @@ namespace Kamanri.Http
                 var strfiedObj = new Dictionary<string,string>();
                 foreach(var key in obj.Keys)
                 {
-                    strfiedObj[key] = JsonConvert.SerializeObject(obj[key]);
+                    strfiedObj[key] = obj[key].ToJson();
                 }
                 var content = new FormUrlEncodedContent(strfiedObj);
                 var response = await httpClient.PostAsync(defaultHost + url,content);
@@ -104,7 +104,7 @@ namespace Kamanri.Http
                 var strfiedObj = new Dictionary<string,string>();
                 foreach(var key in obj.Keys)
                 {
-                    strfiedObj[key] = JsonConvert.SerializeObject(obj[key]);
+                    strfiedObj[key] = obj[key].ToJson();
                 }
                 var content = new FormUrlEncodedContent(strfiedObj);
                 var response = await httpClient.PostAsync(defaultHost + url,content);
@@ -124,7 +124,7 @@ namespace Kamanri.Http
                 var strfiedObj = new Dictionary<string,string>();
                 foreach(var key in obj.Keys)
                 {
-                    strfiedObj[key] = JsonConvert.SerializeObject(obj[key]);
+                    strfiedObj[key] = obj[key].ToJson();
                 }
                 var content = new FormUrlEncodedContent(strfiedObj);
                 var response = await httpClient.PostAsync(host + url,content);
@@ -144,7 +144,7 @@ namespace Kamanri.Http
                 var strfiedObj = new Dictionary<string,string>();
                 foreach(var key in obj.Keys)
                 {
-                    strfiedObj[key] = JsonConvert.SerializeObject(obj[key]);
+                    strfiedObj[key] = obj[key].ToJson();
                 }
                 var content = new FormUrlEncodedContent(strfiedObj);
                 var response = await httpClient.PostAsync(host + url,content);

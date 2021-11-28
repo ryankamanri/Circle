@@ -24,7 +24,7 @@ namespace dotnetDataSide.Controllers
 
         [HttpGet]
         [Route("/")]
-        public async Task<IActionResult> Indexer()
+        public async Task Indexer()
         {
 
             if (HttpContext.WebSockets.IsWebSocketRequest)
@@ -34,7 +34,6 @@ namespace dotnetDataSide.Controllers
                 await _wsClient.AcceptWebSocketInjection(webSocket);
             }
 
-            return new OkResult();
             
         }
 
