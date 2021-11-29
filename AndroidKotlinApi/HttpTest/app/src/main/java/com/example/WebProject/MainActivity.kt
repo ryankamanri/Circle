@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
         // api类的初始化
-        api = Api("http://192.168.1.104:5030")
+        api = Api("http://192.168.1.104:5031")
         myWebSocket = MyWebSocket("ws://192.168.1.104:5042")
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
