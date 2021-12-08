@@ -135,6 +135,9 @@ class MyWebSocket(url: String) {
 
         websocket.OnFaliure = { t: Throwable, response: Response? ->
             Log.e(toString(), "An Error Has Occured Caused By : $t : ${t.message}")
+            while (!websocket.TryReconnect()){
+                Thread.sleep(3000)
+            }
         }
 
         websocket.OnMessage = { bytes: ByteString ->

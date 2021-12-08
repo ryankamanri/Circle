@@ -68,19 +68,6 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 )
-//                myWebSocket.SendMessages(
-//                    arrayListOf(
-//                        MyWebSocket.WebSocketMessage(
-//                            MessageEvent = MyWebSocket.WebSocketMessageEvent.OnClientPreviousMessage,
-//                            MessageType = MyWebSocket.WebSocketMessageType.Text,
-//                            Message = 8.toString()
-//                        ),
-//                        MyWebSocket.WebSocketMessage(
-//                            MessageEvent = MyWebSocket.WebSocketMessageEvent.OnClientPreviousMessage,
-//                            MessageType = MyWebSocket.WebSocketMessageType.Text,
-//                            Message = 2.toString()
-//                        ))
-//                )
             }
 
 

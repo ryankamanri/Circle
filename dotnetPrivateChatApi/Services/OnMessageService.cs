@@ -303,7 +303,11 @@ namespace dotnetPrivateChatApi.Services
                 }
             });
             _userService.onlineUserID_WebSocketIDs.Remove(userID);
-            _userService.onlineUserID_WebSocketIDsMutex[userID].Signal();
+            Mutex mutex;
+            if (_userService.onlineUserID_WebSocketIDsMutex.TryGetValue(userID, out mutex))
+            {
+                mutex.Signal();
+            }
             return default;
         }
     }

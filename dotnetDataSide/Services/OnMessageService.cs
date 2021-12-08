@@ -105,7 +105,7 @@ namespace dotnetDataSide.Services
                 MessageType = WebSocketMessageType.Text,
                 Message = userID.ToString()
             });
-            result.AddRange(tempMessages.ToList().ToWebSocketMessageList(WebSocketMessageEvent.OnDataSideTempMessage));
+            result.AddRange(tempMessages.ToWebSocketMessageList(WebSocketMessageEvent.OnDataSideTempMessage));
 
             return result;
 

@@ -33,7 +33,10 @@ namespace Kamanri.Extensions
                     result = await webSocket.ReceiveAsync(
                         new ArraySegment<byte>(buffer),
                         CancellationToken.None);
-                    if (webSocket.CloseStatus.HasValue) throw new System.Net.WebSockets.WebSocketException();
+                    if (webSocket.CloseStatus.HasValue)
+                    {
+                        throw new System.Net.WebSockets.WebSocketException();
+                    }
 
                     buffer.GetWebSocketMessages(messages);
                 }
@@ -51,6 +54,11 @@ namespace Kamanri.Extensions
                             }
                         };
                         await OnMessage(messages);
+                        
+                        if(webSocket.State == WebSocketState.Open || webSocket.State == WebSocketState.CloseReceived || webSocket.State == WebSocketState.CloseSent)
+                            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal", CancellationToken.None);
+
+                        webSocket.Dispose();
                         return;
                     }
                     else throw new WebSocketExtensionException($"Failed To Receive The Message Or Get WebSocketMessages From Messages, Buffer Bytes :\n{buffer.ShowArrayItems(0x30)}", e);

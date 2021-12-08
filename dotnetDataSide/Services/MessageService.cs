@@ -14,23 +14,27 @@ namespace dotnetDataSide.Services
 
         private ILogger<MessageService> _logger;
 
-        public ICollection<Message> messages;
+        public IDictionary<long, IList<Message>> receiveID_messages;
 
         public MessageService(DataBaseContext dbc, ILoggerFactory loggerFactory)
         {
             _dbc = dbc;
             _logger = loggerFactory.CreateLogger<MessageService>();
-            messages = new List<Message>();
+            receiveID_messages = new Dictionary<long, IList<Message>>();
         }
 
 
 
-        public IEnumerable<Message> SelectTempMessagesOfAUser(int eventCode, long userID)
+        public IList<Message> SelectTempMessagesOfAUser(int eventCode, long userID)
         {
-            var selectedMessages = from messageItem in messages
-            where messageItem.ReceiveID == userID 
-            select messageItem;
+            IList<Message> selectedMessages;
+            if (!receiveID_messages.TryGetValue(userID, out selectedMessages))
+            {
+                selectedMessages = new List<Message>();
+            }
             _logger.LogInformation(eventCode, $"Selected {selectedMessages.Count()} Temporary Messages Of User {userID.ToString()}");
+
+            receiveID_messages[userID] = new List<Message>();
             return selectedMessages;
         }
 
@@ -46,7 +50,10 @@ namespace dotnetDataSide.Services
 
         public bool AppendTemporaryMessage(int eventCode, Message message)
         {
-            messages.Add(message);
+            IList<Message> selectedMessages;
+            if (!receiveID_messages.TryGetValue(message.ReceiveID, out selectedMessages))
+                receiveID_messages[message.ReceiveID] = new List<Message>();
+            receiveID_messages[message.ReceiveID].Add(message);
             _logger.LogInformation(eventCode, $"Append A Temporary Message, Which Type : {message.ContentType}");
             return true;
         }

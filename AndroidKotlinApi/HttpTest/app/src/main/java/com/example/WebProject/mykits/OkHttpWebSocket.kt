@@ -10,8 +10,9 @@ class OkHttpWebSocket(url: String) {
     val MAX_RECONNECT_COUNT = 10
     val webSocketUrl = url
     var reconnectCount = 0
-    var IsOpen = false
-    var IsClosed = false
+    private var IsOpen = false
+    private var IsClosed = false
+    private var ConnectionMutex = false
     lateinit var webSocket: WebSocket
     lateinit var OnOpen: (response: Response) -> Unit
     lateinit var OnMessage: (bytes: ByteString) -> Unit
@@ -36,6 +37,7 @@ class OkHttpWebSocket(url: String) {
                 // WebSocket 连接建立
                 webSocket = wSocket
                 IsOpen = true
+                ConnectionMutex = true
                 OnOpen(response)
             }
 
@@ -49,13 +51,14 @@ class OkHttpWebSocket(url: String) {
                 super.onClosed(webSocket, code, reason)
                 // WebSocket 连接关闭
                 IsClosed = true
+                ConnectionMutex = false
                 OnClosed(code, reason)
             }
 
             override fun onFailure(wSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(wSocket, t, response)
                 // 出错了
-                OnFaliure(t, response)
+
                 Log.e(
                     toString(),
                     "Failed To Correspond With The Server \n Caused By $t : ${t.message} \n "
@@ -70,13 +73,23 @@ class OkHttpWebSocket(url: String) {
                     reconnectCount++
                     WebSocketConnect()
                 }
+
+                ConnectionMutex = false
                 if (!IsOpen) Log.w(toString(), "Connection Has NOT Been Opened")
                 if (IsClosed) Log.w(toString(), "Connection Had Been Closed")
                 if (reconnectCount >= MAX_RECONNECT_COUNT)
                     Log.e(toString(), "Reach the maximum number of reconnections")
-
+                OnFaliure(t, response)
             }
         })
+    }
+
+    fun TryReconnect() : Boolean{
+        if(!ConnectionMutex){
+            WebSocketConnect()
+            return true
+        }
+        return false
     }
 
     fun Send(bytes: ByteString) {

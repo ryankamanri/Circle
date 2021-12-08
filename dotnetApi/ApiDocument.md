@@ -103,7 +103,7 @@
 > 请求参数 : 
 > 
 > > `"User"` : `User` -- 用户实体
-> > `"Selections"` : `JsonArray` -- 选择用户帖子的类型, 例如`{"Type" : ["Owned"]}` 表示用户选择标签类型为"自己拥有"的帖子
+> > `"Selections"` : `JsonObject` -- 选择用户帖子的类型, 例如`{"Type" : ["Owned"]}` 表示用户选择标签类型为"自己拥有"的帖子
 > 
 > 返回参数 : 
 > 
@@ -117,11 +117,11 @@
 > 请求参数 : 
 > 
 > > `"User"` : `User` -- 用户实体
-> > `"Selections"` : `JsonArray` -- 选择用户采取行为的类型, 例如`{"Type" : ["Focus"]}` 表示用户选择自己关注的用户
+> > `"Selections"` : `JsonObject` -- 选择用户采取行为的类型, 例如`{"Type" : ["Focus"]}` 表示用户选择自己关注的用户
 > 
 > 返回参数 : 
 > 
-> > `Array<User>` -- 帖子实体数组
+> > `Array<User>` -- 用户实体数组
 
 - /User/SelectUserPassive
 
@@ -131,11 +131,11 @@
 > 请求参数 : 
 > 
 > > `"User"` : `User` -- 用户实体
-> > `"Selections"` : `JsonArray` -- 选择用户采取行为的类型, 例如`{"Type" : ["Focus"]}` 表示用户选择自己关注的用户
+> > `"Selections"` : `JsonObject` -- 选择用户采取行为的类型, 例如`{"Type" : ["Focus"]}` 表示用户选择自己关注的用户
 > 
 > 返回参数 : 
 > 
-> > `Array<User>` -- 帖子实体数组
+> > `Array<User>` -- 用户实体数组
 
 - User/MappingPostsByTag
 
@@ -144,7 +144,7 @@
 > 请求参数 : 
 > 
 > > `"User"` : `User` -- 用户实体
-> > `"Selections"` : `JsonArray` -- 选择帖子拥有标签的类型, 此处类型默认为空, 填`{}`即可.
+> > `"Selections"` : `JsonObject` -- 选择帖子拥有标签的类型, 此处类型默认为空, 填`{}`即可.
 > 
 > 返回参数 : 
 > 
