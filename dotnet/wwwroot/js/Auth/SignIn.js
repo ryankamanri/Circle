@@ -42,7 +42,7 @@ function SignIn()
             if(data == "注册成功") 
             {
                 await ShowMessage("alert alert-success","😀",data);
-                window.location.href = "/Home";
+                window.location.href = "/SelectCircle";
             }
             ShowMessage("alert alert-warning","😥",data);
         }).fail(() =>

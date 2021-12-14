@@ -97,7 +97,7 @@ namespace dotnetApi.Models
 
         public override string InsertValuesString()
         {
-            return $"{ID},'{NickName}','{RealName}','{University}','{School}','{Speciality}','{SchoolYear.ToString()}','{Introduction}','{HeadImage}'";
+            return $"'{NickName}','{RealName}','{University}','{School}','{Speciality}','{SchoolYear.ToString()}','{Introduction}','{HeadImage}'";
         }
 
         public override string UpdateSetString()

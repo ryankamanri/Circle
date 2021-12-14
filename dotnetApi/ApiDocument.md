@@ -137,7 +137,7 @@
 > 
 > > `Array<User>` -- 用户实体数组
 
-- User/MappingPostsByTag
+- /User/MappingPostsByTag
 
 通过标签请求拥有该标签的帖子
 > 方法 : Post
@@ -150,7 +150,7 @@
 > 
 > > `Array<Post>` -- 帖子实体数组
 
-- User/InsertUser
+- /User/InsertUser
 
 新增一位用户
 > 方法 : Post
@@ -161,6 +161,18 @@
 > 返回参数 : 
 > 
 > > `long` -- 数据库生成的`User.ID`
+
+- /User/InsertOrUpdateUserInfo
+
+如果用户信息不存在, 插入用户信息, 否则更新用户信息
+> 方法 : Post
+> 请求参数 : 
+> 
+> > `"UserInfo"` : `UserInfo` -- 用户信息实体
+> 
+> 返回参数 : 
+> 
+> > `bool` -- 是否插入/更新成功
 
 - /User/IsUserRelationExist
 
@@ -231,7 +243,7 @@
 > 
 > > `double` -- 相似度 (经过修正)
 
-2. Tag控制器
+1. Tag控制器
 
 - /Tag/TagIndex
 
@@ -296,7 +308,7 @@
 > 
 > > `Array<Post>` -- 所有帖子
 
-- Post/GetPostInfo
+- /Post/GetPostInfo
 
 根据Post请求PostInfo
 > 方法 : Post
@@ -309,7 +321,7 @@
 
 
 
-- Post/SelectAuthorInfo
+- /Post/SelectAuthorInfo
 
 根据帖子选择作者信息
 > 方法 : Post
@@ -320,7 +332,7 @@
 > 
 > > `UserInfo` : 该Post的作者信息
 
-- Post/SelectTags
+- /Post/SelectTags
 
 根据帖子选择该帖子的标签
 > 方法 : Post
@@ -331,7 +343,7 @@
 > 
 > > `Array<Tag>` : 该Post的所有帖子
 
-- Post/InsertPost
+- /Post/InsertPost
 
 插入一条新的帖子
 > 方法 : Post
@@ -349,7 +361,7 @@
 
 4. Search控制器
 
-- Search/SearchUserInfoAndTags
+- /Search/SearchUserInfoAndTags
 
 根据关键字搜索用户信息以及用户拥有的个人标签中能够匹配到关键字的标签
 
@@ -361,7 +373,7 @@
 > 
 > > `Dictionary<UserInfo, Array<Tag>>` -- Key用户信息, Value用户拥有的个人标签中能够匹配到关键字的标签
 
-- Search/SearchPosts
+- /Search/SearchPosts
 
 根据关键字搜索帖子信息
 
@@ -372,6 +384,19 @@
 > 返回参数 : 
 > 
 > > `Array<Post>` -- 所有帖子
+
+5. Auth控制器
+
+- /Auth/GetAuthCode
+
+> 方法 : Post
+> 请求参数 : 
+> > `"Account"` : 邮箱账号
+> 
+> 返回参数 : 
+> 
+> > `string` -- 验证码
+> > 如发送失败返回`"-1"`, 如请求不合法返回 `"-2"`
 
 
 

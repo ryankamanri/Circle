@@ -116,7 +116,7 @@ namespace Kamanri.WebSockets
             if(webSocketServerCollection == default) webSocketServerCollection = new Dictionary<long, WebSocket>();
             long ID = RandomGenerator.GenerateID();
             this.webSocketServerCollection.Add(ID, webSocket);
-            _logger.LogInformation($"[{DateTime.Now}] : WebSocket Client {{ id = {ID} }} Has Connected, WebSocket Collection Count : {webSocketServerCollection.Count}");
+            _logger.LogDebug($"[{DateTime.Now}] : WebSocket Client {{ id = {ID} }} Has Connected, WebSocket Collection Count : {webSocketServerCollection.Count}");
             return ID;
         }
 
@@ -128,7 +128,7 @@ namespace Kamanri.WebSockets
                 select id_socket).FirstOrDefault();
             webSocketServerCollection.Remove(managedID_webSocket);
             webSocket.Dispose();
-            _logger.LogInformation($"[{DateTime.Now}] : WebSocket Client {{ id = {managedID_webSocket.Key } }} Has Disposed, WebSocket Collection Count : {webSocketServerCollection.Count}");
+            _logger.LogDebug($"[{DateTime.Now}] : WebSocket Client {{ id = {managedID_webSocket.Key } }} Has Disposed, WebSocket Collection Count : {webSocketServerCollection.Count}");
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Kamanri.WebSockets
                 _logger.LogError($"[{DateTime.Now}] : Cannot Find Client WebSocket By WebSocket ID {webSocketID}, Execute Default Task");
             else
             {
-                _logger.LogInformation($"[{DateTime.Now}] : Send To Client {webSocketID}");
+                _logger.LogDebug($"[{DateTime.Now}] : Send To Client {webSocketID}");
                 await clientWebSocket.SendMessageAsync(sendMessages);
             }
         }

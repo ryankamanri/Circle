@@ -121,6 +121,14 @@ namespace dotnetApi.Controller
                 User user = HttpContext.Request.Form["User"].ToObject<User>();
                 return (await _userService.InsertUser(user)).ToJson();
             }
+
+            [HttpPost]
+            [Route("InsertOrUpdateUserInfo")]
+            public async Task<string> InsertOrUpdateUserInfo()
+            {
+                UserInfo userInfo = HttpContext.Request.Form["UserInfo"].ToObject<UserInfo>();
+                return (await _userService.InsertOrUpdateUserInfo(userInfo)).ToJson();
+            }
         #endregion
 
         #region JudgeRelation

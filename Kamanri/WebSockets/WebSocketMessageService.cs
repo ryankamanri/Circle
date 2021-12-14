@@ -55,7 +55,7 @@ namespace Kamanri.WebSockets
 
             var firstMessage = messages.FirstOrDefault();
             if (firstMessage == default) return default;
-            _logger.LogInformation($"[{DateTime.Now}] : Received Message Event Code : {firstMessage.MessageEvent.Code}, Try To Find And Execute The Corresponding Handler");
+            _logger.LogDebug($"[{DateTime.Now}] : Received Message Event Code : {firstMessage.MessageEvent.Code}, Try To Find And Execute The Corresponding Handler");
             Func<WebSocket, IList<WebSocketMessage>, Task<IList<WebSocketMessage>>> EventHandler = default;
             if (!eventHandlerCollection.TryGetValue(firstMessage.MessageEvent.Code, out EventHandler))
             {

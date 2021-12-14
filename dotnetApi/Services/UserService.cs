@@ -20,7 +20,7 @@ namespace dotnetApi.Services
 
         private IDictionary<string,Object> entityDictionary;
 
-        public IList<User> Users{get;private set;}
+        public IList<User> Users { get; private set; }
 
         #region Init
             
@@ -137,6 +137,22 @@ namespace dotnetApi.Services
             Users.Add(user);
             return user.ID;
         }
+
+        /// <summary>
+        /// 如果用户信息不存在, 插入用户信息, 否则更新用户信息
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
+        public async Task<bool> InsertOrUpdateUserInfo(UserInfo userInfo)
+        {
+            var oldUserInfo = await _dbc.Select<UserInfo>(userInfo);
+            if(oldUserInfo == default) await _dbc.InsertWithID<UserInfo>(userInfo);
+            else await _dbc.Update<UserInfo>(userInfo);
+            return true;
+            
+        }
+
+
         #endregion
 
         #region JudgeRelation

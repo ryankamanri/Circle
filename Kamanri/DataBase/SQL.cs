@@ -138,7 +138,7 @@ namespace Kamanri.Database
                 try
                 {
                     command.CommandText = expression;
-                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}'");
+                    _logger.LogDebug($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}'");
                     return new KeyValuePair<DbDataReader, Mutex>(command.ExecuteReader(), connectionAndMutex.Value);
                 }
                 catch (Exception e)
@@ -171,7 +171,7 @@ namespace Kamanri.Database
                         }
                     }
 
-                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}', Set Parameters");
+                    _logger.LogDebug($"[{DateTime.Now}] : Execute The SQL Query Expression : '{expression}', Set Parameters");
                     return new KeyValuePair<DbDataReader, Mutex>(command.ExecuteReader(), connectionAndMutex.Value);
                 }
                 catch (Exception e)
@@ -195,7 +195,7 @@ namespace Kamanri.Database
                 using (DbCommand command = connectionAndMutex.Key.CreateCommand())
                 {
                     command.CommandText = expression;
-                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}'");
+                    _logger.LogDebug($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}'");
                     await command.ExecuteNonQueryAsync();
                 }
                 connectionAndMutex.Value.Signal();
@@ -224,7 +224,7 @@ namespace Kamanri.Database
                             command.Parameters.Add(param);
                         }
                     }
-                    _logger.LogInformation($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}', Set Parameters");
+                    _logger.LogDebug($"[{DateTime.Now}] : Execute The SQL NonQuery Expression : '{expression}', Set Parameters");
                     await command.ExecuteNonQueryAsync();
                 }
                 connectionAndMutex.Value.Signal();

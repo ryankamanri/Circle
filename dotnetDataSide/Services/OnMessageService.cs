@@ -86,29 +86,32 @@ namespace dotnetDataSide.Services
         /// <param name="webSocket"></param>
         /// <param name="messages"></param>
         /// <returns></returns>
-        public async Task<IList<WebSocketMessage>> OnClientConnect(WebSocket webSocket, IList<WebSocketMessage> messages)
+        public Task<IList<WebSocketMessage>> OnClientConnect(WebSocket webSocket, IList<WebSocketMessage> messages)
         {
-            
-            var userID = Convert.ToInt64(messages[0].Message);
-            var serviceID = Convert.ToInt64(messages[1].Message);
-            var eventCode = messages[0].MessageEvent.Code;
-            _userService.AppendOnlineUser(eventCode, userID, serviceID);
-            _logger.LogInformation(eventCode, $"A User {userID} Connection Request, Client ID = {_userService.OnlineUserID_ServerID[userID]}");
-            
-
-
-            var tempMessages = _messageService.SelectTempMessagesOfAUser(eventCode, userID);
-            var result = new List<WebSocketMessage>();
-            result.Add(new WebSocketMessage()
+            return Task.Run<IList<WebSocketMessage>>(() =>
             {
-                MessageEvent = WebSocketMessageEvent.OnDataSideTempMessage,
-                MessageType = WebSocketMessageType.Text,
-                Message = userID.ToString()
+                var userID = Convert.ToInt64(messages[0].Message);
+                var serviceID = Convert.ToInt64(messages[1].Message);
+                var eventCode = messages[0].MessageEvent.Code;
+                _userService.AppendOnlineUser(eventCode, userID, serviceID);
+                _logger.LogInformation(eventCode, $"A User {userID} Connection Request, Client ID = {_userService.OnlineUserID_ServerID[userID]}");
+
+
+
+                var tempMessages = _messageService.SelectTempMessagesOfAUser(eventCode, userID);
+                var result = new List<WebSocketMessage>();
+                result.Add(new WebSocketMessage()
+                {
+                    MessageEvent = WebSocketMessageEvent.OnDataSideTempMessage,
+                    MessageType = WebSocketMessageType.Text,
+                    Message = userID.ToString()
+                });
+                result.AddRange(tempMessages.ToWebSocketMessageList(WebSocketMessageEvent.OnDataSideTempMessage));
+
+                return result;
             });
-            result.AddRange(tempMessages.ToWebSocketMessageList(WebSocketMessageEvent.OnDataSideTempMessage));
-
-            return result;
-
+            
+            
         }
         
         /// <summary>

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 using dotnet.Models;
 using dotnet.Services;
 using dotnet.Services.Cookie;
@@ -27,13 +28,16 @@ namespace dotnet.Controllers
 
         //保存账号跟验证码
         private Dictionary<string,string> account_authCode;
-        public AuthController(Api api,UserService userService,ICookie cookie,Dictionary<string, string> account_authCode)
+
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(Api api,UserService userService,ICookie cookie,Dictionary<string, string> account_authCode, ILoggerFactory loggerFactory)
         {
             _api = api;
             _cookie = cookie;
             _userService = userService;
             _user = new User();
             this.account_authCode = account_authCode;
+            _logger = loggerFactory.CreateLogger<AuthController>();
         }
 
         #region Index
@@ -127,11 +131,12 @@ namespace dotnet.Controllers
                 //向字典中添加或更新cookie内容
                 if(account_authCode.ContainsKey(account))
                     account_authCode[account] = authCode;
-                account_authCode.Add(account,authCode);
+                else account_authCode.Add(account,authCode);
 
                 return new JsonResult("验证码发送成功");
-            }catch(Exception)
+            }catch(Exception e)
             {
+                _logger.LogError(e, $"Fail To Set Auth Code");
                 return new JsonResult("验证码发送失败");
             }
             
@@ -156,7 +161,7 @@ namespace dotnet.Controllers
 
             User user = await _userService.GetUser(account);
 
-            if(user.ID != long.MinValue) return new JsonResult("账号已存在");
+            if(user != null) return new JsonResult("账号已存在");
 
             
 
