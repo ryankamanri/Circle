@@ -72,7 +72,7 @@ function MyWebSocket(url)
     this.websocket.onmessage = ev =>
          OnMessageHandler(ev, this.websocket, this.eventHandlers);
     
-    return this;
+    // return this;
 }
 
 

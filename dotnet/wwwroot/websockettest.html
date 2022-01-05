@@ -14,13 +14,12 @@
 </body>
 <script type="module">
     import { MyWebSocket, Sleep } from '/js/My.js'
-    var mywebsocket = MyWebSocket.MyWebSocket("ws://192.168.1.104:5042");
+    var mywebsocket = new MyWebSocket.MyWebSocket("ws://192.168.1.104:5042");
     var assignID;
     mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async(wsMessages) => 
     {
         console.log(wsMessages)
         await Sleep(1000)
-        // document.writeln(JSON.stringify(wsMessages))
         document.querySelector("#text").innerHTML += `\n${JSON.stringify(wsMessages)}`;
         assignID = new Number(wsMessages[0].Message)
         await new Promise(resolve => {
@@ -36,18 +35,6 @@
                     "3"
                 )
             ]);
-            // mywebsocket.SendMessages([
-            //     new MyWebSocket.WebSocketMessage(
-            //         MyWebSocket.WebSocketMessageEvent.OnClientPreviousMessage,
-            //         MyWebSocket.WebSocketMessageType.Text,
-            //         "2"
-            //     ),
-            //     new MyWebSocket.WebSocketMessage(
-            //         MyWebSocket.WebSocketMessageEvent.OnClientPreviousMessage,
-            //         MyWebSocket.WebSocketMessageType.Text,
-            //         "8"
-            //     )
-            // ]);
         });
         return [];
     });

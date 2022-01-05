@@ -33,6 +33,7 @@ function Header()
 
     function SearchTag() {
         let search = $("#search").val();
+        if(search == "") return;
         console.log(search);
         $.ajax({
             url: "/Shared/Search",
@@ -48,8 +49,8 @@ function Header()
             AppendResults(resultList);
             Tag.FlushDrugEvent();
         }).fail(() =>
-            alert("send failure")
-        )
+            console.log("send failure")
+        );
     }
 
     function AppendResults(obj)
