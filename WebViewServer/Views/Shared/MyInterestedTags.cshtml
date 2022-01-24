@@ -1,0 +1,26 @@
+@using WebViewServer.Models
+@using WebViewServer.Models.User
+@using WebViewServer.Services
+@inject User _user
+@inject UserService _userService
+@{
+    IList<Tag> myInterestedTags = await _userService.SelectTag(_user,selection => selection.Type = new List<string>(){"Interested"});
+    IList<Tag> mySelfTags = await _userService.SelectTag(_user,selection => selection.Type = new List<string>(){"Self"});
+}
+
+    <div class="container " style="padding-top: 5rem;">
+        <div style="display: inline-block;">我的个人标签 : </div>
+        <div id="mySelfTags" class="tagbox col-md-10" style="min-height: 30px;min-width: 50px; display: inline-block; z-index: 1">
+            @foreach (var tag in mySelfTags)
+            {
+                @await Html.PartialAsync("Tag",tag)
+            }
+        </div>
+        <div style="display: inline-block;">我的兴趣标签 : </div>
+        <div id="myInterestedTags" class="tagbox col-md-10" style="min-height: 30px;min-width: 50px; display: inline-block; z-index: 1">
+            @foreach (var tag in myInterestedTags)
+            {
+                @await Html.PartialAsync("Tag",tag)
+            }
+        </div>
+    </div>

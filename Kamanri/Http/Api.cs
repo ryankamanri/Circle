@@ -79,7 +79,7 @@ namespace Kamanri.Http
             }
         }
 
-        public async Task<object> Post(string url,JsonObject obj)
+        public async Task<object> Post(string url,Form obj)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace Kamanri.Http
             }
         }
 
-        public async Task<Type> Post<Type>(string url,JsonObject obj)
+        public async Task<Type> Post<Type>(string url,Form obj)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace Kamanri.Http
             }
         }
 
-        public async Task<object> Post(string hostKey,string url,JsonObject obj)
+        public async Task<object> Post(string hostKey,string url,Form obj)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace Kamanri.Http
             }
         }
 
-        public async Task<Type> Post<Type>(string hostKey,string url,JsonObject obj)
+        public async Task<Type> Post<Type>(string hostKey,string url,Form obj)
         {
             try
             {

@@ -391,7 +391,7 @@ namespace Kamanri.Database
             dynamic relation = await SelectRelation<TKeyEntity,TValueEntity>(Tke,Tve);
             IsExecute = await SetRelation(relation);
             if(IsExecute == false) return;
-            string relationJSON = JsonConvert.SerializeObject(relation);
+            string relationJSON = Extensions.EObject.ToJson(relation);
             string selectWay = $"{tableName}.{Tke.TableName} = {Tke.ID} and {tableName}.{Tve.TableName} = {Tve.ID}";
             if(Tke.GetType() == Tve.GetType()) selectWay = $"{tableName}.{Tke.TableName}_1 = {Tke.ID} and {tableName}.{Tve.TableName}_2 = {Tve.ID}";
             string SQLStatement = $"update {tableName} set relations = '{relationJSON}' where {selectWay}";
@@ -412,14 +412,16 @@ namespace Kamanri.Database
                {
                    if (relation == null)
                    {   //两个实体之间的关系不存在,则新建关系,并取消update执行
-                       await Connect<TKeyEntity, TValueEntity>(Tke, Tve, relation => ((IDictionary<string,Object>)relation).Add(relationName,new List<string>() { newRelation.ToString() }));
+                       await Connect<TKeyEntity, TValueEntity>(Tke, Tve, relation => ((IDictionary<string,object>)relation).Add(relationName,new List<string>() { newRelation.ToString() }));
                        return false;
                    }
                    foreach (var properties in relation)
                    {
-                       //两个实体之间存在名为Type的关系
+                       //两个实体之间存在名为relationName的关系
                        if (properties.Key.ToString() == relationName)
                        {
+                           if (!typeof(ICollection<object>).IsAssignableFrom(properties.Value.GetType()))
+                               throw new InvalidOperationException($"Cannot Append The Relation '{newRelation}' On Non-Collection Type '{relationName}'");
                             if (!properties.Value.Contains(newRelation.ToString()))
                             {
                                 properties.Value.Add(newRelation.ToString());
@@ -450,6 +452,8 @@ namespace Kamanri.Database
                  {
                      if (properties.Key == relationName)
                      {
+                         if (!typeof(ICollection<object>).IsAssignableFrom(properties.Value.GetType()))
+                             throw new InvalidOperationException($"Cannot Remove The Relation '{oldRelation}' On Non-Collection Type '{relationName}'");
                          properties.Value.Remove(oldRelation.ToString());
                          if (properties.Value.Count == 0)
                          {

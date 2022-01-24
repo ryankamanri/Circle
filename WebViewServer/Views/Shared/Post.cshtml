@@ -1,0 +1,59 @@
+@using WebViewServer.Models
+@using WebViewServer.Models.Post
+@using WebViewServer.Models.User
+@using WebViewServer.Services
+@model Post
+@inject User _user
+@inject PostService _postService
+@inject UserService _userService
+@{
+    UserInfo authorInfo = await _postService.SelectAuthorInfo(Model);
+    ICollection<Tag> tags = await _postService.SelectTags(Model);
+    
+    bool isFocus = await _userService.IsUserRelationExist(_user, new User(authorInfo.ID), "Type","Focus");
+}
+
+<div class="feed-item-box clearfix col-md-12">
+
+    <a href="" target="_blank" class="feed-head-pic" style="border-radius: 0px;">
+        <img src="@authorInfo.HeadImage">
+    </a>
+
+    <div class="feed-item-bd">
+        <div class="feed-hd-info">
+            <p> <strong class="ml-2 mr-2">@authorInfo.NickName</strong> <a ID="@authorInfo.ID" isfocus="@isFocus.ToString()" href="javascript:void(0)"
+                    class="tag-label selected"><i class="icon-nc-check"></i>
+                    + 关注
+                </a>
+            </p>
+        </div>
+        <div class="nc-post-content">
+            <a href="javascript:void(0);">
+                <div class="feed-title">
+                    <span>@Model.Title</span>
+                </div>
+                <div class="feed-cont">
+                    <div>
+                        <span style="color: rgb(37, 187, 155);">#@Model.Focus#</span>
+                        <span>@Model.Summary ...</span>
+
+                        <!---->
+                    </div>
+                </div>
+            </a>
+            <div class="post-content">
+                <input type="button" id="@Model.ID" value="查看全文" jump="" class="btn btn-link font-green content-item"
+                    style="cursor:pointer;width:90px;">
+            </div>
+        </div>
+        <!---->
+        <div class="feed-tags">
+            @foreach (var tag in tags)
+            {
+            <div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
+            }
+        </div>
+        <!---->
+        <!---->
+    </div>
+</div>

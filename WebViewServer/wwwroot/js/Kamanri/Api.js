@@ -1,0 +1,46 @@
+
+
+function Api() {
+
+    this.Get = url => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: url,
+                type: "GET"
+
+            }).done(data => {
+                resolve(data);
+
+            }).fail((action, state, event) => {
+                console.error(action);
+                console.error(state);
+                console.error(event);
+                reject(event);
+            });
+        });
+        
+    }
+
+    this.Post = (url, reqData) => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: reqData
+
+            }).done(data => {
+                resolve(data);
+
+            }).fail((action, state, event) => {
+                console.error(action);
+                console.error(state);
+                console.error(event);
+                reject(event);
+            });
+        });
+    }
+}
+
+export {
+    Api
+}

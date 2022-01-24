@@ -9,6 +9,11 @@ namespace Kamanri.Self
             return DateTime.Now.Ticks - new DateTime(2020,1,1).Ticks;
         }
 
+        public static string GenerateGUID()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
         //生成五位数的验证码
         public static int GenerateAuthCode()
         {

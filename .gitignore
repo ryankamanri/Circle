@@ -3,20 +3,23 @@
 .idea/
 
 
-dotnet/bin/
-dotnet/obj/
+WebViewServer/bin/
+WebViewServer/obj/
 
 
-dotnetApi/bin/
-dotnetApi/obj/
+ApiServer/bin/
+ApiServer/obj/
 
 
-dotnetDataSide/bin/
-dotnetDataSide/obj/
+ChatDataServer/bin/
+ChatDataServer/obj/
 
 
-dotnetPrivateChatApi/bin/
-dotnetPrivateChatApi/obj/
+ChatServer/bin/
+ChatServer/obj/
+
+MLServer/bin/
+MLServer/obj/
 
 Kamanri/bin/
 Kamanri/obj/

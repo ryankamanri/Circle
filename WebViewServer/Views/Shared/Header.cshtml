@@ -1,0 +1,69 @@
+@using WebViewServer.Models.User
+@using WebViewServer.Services
+@model User
+@inject Dictionary<string,string> _dict
+@inject UserService _userService
+@{
+    var userInfo = await _userService.GetUserInfo(Model);
+}
+
+
+<header style="opacity: 1; position: fixed; width: 100%; top: 0px; z-index:1">
+
+        <nav class="navbar navbar-expand-md navbar-light box-shadow" style="background-color: white;">
+            <div class="container"><button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/SelectCircle">@_dict["Circle"]</a>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/Home">主页</a>
+                            <!--<span class="sr-only">(current)</span></a>-->
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/PrivateChat">私聊</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/TagTree">标签树</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+
+
+                        <div class="self-dropdown" style="position: relative;">
+                            <input id="search" class="form-control mr-sm-2 btn" type="text" placeholder="Search"
+                                aria-label="Search" style="border-color: lightgray;" value='@ViewData["searchString"]'>
+                            <ul id="searchResult" class="self-dropdown-block"
+                                style="position:fixed;width:203.6px">
+
+                            </ul>
+                        </div>
+
+
+                        <input type="button" id="searchButton" class="btn btn-outline-info my-2 my-sm-0" value="🔍" />
+                    </form>
+
+                    <div class="form-inline">
+                        <div class="self-dropdown"> <img src="@userInfo.HeadImage" class="drop"
+                                style="border-radius: 100px; height: 40px;width: 40px;float: right;">
+                            <ul class="self-dropdown-block" style="position:fixed;float: right;transform:translate(25%, 0); top:48px;right:3rem">
+                                <li class="self-dropdown-item">@Model.Account</li>
+                                <li class="self-dropdown-item">个人信息</li>
+                                <li class="self-dropdown-item">设置</li>
+                                <li class="self-dropdown-item" id="logout">注销</li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    
+                    
+
+                </div>
+
+            </div>
+        </nav>
+    </header>

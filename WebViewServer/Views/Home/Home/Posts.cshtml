@@ -1,0 +1,28 @@
+@using WebViewServer.Models.User
+@using WebViewServer.Models.Post
+@using WebViewServer.Services
+@inject User _user
+@inject TagService _tagService
+@inject UserService _userService
+@inject PostService _postService
+
+
+@{
+    Layout = "Layout.cshtml";
+    ViewData["SecondTitle"] = "帖子";
+
+    var myInterestedPosts = await _userService.MappingPostsByTag(_user,selection => selection.Type = new List<string>(){"Interested"});
+    var allPosts = await _postService.GetAllPost();
+    IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
+    
+    int count = Math.Min(25,myPosts.Count);
+
+}
+
+
+@for(int i = 0;i < count;i ++)
+{
+    @await Html.PartialAsync("Post",myPosts[i])
+}
+
+
