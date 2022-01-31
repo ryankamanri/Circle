@@ -1,111 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .ID{
-            display: none;
-        }
-        .tag{
-            width: 70px;
-            height: 30px;
-            text-align: center;
-            display: inline-block;
-            margin: 5px;
-            border-radius: 100px;
-            transition: opacity 0.3s ease-in-out;
-            opacity: 0.8;
-        }
-        ._Tag{
-            color: black;
-            position: relative;
-            top: 50%;
-            transform: translate(0,-50%);
-        }
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		.ID{
+			display: none;
+		}
+		.tag{
+			width: 70px;
+			height: 30px;
+			text-align: center;
+			display: inline-block;
+			margin: 5px;
+			border-radius: 100px;
+			transition: opacity 0.3s ease-in-out;
+			opacity: 0.8;
+		}
+		._Tag{
+			color: black;
+			position: relative;
+			top: 50%;
+			transform: translate(0,-50%);
+		}
 
-        .tag:hover{
-            cursor: pointer;
-            opacity: 1;
-            
-        }
+		.tag:hover{
+			cursor: pointer;
+			opacity: 1;
+			
+		}
 
 
-        .dropbox{
-            width: 100px;
-            height: 100px;
-            background-color: blanchedalmond;
-            position: fixed;
-            top: 50%;
-        }
-    </style>
+		.dropbox{
+			width: 100px;
+			height: 100px;
+			background-color: blanchedalmond;
+			position: fixed;
+			top: 50%;
+		}
+	</style>
 </head>
 <body style="height: 100%;">
-    <div class="tag" id="tag_1" draggable="true" style="background-color: aquamarine;">
-        <div class="ID">1</div>
-        <div class="_Tag">标签</div>
-        
+	<div class="tag" id="tag_1" draggable="true" style="background-color: aquamarine;">
+		<div class="ID">1</div>
+		<div class="_Tag">标签</div>
+		
 
-    </div>
-    <div id="vue">
-        <div>{{text}}</div>
-        <div>{{store.text}}</div>
-        <my></my>
-        
-        <tag :tag="tag1"></tag>
-    </div>
-        
-    <div class="dropbox">
-        
-    </div>
+	</div>
+	<div id="vue">
+		<div>{{text}}</div>
+		<div>{{store.text}}</div>
+		<my></my>
+		
+		<tag :tag="tag1"></tag>
+	</div>
+		
+	<div class="dropbox">
+		
+	</div>
 
-    <div contenteditable="true"></div>
+	<div contenteditable="true"></div>
 </body>
 <script>
-    let vue;
+	let vue;
 </script>
 <script type="module">
-    import Vue from '/js/MainVue.js'
-    let my = {
-        template : '<h1>My</h1>'
-    }
+	import Vue from '/js/MainVue.js'
+	let my = {
+		template : '<h1>My</h1>'
+	}
 
-    let tagComponent = {
-        template : `
-        <div class="tag" :id="tag.ID" draggable="true" :style="{background : bColor}">
-            <div class="ID">{{tag.tagID}}</div>
-            <div class="_Tag" :style="{color : fColor}">{{tag._Tag}}</div>
-        </div>`,
-        
-        props : ['tag'],
-        
-        data() {
-            return{
-                bColor : this.tag.bColor,
-                fColor : this.tag.fColor
-            } 
-        }
-    }
+	let tagComponent = {
+		template : `
+		<div class="tag" :id="tag.ID" draggable="true" :style="{background : bColor}">
+			<div class="ID">{{tag.tagID}}</div>
+			<div class="_Tag" :style="{color : fColor}">{{tag._Tag}}</div>
+		</div>`,
+		
+		props : ['tag'],
+		
+		data() {
+			return{
+				bColor : this.tag.bColor,
+				fColor : this.tag.fColor
+			} 
+		}
+	}
 
-    vue = new Vue.MainVue({
-        el : '#vue',
-        data : {
-            text : 123,
-            tag1 : {
-                ID : 1,
-                bColor : '#ABCDEF',
-                fColor : '#FEDCBA',
-                tagID : 2,
-                _Tag : '第一个标签'
-            }
-        },
-        components : {
-            'my' : my,
-            'tag' : tagComponent
-        }
-    });
+	vue = new Vue.MainVue({
+		el : '#vue',
+		data : {
+			text : 123,
+			tag1 : {
+				ID : 1,
+				bColor : '#ABCDEF',
+				fColor : '#FEDCBA',
+				tagID : 2,
+				_Tag : '第一个标签'
+			}
+		},
+		components : {
+			'my' : my,
+			'tag' : tagComponent
+		}
+	});
 
 
 

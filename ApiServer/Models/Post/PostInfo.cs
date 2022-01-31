@@ -3,52 +3,36 @@ using Kamanri.Database.Models;
 
 namespace ApiServer.Models.Post
 {
-    public class PostInfo : Entity<PostInfo>
-    {
-        public string Content { get; set; }
+	public class PostInfo : Entity<PostInfo>
+	{
+		public string Content { get; set; }
 
-        public override string TableName { get; set; } = "postsinfo";
+		public override string TableName { get; set; } = "postsinfo";
 
-        public override string ColumnNamesString() => $"{TableName}.Content";
+		public PostInfo() { }
 
-        public PostInfo() { }
+		public PostInfo(long ID) : base(ID) { }
 
-        public PostInfo(long ID) : base(ID) { }
+		public PostInfo(string Content)
+		{
+			this.Content = Content;
+		}
 
-        public PostInfo(string Content)
-        {
-            this.Content = Content;
-        }
+		public PostInfo(long ID, string Content) : base(ID)
+		{
+			this.Content = Content;
+		}
 
-        public PostInfo(long ID, string Content) : base(ID)
-        {
-            this.Content = Content;
-        }
 
-        public override string InsertValuesString()
-        {
-            return $"'{Content}'";
-        }
+		public override PostInfo GetEntityFromDataReader(DbDataReader ddr)
+		{
+			return new PostInfo((long)ddr["ID"], (string)ddr["Content"]);
+		}
 
-        public override string UpdateSetString()
-        {
-            return $"{TableName}.Content = '{Content}'";
-        }
-
-        public override string CandidateKeySelectionString()
-        {
-            return $"{TableName}.Content = '{Content}'";
-        }
-
-        public override PostInfo GetEntityFromDataReader(DbDataReader msdr)
-        {
-            return new PostInfo((long)msdr["ID"], (string)msdr["Content"]);
-        }
-
-        public override PostInfo GetEntity()
-        {
-            return this;
-        }
-    }
+		public override PostInfo GetEntity()
+		{
+			return this;
+		}
+	}
 }
 

@@ -1,0 +1,78 @@
+﻿.fl-comment {
+    background: #ffffff;
+}
+
+    .fl-comment .head-image {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+    }
+
+    .fl-comment .sl-comment .head-image {
+        width: 25px;
+        height: 25px;
+    }
+
+    .fl-comment .head-image > img {
+        width: 100%;
+    }
+
+    .fl-comment .comment-info {
+        display: flex;
+    }
+
+    .fl-comment .top-bar {
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+
+    .fl-comment .nickname {
+        font-weight: bold;
+        font-size: x-small;
+    }
+
+    .fl-comment .sl-comment .nickname {
+        padding-top: 5px;
+    }
+
+
+    .fl-comment .comment-datetime {
+        font-size: xx-small;
+    }
+
+    .fl-comment .sl-comment .comment-datetime {
+        margin: 8px 0 0 10px;
+    }
+
+    .fl-comment .comment-content {
+        margin: 1rem 1rem 0 3rem;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .fl-comment .comment-content:hover{
+        color: #25bb9b;
+    }
+
+    .fl-comment .more-frame {
+        display: flex;
+        justify-content: flex-end;
+        min-height: 2rem;
+    }
+
+    .fl-comment .sl-comment .more-frame {
+        justify-content: space-between;
+    }
+
+.sl-comment .to {
+    margin: 0 1rem;
+}
+
+.sl-comment {
+    background: #eeeeee;
+}
+
+    .sl-comment hr {
+        margin-top: 0;
+        margin-bottom: 5px;
+    }

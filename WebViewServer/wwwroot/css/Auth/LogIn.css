@@ -1,94 +1,94 @@
 body{
-    margin: 0;
-    padding: 0;
-    background-color: #ededed;
-    font-family: sans-serif;
-    background-size: cover;
+	margin: 0;
+	padding: 0;
+	background-color: #ededed;
+	font-family: sans-serif;
+	background-size: cover;
 }
 .nav{
-    height:80px;
-    line-height:80px;
-    border-radius:15px 15px 15px 15px;   
+	height:80px;
+	line-height:80px;
+	border-radius:15px 15px 15px 15px;   
 }
 .nav li{
-      float:left;
-      width:100px;
-      text-align:center;
-      list-style: none;
-      display: inline;
+	  float:left;
+	  width:100px;
+	  text-align:center;
+	  list-style: none;
+	  display: inline;
 }
 .nav a{
-      display:inline;
-      color:black;
-      text-decoration: none;
+	  display:inline;
+	  color:black;
+	  text-decoration: none;
 }
 .nav a:hover{
-    color:white;
+	color:white;
 }
 .nav a>long{
-    width: 124px;
+	width: 124px;
 }
 .box{
-    position: absolute;
-    top:50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 700px;
-    padding: 40px;
-    background: rgb(23, 90, 86);
-    box-sizing: border-box;
-    box-shadow: 0 15px 25px rgba(0,0,0,.5);
-    border-radius: 10px;
+	position: absolute;
+	top:50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 700px;
+	padding: 40px;
+	background: rgb(23, 90, 86);
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0,0,0,.5);
+	border-radius: 10px;
  
 }
 .box h2{
-    margin: 0 0 30px;
-    padding: 0;
-    color: #fff;
-    text-align: center;
+	margin: 0 0 30px;
+	padding: 0;
+	color: #fff;
+	text-align: center;
 }
 .box .inputBox{
-    position: relative;
+	position: relative;
 }
 .box .inputBox input{
-    width: 100%;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #fff;
-    outline: none;
-    background: transparent;
+	width: 100%;
+	padding: 10px 0;
+	font-size: 16px;
+	color: #fff;
+	margin-bottom: 30px;
+	border-bottom: 1px solid #fff;
+	outline: none;
+	background: transparent;
  
 }
 .box .inputBox label{
-    position: absolute;
-    top:0;
-    left: 0;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
-    pointer-events: none;
-    transition: .5s;
+	position: absolute;
+	top:0;
+	left: 0;
+	padding: 10px 0;
+	font-size: 16px;
+	color: #fff;
+	pointer-events: none;
+	transition: .5s;
 }
 .box .inputBox input:focus ~ label,
 .box .inputBox input:valid ~label{
-    top:-18px;
-    left: 0;
-    color: #03a9f4;
-    font-size: 12px;
+	top:-18px;
+	left: 0;
+	color: #03a9f4;
+	font-size: 12px;
 }
 .box input[type='submit']{
-    height: 50px;
-    font-size: 18px;
-    text-align: center;
-    background: white;
-    border: none;
-    outline: none;
-    color: rgb(14, 38, 54);
-    padding: 0px 292px;
-    border-radius: 5px;
-    cursor: pointer;
-    top: 50%;
-    left: 50%;
+	height: 50px;
+	font-size: 18px;
+	text-align: center;
+	background: white;
+	border: none;
+	outline: none;
+	color: rgb(14, 38, 54);
+	padding: 0px 292px;
+	border-radius: 5px;
+	cursor: pointer;
+	top: 50%;
+	left: 50%;
 }

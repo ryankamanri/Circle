@@ -18,67 +18,67 @@ using ChatDataServer.Middlewares;
 
 namespace ChatDataServer
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
 
-            services.AddControllers();
+			services.AddControllers();
 
-            // var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+			// var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
 
-            //增加单例服务,数据库访问
+			//增加单例服务,数据库访问
 
-            services.AddKamanriDataBase(options =>
-            {
-                options.Server = Configuration["SQL:Server"];
-                options.Port = Configuration["SQL:Port"];
-                options.Database = Configuration["SQL:Database"];
-                options.Uid = Configuration["SQL:Uid"];
-                options.Pwd = Configuration["SQL:Pwd"];
+			services.AddKamanriDataBase(options =>
+			{
+				options.Server = Configuration["SQL:Server"];
+				options.Port = Configuration["SQL:Port"];
+				options.Database = Configuration["SQL:Database"];
+				options.Uid = Configuration["SQL:Uid"];
+				options.Pwd = Configuration["SQL:Pwd"];
 
-            }, options => new MySql.Data.MySqlClient.MySqlConnection(options));
+			}, options => new MySql.Data.MySqlClient.MySqlConnection(options));
 
-            services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
+			services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
 
-            services.AddSingleton<MessageService>();
-        }
+			services.AddSingleton<MessageService>();
+		}
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            app.UseRouting();
+			app.UseRouting();
 
-            var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(120)
-            };
+			var webSocketOptions = new WebSocketOptions()
+			{
+				KeepAliveInterval = TimeSpan.FromSeconds(120)
+			};
 
-            webSocketOptions.AllowedOrigins.Any();
+			webSocketOptions.AllowedOrigins.Any();
 
-            app.UseWebSockets(webSocketOptions);
+			app.UseWebSockets(webSocketOptions);
 
-            app.UseKamanriWebSocket();
+			app.UseKamanriWebSocket();
 
-            app.UseMiddleware<MyMiddleware>();
+			app.UseMiddleware<OnMessageMiddleware>();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-    }
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
+		}
+	}
 }

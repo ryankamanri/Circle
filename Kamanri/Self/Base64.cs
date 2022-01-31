@@ -2,9 +2,9 @@ using System;
 using System.Text;
 namespace Kamanri.Self
 {
-    public static class Base64
-    {
-        /// <summary>
+	public static class Base64
+	{
+		/// <summary>
         /// Base64 UTF-8编码
         /// </summary>
         /// <param name="source">要编码的字符串</param>
@@ -44,5 +44,5 @@ namespace Kamanri.Self
             }
             return result;
         }
-    }
+	}
 }

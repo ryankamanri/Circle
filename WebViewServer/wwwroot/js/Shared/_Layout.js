@@ -1,78 +1,71 @@
 import Header from './Header.js';
 import Tag from './Tag.js';
 import Post from './Post.js';
-import { ShowMessage } from '../Show.js';
+import { ShowAlert } from '../Show.js';
+import { Api } from '../My.js';
 
 
 
 
 let mySelfTags;
 let myInterestedTags;
+let api = new Api();
 
 
 function _Layout()
 {
 
 
-    mySelfTags = document.querySelector("#mySelfTags");
-    myInterestedTags = document.querySelector("#myInterestedTags");
+	mySelfTags = document.querySelector("#mySelfTags");
+	myInterestedTags = document.querySelector("#myInterestedTags");
 
-    mySelfTags.addEventListener("dragstart", event => {
-        PostChange(event, "/Shared/RemoveRelation", "Tag", "Type", "Self", resData => ShowMessage("alert alert-success", resData, ""));
-    });
-    mySelfTags.addEventListener("drop", event => {
-        PostChange(event, "/Shared/AppendRelation", "Tag", "Type", "Self", resData => ShowMessage("alert alert-success", resData, ""));
-    });
+	mySelfTags.addEventListener("dragstart", async event => {
+		let resData = await ChangeTagRelation(event, "/Shared/RemoveRelation", "Type", "Self");
+		ShowAlert("alert alert-success", resData, "");
+	});
+	mySelfTags.addEventListener("drop", async event => {
+		let resData = await ChangeTagRelation(event, "/Shared/AppendRelation", "Type", "Self");
+		ShowAlert("alert alert-success", resData, "");
+	});
 
-    myInterestedTags.addEventListener("dragstart", event => {
-        PostChange(event, "/Shared/RemoveRelation", "Tag", "Type", "Interested", resData => ShowMessage("alert alert-success", resData, ""));
-    });
-    
-    myInterestedTags.addEventListener("drop", event => {
-        PostChange(event, "/Shared/AppendRelation", "Tag", "Type", "Interested", resData => ShowMessage("alert alert-success", resData, ""));
-    });
+	myInterestedTags.addEventListener("dragstart", async event => {
+		let resData = await ChangeTagRelation(event, "/Shared/RemoveRelation", "Type", "Interested");
+		ShowAlert("alert alert-success", resData, "");
+	});
+	
+	myInterestedTags.addEventListener("drop", async event => {
+		let resData = await ChangeTagRelation(event, "/Shared/AppendRelation", "Type", "Interested");
+		ShowAlert("alert alert-success", resData, "");
+	});
 
-    
-    Header.Header();
-    Tag.Tag();
-    Post.Post();
+	
+	Header.Header();
+	Tag.Tag();
+	Post.Post();
 }
 
-function PostChange(event, url, entityType, relationName,relation, CallBack)
+async function ChangeTagRelation(event, url, relationName, relation)
 {
-    let DragTagCurrentID = event.dataTransfer.getData("id");
-    let DragTag = document.getElementById(DragTagCurrentID);
-    let DragTagID = DragTag.children[0].innerText;
+	let DragTagCurrentID = event.dataTransfer.getData("id");
+	let DragTag = document.getElementById(DragTagCurrentID);
+	let DragTagID = DragTag.children[0].innerText;
 
-    PostChangeRelation(url,DragTagID,entityType,relationName,relation,resData =>{
-        console.log(resData);
-        CallBack(resData);
-    },(action,state,event) => {});
+	return await PostChangeRelation(url,DragTagID,"Tag",relationName,relation);
 }
 
-function PostChangeRelation(url,ID,entityType,relationName,relation,CallBack,FailHandler)
+async function PostChangeRelation(url, ID, entityType, relationName, relation)
 {
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: {
-            ID: ID,
-            entityType: entityType,
-            relationName: relationName,
-            relation: relation
-        }
-    }).done(resData => {
-        CallBack(resData);
-    }).fail((action,state,event) =>{
-        console.log(action);
-        console.log(state);
-        console.log(event);
-        FailHandler(action,state,event);
-    });
+	return await api.Post(url, {
+		ID: ID,
+		entityType: entityType,
+		relationName: relationName,
+		relation: relation
+	});
+
 }
 export{
-    _Layout,PostChange,PostChangeRelation
+	_Layout,ChangeTagRelation,PostChangeRelation
 }
 export default{
-    _Layout,PostChange,PostChangeRelation
+	_Layout,ChangeTagRelation,PostChangeRelation
 }

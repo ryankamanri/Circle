@@ -1,17 +1,17 @@
 .inputBox .inputBox1{
-    width: 80%;
+	width: 80%;
 }
 .inputBox button{
-    position: absolute;
-    margin-top: -10px;
-    /*margin-bottom: 40px;*/
-    height: 40px;
-    width: 19%;
-    top: 10px;
-    font-size: 16px;
-    color: #fff;
-    right: 0;
-    background-color:cornflowerblue;
-    border: none;
-    outline: none;
+	position: absolute;
+	margin-top: -10px;
+	/*margin-bottom: 40px;*/
+	height: 40px;
+	width: 19%;
+	top: 10px;
+	font-size: 16px;
+	color: #fff;
+	right: 0;
+	background-color:cornflowerblue;
+	border: none;
+	outline: none;
 }

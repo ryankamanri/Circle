@@ -2,37 +2,37 @@
 @using WebViewServer.Services
 @inject SearchService _search
 @{
-    Layout = "../Shared/_Layout.cshtml";
-    ViewData["Title"] = "搜索结果";
-    ViewData["searchString"] = Model;
-    //IList<Tag> tagList = new Tag().GetList(_sql.Query($"select * from tags where tag like '%{Model}%'"));
-    var userInfo_tagLists = await _search.SearchUserInfoAndTags(Model);
-    var posts = await _search.SearchPosts(Model);
+	Layout = "../Shared/_Layout.cshtml";
+	ViewData["Title"] = "搜索结果";
+	ViewData["searchString"] = Model;
+	//IList<Tag> tagList = new Tag().GetList(_sql.Query($"select * from tags where tag like '%{Model}%'"));
+	var userInfo_tagLists = await _search.SearchUserInfoAndTags(Model);
+	var posts = await _search.SearchPosts(Model);
 }
 
 <div id="search-result" class="col-md-12 pb-5">
-    <p>所有用户 : </p>
-        <div class="users pt-4 pb-4 pl-4 pr-4">
-            <div class="user-container">
-            @foreach (var userInfo_tagList in userInfo_tagLists)
-            {
-                @await Html.PartialAsync("SearchUserInfo",userInfo_tagList)
-            }
-            </div>
+	<p>所有用户 : </p>
+		<div class="users pt-4 pb-4 pl-4 pr-4">
+			<div class="user-container">
+			@foreach (var userInfo_tagList in userInfo_tagLists)
+			{
+				@await Html.PartialAsync("SearchUserInfo",userInfo_tagList)
+			}
+			</div>
 
-        </div>
+		</div>
 
-    <p>所有帖子 : </p>
-    @foreach (var post in posts)
-    {
-        @await Html.PartialAsync("Post",post)
-    }
+	<p>所有帖子 : </p>
+	@foreach (var post in posts)
+	{
+		@await Html.PartialAsync("Post",post)
+	}
 
 
 </div>
 <link rel="stylesheet" href="/css/Home/SearchResult.css">
 <script type="module">
-    import SearchResult from '/js/Home/SearchResult.js'
-    SearchResult.SearchResult();
+	import SearchResult from '/js/Home/SearchResult.js'
+	SearchResult.SearchResult();
 </script>
 

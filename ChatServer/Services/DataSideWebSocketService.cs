@@ -1,11 +1,11 @@
 namespace ChatServer.Services
 {
-    public class DataSideWebSocketService
-    {
+	public class DataSideWebSocketService
+	{
 
-        public DataSideWebSocketService()
-        {
+		public DataSideWebSocketService()
+		{
 
-        }
-    }
+		}
+	}
 }

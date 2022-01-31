@@ -1,0 +1,74 @@
+[{
+    "Key": {
+        "Key": {
+            "PostID": 6,
+            "CommentID": -1,
+            "Content": "写得'太好了",
+            "CommentDateTime": "2021-01-01T00:00:00",
+            "ID": 1
+        },
+        "Value": {
+            "OwnerHeadImage": "/StaticFiles/Images/HeadImage/syt5.com.1638601084.jpg",
+            "OwnerNickName": "兄贵",
+            "LikeCount": 0,
+            "ReplyCount": 2,
+            "IsLike": false
+        }
+    },
+    "Value": [{
+        "Key": {
+            "PostID": 6,
+            "CommentID": 1,
+            "Content": "我也觉得",
+            "CommentDateTime": "2021-01-01T00:00:00",
+            "ID": 3
+        },
+        "Value": {
+            "OwnerHeadImage": "/StaticFiles/Images/HeadImage/syt5.com.1638601145.jpg",
+            "OwnerNickName": "853909407",
+            "ReplyUserHeadImage": "/StaticFiles/Images/HeadImage/syt5.com.1638601084.jpg",
+            "ReplyUserNickName": "兄贵"
+        }
+    }, {
+        "Key": {
+            "PostID": 6,
+            "CommentID": 3,
+            "Content": "我也觉得+1",
+            "CommentDateTime": "2021-01-01T00:00:00",
+            "ID": 4
+        },
+        "Value": {
+            "OwnerHeadImage": "/StaticFiles/Images/HeadImage/20210714185547.jpg",
+            "OwnerNickName": "kamanri",
+            "ReplyUserHeadImage": "/StaticFiles/Images/HeadImage/syt5.com.1638601145.jpg",
+            "ReplyUserNickName": "853909407"
+        }
+    }]
+}, {
+    "Key": {
+        "Key": {
+            "PostID": 6,
+            "CommentID": -1,
+            "Content": "有心了",
+            "CommentDateTime": "2021-01-01T00:00:00",
+            "ID": 2
+        },
+        "Value": {
+            "OwnerHeadImage": "/StaticFiles/Images/HeadImage/syt5.com.1638601120.jpg",
+            "OwnerNickName": "了无痕",
+            "LikeCount": 0,
+            "ReplyCount": 0,
+            "IsLike": false
+        }
+    },
+    "Value": []
+}]
+
+
+
+{
+    "CandidateKeySelectionString": "comments.PostID = 0 and comments.CommentID = 0 and comments.Content = '' and comments.TableName = 'comments' and comments.ID = 0",
+    "ColumnNamesString": "comments.PostID, comments.CommentID, comments.Content, comments.ContentDateTime, comments.TableName, comments.ID",
+    "InsertValuesString": "PostID, CommentID, Content, ContentDateTime, TableName, ID",
+    "UpdateSetString": "comments.PostID = 0, comments.CommentID = 0, comments.Content = '', comments.ContentDateTime = '@CommentDateTimePlaceHolder', comments.TableName = 'comments', comments.ID = 0"
+}

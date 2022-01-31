@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RestoreSources>../Kamanri/bin/Debug</RestoreSources>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<RestoreSources>../Kamanri/bin/Debug</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.26" />
+	<PackageReference Include="MySql.Data" Version="8.0.26" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kamanri\Kamanri.csproj"></ProjectReference>
+	<ProjectReference Include="..\Kamanri\Kamanri.csproj"></ProjectReference>
   </ItemGroup>
 
 </Project>

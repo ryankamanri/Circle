@@ -1,86 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
-    <div id="text"></div>
-    <button class="btn btn-info" id="button">发送</button>
-    <input type="text" class="form-control" id="edit" />
+	<div id="text"></div>
+	<button class="btn btn-info" id="button">发送</button>
+	<input type="text" class="form-control" id="edit" />
 </body>
 <script type="module">
-    import { MyWebSocket, Sleep } from '/js/My.js'
-    var mywebsocket = new MyWebSocket.MyWebSocket("ws://192.168.1.104:5042");
-    var assignID;
-    mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async(wsMessages) => 
-    {
-        console.log(wsMessages)
-        await Sleep(1000)
-        document.querySelector("#text").innerHTML += `\n${JSON.stringify(wsMessages)}`;
-        assignID = new Number(wsMessages[0].Message)
-        await new Promise(resolve => {
-            mywebsocket.SendMessages([
-                new MyWebSocket.WebSocketMessage(
-                    MyWebSocket.WebSocketMessageEvent.OnClientConnect,
-                    MyWebSocket.WebSocketMessageType.Text,
-                    assignID.toString()
-                ),
-                new MyWebSocket.WebSocketMessage(
-                    MyWebSocket.WebSocketMessageEvent.OnClientConnect,
-                    MyWebSocket.WebSocketMessageType.Text,
-                    "3"
-                )
-            ]);
-        });
-        return [];
-    });
-    
-    mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerPreviousMessage, async(wsMessages) => 
-    {
-        // document.writeln(JSON.stringify(wsMessages));
-        document.querySelector("#text").innerHTML += `\n${JSON.stringify(wsMessages)}`;
-        console.log(`Receive ${it.size} Messages`);
-        return [];
-    });
-    document.querySelector("#button").addEventListener("click", (ele, ev) =>
-    {
-        var sendMessageText = document.querySelector("#edit").value;
-        var sendMessage = {
-            ID: 0,
-            SendUserID: 3,
-            ReceiveID: 8,
-            IsGroup: false,
-            Time: new Date(),
-            ContentType: "text/plain",
-            Content: sendMessageText
-        };
-        mywebsocket.SendMessages([
-            new MyWebSocket.WebSocketMessage(
-                MyWebSocket.WebSocketMessageEvent.OnClientMessage,
-                MyWebSocket.WebSocketMessageType.Text,
-                JSON.stringify(sendMessage)
-            )
-        ]);
-        document.querySelector("#text").innerHTML += `<br />[${sendMessage.Time}]  Me ${sendMessage.SendUserID} : ${sendMessage.Content}`;
-    });
-    
-    mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerTempMessage, async (wsMessage) => 
-    {
-        var resMessage = JSON.parse(wsMessage[0].Message)
-        document.querySelector("#text").innerHTML += `<br />[${resMessage.Time}]  User ${resMessage.SendUserID} : ${resMessage.Content}`;
-        return [];
-    });
-    
-    mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerMessage, async (wsMessage) => 
-    {
-        var resMessage = JSON.parse(wsMessage[0].Message)
-        document.querySelector("#text").innerHTML += `<br />[${resMessage.Time}]  User ${resMessage.SendUserID} : ${resMessage.Content}`;
-        return [];
-    });
-    
+	import { MyWebSocket, Sleep } from '/js/My.js'
+	var mywebsocket = new MyWebSocket.MyWebSocket("ws://192.168.1.104:5042");
+	var assignID;
+	mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async(wsMessages) => 
+	{
+		console.log(wsMessages)
+		await Sleep(1000)
+		document.querySelector("#text").innerHTML += `\n${JSON.stringify(wsMessages)}`;
+		assignID = new Number(wsMessages[0].Message)
+		await new Promise(resolve => {
+			mywebsocket.SendMessages([
+				new MyWebSocket.WebSocketMessage(
+					MyWebSocket.WebSocketMessageEvent.OnClientConnect,
+					MyWebSocket.WebSocketMessageType.Text,
+					assignID.toString()
+				),
+				new MyWebSocket.WebSocketMessage(
+					MyWebSocket.WebSocketMessageEvent.OnClientConnect,
+					MyWebSocket.WebSocketMessageType.Text,
+					"3"
+				)
+			]);
+		});
+		return [];
+	});
+	
+	mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerPreviousMessage, async(wsMessages) => 
+	{
+		// document.writeln(JSON.stringify(wsMessages));
+		document.querySelector("#text").innerHTML += `\n${JSON.stringify(wsMessages)}`;
+		console.log(`Receive ${it.size} Messages`);
+		return [];
+	});
+	document.querySelector("#button").addEventListener("click", (ele, ev) =>
+	{
+		var sendMessageText = document.querySelector("#edit").value;
+		var sendMessage = {
+			ID: 0,
+			SendUserID: 3,
+			ReceiveID: 8,
+			IsGroup: false,
+			Time: new Date(),
+			ContentType: "text/plain",
+			Content: sendMessageText
+		};
+		mywebsocket.SendMessages([
+			new MyWebSocket.WebSocketMessage(
+				MyWebSocket.WebSocketMessageEvent.OnClientMessage,
+				MyWebSocket.WebSocketMessageType.Text,
+				JSON.stringify(sendMessage)
+			)
+		]);
+		document.querySelector("#text").innerHTML += `<br />[${sendMessage.Time}]  Me ${sendMessage.SendUserID} : ${sendMessage.Content}`;
+	});
+	
+	mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerTempMessage, async (wsMessage) => 
+	{
+		var resMessage = JSON.parse(wsMessage[0].Message)
+		document.querySelector("#text").innerHTML += `<br />[${resMessage.Time}]  User ${resMessage.SendUserID} : ${resMessage.Content}`;
+		return [];
+	});
+	
+	mywebsocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerMessage, async (wsMessage) => 
+	{
+		var resMessage = JSON.parse(wsMessage[0].Message)
+		document.querySelector("#text").innerHTML += `<br />[${resMessage.Time}]  User ${resMessage.SendUserID} : ${resMessage.Content}`;
+		return [];
+	});
+	
 </script>
 </html>

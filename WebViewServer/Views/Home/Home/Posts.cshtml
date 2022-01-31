@@ -8,21 +8,21 @@
 
 
 @{
-    Layout = "Layout.cshtml";
-    ViewData["SecondTitle"] = "帖子";
+	Layout = "Layout.cshtml";
+	ViewData["SecondTitle"] = "帖子";
 
-    var myInterestedPosts = await _userService.MappingPostsByTag(_user,selection => selection.Type = new List<string>(){"Interested"});
-    var allPosts = await _postService.GetAllPost();
-    IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
-    
-    int count = Math.Min(25,myPosts.Count);
+	var myInterestedPosts = await _userService.MappingPostsByTag(_user,selection => selection.Type = new List<string>(){"Interested"});
+	var allPosts = await _postService.GetAllPost();
+	IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
+	
+	int count = Math.Min(25,myPosts.Count);
 
 }
 
 
 @for(int i = 0;i < count;i ++)
 {
-    @await Html.PartialAsync("Post",myPosts[i])
+	@await Html.PartialAsync("Post",myPosts[i])
 }
 
 

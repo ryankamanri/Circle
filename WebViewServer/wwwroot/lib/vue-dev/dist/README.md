@@ -35,9 +35,9 @@ Since the runtime-only builds are roughly 30% lighter-weight than their full-bui
 module.exports = {
   // ...
   resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
-    }
+	alias: {
+	  'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+	}
   }
 }
 ```
@@ -50,9 +50,9 @@ const alias = require('rollup-plugin-alias')
 rollup({
   // ...
   plugins: [
-    alias({
-      'vue': 'vue/dist/vue.esm.js'
-    })
+	alias({
+	  'vue': 'vue/dist/vue.esm.js'
+	})
   ]
 })
 ```
@@ -65,7 +65,7 @@ Add to your project's `package.json`:
 {
   // ...
   "browser": {
-    "vue": "vue/dist/vue.common.js"
+	"vue": "vue/dist/vue.common.js"
   }
 }
 ```
@@ -88,10 +88,10 @@ var webpack = require('webpack')
 module.exports = {
   // ...
   plugins: [
-    // ...
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    })
+	// ...
+	new webpack.DefinePlugin({
+	  'process.env.NODE_ENV': JSON.stringify('production')
+	})
   ]
 }
 ```
@@ -106,9 +106,9 @@ const replace = require('rollup-plugin-replace')
 rollup({
   // ...
   plugins: [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    })
+	replace({
+	  'process.env.NODE_ENV': JSON.stringify('production')
+	})
   ]
 }).then(...)
 ```

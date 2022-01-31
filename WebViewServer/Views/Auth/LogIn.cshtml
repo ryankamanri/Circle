@@ -1,37 +1,38 @@
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - 圈</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/Auth/LogIn.css">
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>登录 - 圈</title>
+	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/css/Auth/LogIn.css">
+	<link rel="stylesheet" href="/css/Global.css">
+	<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
-    <div id="body" style="height: 100%;margin: 0;background-image: url('/StaticFiles/Images/1.jpg');
-        background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
-        <div class="box">
-            <h2>登录</h2>
-            <form class="form-box">
-                <div class="inputBox">
-                    <input type="text" id="account" name="" required="">
-                    <label>用户名(邮箱)</label>
-                </div>
-                <div class="inputBox">
-                    <input type="password" id="password" name="" required="">
-                    <label>密码</label>
-                </div>
-                <input class="btn btn-primary col-md-12" type="button" id="login" name="" value="提交">
+	<div id="body" style="height: 100%;margin: 0;background-image: url('/StaticFiles/Images/1.jpg');
+		background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
+		<div class="box">
+			<h2>登录</h2>
+			<form class="form-box">
+				<div class="inputBox">
+					<input type="text" id="account" name="" required="">
+					<label>用户名(邮箱)</label>
+				</div>
+				<div class="inputBox">
+					<input type="password" id="password" name="" required="">
+					<label>密码</label>
+				</div>
+				<input class="btn btn-primary col-md-12" type="button" id="login" name="" value="提交">
 
-            </form>
-        </div>
-    </div>
+			</form>
+		</div>
+	</div>
 </body>
 <script type="module">
-    import LogIn from '/js/Auth/LogIn.js'
-    LogIn.LogIn();
+	import LogIn from '/js/Auth/LogIn.js'
+	LogIn.LogIn();
 </script>
 
 </html>

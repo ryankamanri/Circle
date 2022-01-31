@@ -18,65 +18,65 @@ using ChatServer.Middlewares;
 
 namespace ChatServer
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        public ILoggerFactory loggerFactory;
+		public ILoggerFactory loggerFactory;
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
 
-            services.AddControllersWithViews();
+			services.AddControllersWithViews();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("dotnet", builder =>
-                builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true));
-            });
+			services.AddCors(options =>
+			{
+				options.AddPolicy("dotnet", builder =>
+				builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true));
+			});
 
 
-            services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
+			services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
 
-        }
+		}
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            //app.UseHttpsRedirection();
+			//app.UseHttpsRedirection();
 
-            app.UseRouting();
+			app.UseRouting();
 
-            app.UseAuthorization();
+			app.UseAuthorization();
 
-            var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(120)
-            };
+			var webSocketOptions = new WebSocketOptions()
+			{
+				KeepAliveInterval = TimeSpan.FromSeconds(120)
+			};
 
-            webSocketOptions.AllowedOrigins.Any();
+			webSocketOptions.AllowedOrigins.Any();
 
-            app.UseWebSockets(webSocketOptions);
+			app.UseWebSockets(webSocketOptions);
 
-            app.UseKamanriWebSocket();
+			app.UseKamanriWebSocket();
 
-            app.UseMiddleware<MyMiddleware>();
+			app.UseMiddleware<OnMessageMiddleware>();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-    }
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
+		}
+	}
 }

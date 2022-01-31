@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework> 
-    <RestoreSources>../Kamanri/bin/Debug</RestoreSources>
+	<TargetFramework>netcoreapp3.1</TargetFramework> 
+	<RestoreSources>../Kamanri/bin/Debug</RestoreSources>
   </PropertyGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Kamanri\Kamanri.csproj" />
+	<ProjectReference Include="..\Kamanri\Kamanri.csproj" />
   </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4lib_4bootstrap_4dist_4js_4bootstrap_1bundle_1min_1js_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

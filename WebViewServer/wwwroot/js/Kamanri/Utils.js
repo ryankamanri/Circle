@@ -1,54 +1,83 @@
 var Site = {
-    //设置每个按钮的post请求
-    Post : (url,reqData,CallBack,FailHandler) =>
-    {
-        var resData = "";
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: reqData
-            
-        }).done(data => {
-            CallBack(data);
-            
-        }).fail((action,state,event) =>{
-            console.log(action);
-            console.log(state);
-            console.log(event);
-            FailHandler(action,state,event);
-        });
-    },
-    GetJSONObject : jsonStr =>
-    {
-        return JSON.parse(unescape(jsonStr.replace(/\"/g,"").replace(/\\u0022/g,'"').replace(/\\u/g, "%u")));
-    }
+	//设置每个按钮的post请求
+	Post : (url,reqData,CallBack,FailHandler) =>
+	{
+		var resData = "";
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: reqData
+			
+		}).done(data => {
+			CallBack(data);
+			
+		}).fail((action,state,event) =>{
+			console.log(action);
+			console.log(state);
+			console.log(event);
+			FailHandler(action,state,event);
+		});
+	},
+	GetJSONObject : jsonStr =>
+	{
+		return JSON.parse(unescape(jsonStr.replace(/\"/g,"").replace(/\\u0022/g,'"').replace(/\\u/g, "%u")));
+	}
 }
 
 function Sleep(value) {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(value), value);
-    });
+	return new Promise(resolve => {
+		setTimeout(() => resolve(value), value);
+	});
 }
 
 
 
-function parseElement(str) {
+function ParseElement(str) {
 	var o=document.createElement("div");
 	o.innerHTML=str;
 	return o.childNodes[0];
 }
 
-function stringlify(obj){
+function Stringlify(obj){
 	var o=document.createElement("div");
 	o.appendChild(obj);
 	return o.innerHTML;
 }
 
-function parseFunc(str)
+function ParseFunc(str)
 {
-    return new Function(`return ${str}`)();
+	return new Function(`return ${str}`)();
 }
 
-export{
-    Site, Sleep, parseElement, stringlify, parseFunc
+function StrIncrement(strNum, inc) {
+	let num = Number(strNum);
+	num += inc;
+	return String(num);
+}
+
+async function Animate(element, properties, duration="slow", easing="swing") {
+	return new Promise(resolve => {
+		$(element).animate(properties, duration, easing, value => resolve(value));
+	});
+	
+}
+
+function GetType(obj) {
+	return Object.prototype.toString.call(obj)
+}
+function CopyElement(element) {
+	let copyElement = document.createElement(element.tagName);
+	copyElement.innerHTML = element.innerHTML;
+	let attrCount = element.attributes.length;
+	for (let i = 0; i < attrCount; i++) {
+		copyElement.setAttribute(element.attributes[i].name, element.attributes[i].value);
+	}
+	return copyElement;
+}
+function GenerateIDString() {
+	return `${Date.now()}+${(Math.random() * 10000)}`
+}
+
+export {
+	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString
 }

@@ -138,7 +138,7 @@ $.validator.addMethod( "bankorgiroaccountNL", function( value, element ) {
  * - Last 3 characters - branch code, optional (shall not start with 'X' except in case of 'XXX' for primary office) (letters and digits)
  */
 $.validator.addMethod( "bic", function( value, element ) {
-    return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
+	return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
 }, "Please specify a valid BIC code" );
 
 /*
@@ -180,15 +180,15 @@ $.validator.addMethod( "bic", function( value, element ) {
  *
  * [ C ]: Control Digit. It can be a number or a letter depending on T value:
  * [ T ]  -->  [ C ]
- * ------    ----------
- *   A         Number
- *   B         Number
- *   E         Number
- *   H         Number
- *   K         Letter
- *   P         Letter
- *   Q         Letter
- *   S         Letter
+ * ------	----------
+ *   A		 Number
+ *   B		 Number
+ *   E		 Number
+ *   H		 Number
+ *   K		 Letter
+ *   P		 Letter
+ *   Q		 Letter
+ *   S		 Letter
  *
  */
 $.validator.addMethod( "cifES", function( value, element ) {
@@ -441,32 +441,32 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
  *
  * Soft symbol checking
  *  currencyInput: {
- *     currency: ["$", false]
+ *	 currency: ["$", false]
  *  }
  *
  * Strict symbol checking (default)
  *  currencyInput: {
- *     currency: "$"
- *     //OR
- *     currency: ["$", true]
+ *	 currency: "$"
+ *	 //OR
+ *	 currency: ["$", true]
  *  }
  *
  * Multiple Symbols
  *  currencyInput: {
- *     currency: "$,£,¢"
+ *	 currency: "$,£,¢"
  *  }
  */
 $.validator.addMethod( "currency", function( value, element, param ) {
-    var isParamString = typeof param === "string",
-        symbol = isParamString ? param : param[ 0 ],
-        soft = isParamString ? true : param[ 1 ],
-        regex;
+	var isParamString = typeof param === "string",
+		symbol = isParamString ? param : param[ 0 ],
+		soft = isParamString ? true : param[ 1 ],
+		regex;
 
-    symbol = symbol.replace( /,/g, "" );
-    symbol = soft ? symbol + "]" : symbol + "]?";
-    regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
-    regex = new RegExp( regex );
-    return this.optional( element ) || regex.test( value );
+	symbol = symbol.replace( /,/g, "" );
+	symbol = soft ? symbol + "]" : symbol + "]?";
+	regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
+	regex = new RegExp( regex );
+	return this.optional( element ) || regex.test( value );
 
 }, "Please specify a valid currency" );
 
@@ -707,7 +707,7 @@ $.validator.addMethod( "mobileUK", function( phone_number, element ) {
 }, "Please specify a valid mobile number" );
 
 $.validator.addMethod( "netmask", function( value, element ) {
-    return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
+	return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
 }, "Please enter a valid netmask." );
 
 /*
@@ -1030,26 +1030,26 @@ $.validator.addMethod( "skip_or_fill_minimum", function( value, element, options
  *
  *  This is the default - case insensitive, no territories, no military zones
  *  stateInput: {
- *     caseSensitive: false,
- *     includeTerritories: false,
- *     includeMilitary: false
+ *	 caseSensitive: false,
+ *	 includeTerritories: false,
+ *	 includeMilitary: false
  *  }
  *
  *  Only allow capital letters, no territories, no military zones
  *  stateInput: {
- *     caseSensitive: false
+ *	 caseSensitive: false
  *  }
  *
  *  Case insensitive, include territories but not military zones
  *  stateInput: {
- *     includeTerritories: true
+ *	 includeTerritories: true
  *  }
  *
  *  Only allow capital letters, include territories and military zones
  *  stateInput: {
- *     caseSensitive: true,
- *     includeTerritories: true,
- *     includeMilitary: true
+ *	 caseSensitive: true,
+ *	 includeTerritories: true,
+ *	 includeMilitary: true
  *  }
  *
  */

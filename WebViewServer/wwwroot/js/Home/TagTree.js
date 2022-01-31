@@ -5,62 +5,62 @@ let tagRoot;
 
 function TagTree()
 {
-    Tag.Tag();
+	Tag.Tag();
 
-    FlushTagTree();
+	FlushTagTree();
 
-    tagRoot = document.querySelector("#tagRoot");
-    tagRoot.onmousewheel = event => {
-        event.preventDefault();
-        event.stopPropagation();
-        tagRoot.scrollLeft += event.deltaY;
-    }
+	tagRoot = document.querySelector("#tagRoot");
+	tagRoot.onmousewheel = event => {
+		event.preventDefault();
+		event.stopPropagation();
+		tagRoot.scrollLeft += event.deltaY;
+	}
 }
 
 function FlushTagTree() {
-    let tagTreeNodes = document.querySelectorAll("#tagRoot .ceiledTagNode");
-    tagTreeNodes.forEach(tagTreeNode => {
-        tagTreeNode.ondblclick = event => {
-            event.preventDefault();
-            event.stopPropagation();
-            FindChildTags(event.target.parentElement.parentElement, tagTreeNode);
-        }
-    })
+	let tagTreeNodes = document.querySelectorAll("#tagRoot .ceiledTagNode");
+	tagTreeNodes.forEach(tagTreeNode => {
+		tagTreeNode.ondblclick = event => {
+			event.preventDefault();
+			event.stopPropagation();
+			FindChildTags(event.target.parentElement.parentElement, tagTreeNode);
+		}
+	})
 }
 
 
 function AppendChildTree(parentTag, childTags) {
-    for (let i in childTags) {
-        let resultItem = document.createElement("div");
-        resultItem.innerHTML = childTags[i];
-        resultItem.setAttribute("class", "ceiledTagNode");
-        parentTag.append(resultItem);
-        resultItem.ondblclick = event => {
-            event.preventDefault();
-            event.stopPropagation();
-            FindChildTags(event.target.parentElement.parentElement, resultItem);
-        }
-    }
+	for (let i in childTags) {
+		let resultItem = document.createElement("div");
+		resultItem.innerHTML = childTags[i];
+		resultItem.setAttribute("class", "ceiledTagNode");
+		parentTag.append(resultItem);
+		resultItem.ondblclick = event => {
+			event.preventDefault();
+			event.stopPropagation();
+			FindChildTags(event.target.parentElement.parentElement, resultItem);
+		}
+	}
 }
 
 function FindChildTags(parentTag, tagTreeNode) {
-    let tagID = tagTreeNode.querySelector(".ID").innerText;
-    $.ajax({
-        url: "/Home/FindChildTags",
-        type: "POST",
-        data: {
-            tagID: tagID
-        }
-    }).done(resData => {
-        AppendChildTree(parentTag, JSON.parse(resData));
-        //FlushTagTree(parentTag);
-        parentTag.ondblclick = undefined;
-        Tag.FlushDrugEvent();
-        Tag.FlushDropEvent();
-    });
+	let tagID = tagTreeNode.querySelector(".ID").innerText;
+	$.ajax({
+		url: "/Home/FindChildTags",
+		type: "POST",
+		data: {
+			tagID: tagID
+		}
+	}).done(resData => {
+		AppendChildTree(parentTag, JSON.parse(resData));
+		//FlushTagTree(parentTag);
+		parentTag.ondblclick = undefined;
+		Tag.FlushDrugEvent();
+		Tag.FlushDropEvent();
+	});
 }
 export default{
-    TagTree,FlushTagTree,AppendChildTree,FindChildTags
+	TagTree,FlushTagTree,AppendChildTree,FindChildTags
 }
 
 

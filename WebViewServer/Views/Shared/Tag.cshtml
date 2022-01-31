@@ -1,18 +1,18 @@
 @model WebViewServer.Models.Tag
 @using Kamanri.Self
 @{
-    string ID = RandomGenerator.GenerateGUID();
-    int br = RandomGenerator.Generate_0_255();
-    int bg = RandomGenerator.Generate_0_255();
-    int bb = RandomGenerator.Generate_0_255();
-    int fr = (br + 128)%256;
-    int fg = (bg + 128)%256;
-    int fb = (bb + 128)%256;
+	string ID = RandomGenerator.GenerateGUID();
+	int br = RandomGenerator.Generate_0_255();
+	int bg = RandomGenerator.Generate_0_255();
+	int bb = RandomGenerator.Generate_0_255();
+	int fr = (br + 128)%256;
+	int fg = (bg + 128)%256;
+	int fb = (bb + 128)%256;
 }
 
-<div class="tag" id="@ID" draggable="true" style="background-color: rgb(@br,@bg,@bb);">
-    <div class="ID">@Model.ID</div>
-    <div class="_Tag" style="color: rgb(@fr,@fg,@fb);">@Model._Tag</div>
+<div class="tag" id="@ID" title="@Model._Tag" draggable="true" style="background-color: rgb(@br,@bg,@bb);">
+	<div class="ID" style="display: none;">@Model.ID</div>
+	<div class="_Tag" style="color: rgb(@fr,@fg,@fb);">@Model._Tag</div>
 </div>
 
 

@@ -1,0 +1,28 @@
+﻿.more>.like, .more>.collect, .more>.comment {
+	display: inline-block;
+	margin: 0 5px;
+	cursor: pointer;
+}
+.more {
+	float: right;
+	margin: 0 10px 0 10px
+}
+.feed-item-bd > .more {
+	margin: 10px 10px 0 10px
+}
+.more .count{
+	color: grey;
+	text-align: center;
+}
+.liked .count, .collected .count{
+	color: #25bb9b;
+	font-weight: bold;
+}
+.feed-tags {
+	display: inline-block;
+	margin: 10px;
+}
+
+.content-item{
+	margin: 2rem 0;
+}

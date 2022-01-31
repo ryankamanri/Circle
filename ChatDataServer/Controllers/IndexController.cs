@@ -10,33 +10,33 @@ using Kamanri.WebSockets;
 
 namespace ChatDataServer.Controllers
 {
-    public class IndexController : ControllerBase
-    {
-        ILogger<IndexController> _logger;
+	public class IndexController : ControllerBase
+	{
+		ILogger<IndexController> _logger;
 
-        IWebSocketSession _wsSession;
+		IWebSocketSession _wsSession;
 
-        public IndexController(ILoggerFactory loggerFactory, IWebSocketSession wsSession)
-        {
-            _logger = loggerFactory.CreateLogger<IndexController>();
-            _wsSession = wsSession;
-        }
+		public IndexController(ILoggerFactory loggerFactory, IWebSocketSession wsSession)
+		{
+			_logger = loggerFactory.CreateLogger<IndexController>();
+			_wsSession = wsSession;
+		}
 
-        [HttpGet]
-        [Route("/")]
-        public async Task Indexer()
-        {
+		[HttpGet]
+		[Route("/")]
+		public async Task Indexer()
+		{
 
-            if (HttpContext.WebSockets.IsWebSocketRequest)
-            {
-                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                //注册WebSocket
-                await _wsSession.AcceptWebSocketInjection(webSocket);
-            }
-
-
-        }
+			if (HttpContext.WebSockets.IsWebSocketRequest)
+			{
+				var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+				//注册WebSocket
+				await _wsSession.AcceptWebSocketInjection(webSocket);
+			}
 
 
-    }
+		}
+
+
+	}
 }

@@ -7,28 +7,28 @@
 @inject TagService _tagService
 
 @{
-    //ICollection<Tag> fatherTags = (await _dbc.Mapping<Tag,Tag>(new Tag(-1),new Tag(),ID_IDList.OutPutType.Key)).Keys;
-    ICollection<Tag> fatherTags = (await _tagService.FindChildTag(new Tag(-1)));
-    string msg = $"ID = {_user.ID}";
+	//ICollection<Tag> fatherTags = (await _dbc.Mapping<Tag,Tag>(new Tag(-1),new Tag(),ID_IDList.OutPutType.Key)).Keys;
+	ICollection<Tag> fatherTags = (await _tagService.FindChildTag(new Tag(-1)));
+	string msg = $"ID = {_user.ID}";
 }
 <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
 <link rel="stylesheet" href="/css/Shared/Tag.css">
 <div class="col-md-12 text-center" style="background-color:darkseagreen;">
-    <div id="tagRoot">
-        @foreach (var tag in fatherTags)
-        {
-            <div class="ceiledTagNode">
-                @await Html.PartialAsync("Tag",tag)
-            </div>
-        }
-    </div>
-    <link rel="stylesheet" href="/css/Home/TagTree.css">
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
-    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="module">
-        import TagTree from '/js/Home/TagTree.js'
-        TagTree.TagTree();
-    </script>
+	<div id="tagRoot">
+		@foreach (var tag in fatherTags)
+		{
+			<div class="ceiledTagNode">
+				@await Html.PartialAsync("Tag",tag)
+			</div>
+		}
+	</div>
+	<link rel="stylesheet" href="/css/Home/TagTree.css">
+	<script src="/lib/jquery/dist/jquery.min.js"></script>
+	<script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="module">
+		import TagTree from '/js/Home/TagTree.js'
+		TagTree.TagTree();
+	</script>
 </div>
 
 

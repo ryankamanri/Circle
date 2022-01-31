@@ -9,151 +9,131 @@ using Kamanri.Extensions;
 
 namespace Kamanri.Database.Models
 {
-    /// <summary>
-    /// 所有对应到数据库表实体的抽象实体类
-    /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    [JsonObject(MemberSerialization.OptOut)]
-    public abstract class Entity<TEntity> : IEquatable<Entity<TEntity>>
-    {
-        
-        /// <summary>
-        /// 实体ID
-        /// </summary>
-        /// <value></value>
-        public long ID { get; set; }
+	/// <summary>
+	/// 所有对应到数据库表实体的抽象实体类
+	/// </summary>
+	/// <typeparam name="TEntity"></typeparam>
+	[JsonObject(MemberSerialization.OptOut)]
+	public abstract class Entity<TEntity> : EntityObject, IEquatable<Entity<TEntity>>
+	{
 
-        public Entity(){}
-        public Entity(long ID)
-        {
-            this.ID = ID;
-        }
+		public Entity()
+		{
+			EntityAttributesString = new EntityAttributesString<TEntity>(this);
+		}
+		public Entity(long ID) : base(ID)
+		{
+			EntityAttributesString = new EntityAttributesString<TEntity>(this);
+		}
 
-        /// <summary>
-        /// 实体对应的数据库表名
-        /// </summary>
-        /// <value></value>
-        [JsonIgnore]
-        public abstract string TableName{get; set;}
+		/// <summary>
+		/// 实体对应的数据库表名
+		/// </summary>
+		/// <value></value>
+		[JsonIgnore]
+		public abstract string TableName { get; set; }
 
-        /// <summary>
-        /// 实体对应的数据库表所有列名
-        /// </summary>
-        /// <value></value>
-        public string Columns() => $"{TableName}.ID, {ColumnNamesString()}";
+		[JsonIgnore]
+		public EntityAttributesString<TEntity> EntityAttributesString;
 
-        /// <summary>
-        /// 实体对应的数据库表所有列名,不计入ID
-        /// 格式 {TableName}.Property_1,{TableName}.Property_2
-        /// </summary>
-        /// <value></value>
-        public abstract string ColumnNamesString();
-       
-        /// <summary>
-        /// 插入数据库时需要的字符串,包括所有属性的值,以逗号分隔
-        /// 格式 {Property_1},{Property_2}
-        /// </summary>
-        /// <returns></returns>
-        public abstract string InsertValuesString();
+		/// <summary>
+		/// 实体对应的数据库表所有列名
+		/// </summary>
+		/// <value></value>
+		public string Columns()
+		{
+			EntityAttributesString.Build();
+			return $"{TableName}.ID, {EntityAttributesString.ColumnNamesString}";
+		}
 
-        /// <summary>
-        /// 更新数据库时需要的字符串,包括除ID外所有属性的列名和值,以逗号分隔
-        /// 格式 {TableName}.Property_1 = {Property_1},{TableName}.Property_2 = {Property_2}
-        /// </summary>
-        /// <returns></returns>
-        public abstract string UpdateSetString();
+		/// <summary>
+		/// 从数据库容器中读取实体
+		/// </summary>
+		/// <param name="ddr"></param>
+		/// <returns></returns>
+		public abstract TEntity GetEntityFromDataReader(DbDataReader ddr);
 
-        /// <summary>
-        /// 查询数据库时需要的字符串,包括除ID外任一候选码的列名和值,以and/or分隔
-        /// 格式 {TableName}.Property_1 = {Property_1} and/or {TableName}.Property_2 = {Property_2}
-        /// </summary>
-        /// <returns></returns>
-        public abstract string CandidateKeySelectionString();
+		/// <summary>
+		/// 从本实体抽象类的类实例中获取实体
+		/// </summary>
+		/// <returns></returns>
+		public abstract TEntity GetEntity();
 
-        /// <summary>
-        /// 从数据库容器中读取实体
-        /// </summary>
-        /// <param name="msdr"></param>
-        /// <returns></returns>
-        public abstract TEntity GetEntityFromDataReader(DbDataReader msdr);
-
-        /// <summary>
-        /// 从本实体抽象类的类实例中获取实体
-        /// </summary>
-        /// <returns></returns>
-        public abstract TEntity GetEntity();
-
-        /// <summary>
-        /// 为SQL语句中的占位符设置参数(一般用于二进制数据)
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        public virtual ICollection<DbParameter> SetParameter(DbCommand command) => default;
+		/// <summary>
+		/// 为SQL语句中的占位符设置参数(一般用于二进制数据)
+		/// </summary>
+		/// <param name="command"></param>
+		/// <returns></returns>
+		public virtual ICollection<DbParameter> SetParameter(DbCommand command) => default;
 
 
 
 
-        /// <summary>
-        /// 读取从数据库中获取的实体信息,形成一个list列表
-        /// </summary>
-        /// <param name="msdr"></param>
-        /// <returns></returns>
-        public async Task<IList<TEntity>> GetList(KeyValuePair<DbDataReader,Mutex> msdr_mutex)
-        {
-            IList<TEntity> entities = new List<TEntity>();
-            while (msdr_mutex.Key.Read())
-            {
-                try
-                {
-                    entities.Add(GetEntityFromDataReader(msdr_mutex.Key));
-                }catch(Exception e)
-                {
-                    throw new DataBaseModelException("Failed To Get Entity From Data Reader", e);
-                }
-                
-            }
-            await msdr_mutex.Key.CloseAsync();
-            msdr_mutex.Value.Signal();
-            return entities;
-        }
+		/// <summary>
+		/// 读取从数据库中获取的实体信息,形成一个list列表
+		/// </summary>
+		/// <param name="ddr"></param>
+		/// <returns></returns>
+		public async Task<IList<TEntity>> GetList(KeyValuePair<DbDataReader,Mutex> ddr_mutex)
+		{
+			IList<TEntity> entities = new List<TEntity>();
+			while (ddr_mutex.Key.Read())
+			{
+				try
+				{
+					var entity = GetEntityFromDataReader(ddr_mutex.Key);
+					(entity as Entity<TEntity>).ID = (long)ddr_mutex.Key["ID"];
+					entities.Add(entity);
+				}catch(Exception e)
+				{
+					throw new DataBaseModelException("Failed To Get Entity From Data Reader", e);
+				}
+				
+			}
+			await ddr_mutex.Key.CloseAsync();
+			ddr_mutex.Value.Signal();
+			return entities;
+		}
 
-        /// <summary>
-        /// 读取从数据库中连接表获取的实体信息与对应关系,形成一个Dictionary列表
-        /// </summary>
-        /// <param name="msdr"></param>
-        /// <returns></returns>
-        public async Task<IDictionary<TEntity,dynamic>> GetRelationDictionary(KeyValuePair<DbDataReader,Mutex> msdr_mutex)
-        {
-            IDictionary<TEntity,dynamic> entity_Relations = new Dictionary<TEntity,dynamic>();
-            while (msdr_mutex.Key.Read())
-            {
-                try
-                {
-                    entity_Relations.Add(GetEntityFromDataReader(msdr_mutex.Key),
-                    ((string)msdr_mutex.Key["relations"]).ToObject<ExpandoObject>());
-                }catch(Exception e)
-                {
-                    throw new DataBaseModelException($"Failed To Get Entity From Data Reader Or Deserialize The ExpandoObject msdr_mutex.Key['relations'] {(string)msdr_mutex.Key["relations"]}", e);
-                }
-                
-            }
-            await msdr_mutex.Key.CloseAsync();
-            msdr_mutex.Value.Signal();
-            return entity_Relations;
-        }
-
-
-        public bool Equals(Entity<TEntity> other)
-        {
-            return (this.ID == other.ID);
-        }
+		/// <summary>
+		/// 读取从数据库中连接表获取的实体信息与对应关系,形成一个Dictionary列表
+		/// </summary>
+		/// <param name="ddr"></param>
+		/// <returns></returns>
+		public async Task<IDictionary<TEntity,dynamic>> GetRelationDictionary(KeyValuePair<DbDataReader,Mutex> ddr_mutex)
+		{
+			IDictionary<TEntity,dynamic> entity_Relations = new Dictionary<TEntity,dynamic>();
+			while (ddr_mutex.Key.Read())
+			{
+				try
+				{
+					var entity = GetEntityFromDataReader(ddr_mutex.Key);
+					(entity as Entity<TEntity>).ID = (long)ddr_mutex.Key["ID"];
+					entity_Relations.Add(entity, 
+					((string)ddr_mutex.Key["relations"]).ToObject<ExpandoObject>());
+				}catch(Exception e)
+				{
+					throw new DataBaseModelException($"Failed To Get Entity From Data Reader Or Deserialize The ExpandoObject ddr_mutex.Key['relations'] {(string)ddr_mutex.Key["relations"]}", e);
+				}
+				
+			}
+			await ddr_mutex.Key.CloseAsync();
+			ddr_mutex.Value.Signal();
+			return entity_Relations;
+		}
 
 
-        public override int GetHashCode()
-        {
-            return (int)this.ID;
-        }
+		public bool Equals(Entity<TEntity> other)
+		{
+			return (this.ID == other.ID);
+		}
 
 
-    }
+		public override int GetHashCode()
+		{
+			return (int)this.ID;
+		}
+
+
+	}
 }

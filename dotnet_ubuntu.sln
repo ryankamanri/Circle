@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatServer", "ChatServer\Ch
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kamanri", "Kamanri\Kamanri.csproj", "{6A89C08B-45C7-4C32-B16E-AF78457A305C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLServer", "MLServer\MLServer.csproj", "{0F37135D-E06E-42F2-8B8F-66A7015AED1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x64.Build.0 = Release|Any CPU
 		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A89C08B-45C7-4C32-B16E-AF78457A305C}.Release|x86.Build.0 = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Debug|x86.Build.0 = Debug|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|x64.Build.0 = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F37135D-E06E-42F2-8B8F-66A7015AED1E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

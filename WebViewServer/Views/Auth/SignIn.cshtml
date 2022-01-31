@@ -1,47 +1,48 @@
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册 - 圈</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/Auth/LogIn.css">
-    <link rel="stylesheet" href="/css/Auth/SignIn.css">
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>注册 - 圈</title>
+	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/css/Global.css">
+	<link rel="stylesheet" href="/css/Auth/LogIn.css">
+	<link rel="stylesheet" href="/css/Auth/SignIn.css">
+	<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
-    <div id="body" style="height: 100%;margin: 0;background-image: url('/StaticFiles/Images/1.jpg');
-        background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
-        <div class="box">
-            <h2>注册</h2>
-            <form class="form-box">
-                <div class="inputBox">
-                    <input type="text" id="account" name="" required="">
-                    <label>用户名(邮箱)</label>
-                </div>
-                <div class="inputBox">
-                    <input type="password" id="password" name="" required="">
-                    <label>密码</label>
-                </div>
-                <div class="inputBox">
-                    <div class="inputBox1">
-                        <input type="text" id="authcode" name="" required="">
-                        <button class="box1" id="getauthcode">获取</button>
-                        <label>验证码</label>
-                    </div>
-                </div>
-                
-                <input class="btn btn-primary col-md-12" type="button" id="signin" name="" value="提交">
+	<div id="body" style="height: 100%;margin: 0;background-image: url('/StaticFiles/Images/1.jpg');
+		background-attachment: fixed; background-repeat: no-repeat;background-position-x: center;background-size: cover;">
+		<div class="box">
+			<h2>注册</h2>
+			<form class="form-box">
+				<div class="inputBox">
+					<input type="text" id="account" name="" required="">
+					<label>用户名(邮箱)</label>
+				</div>
+				<div class="inputBox">
+					<input type="password" id="password" name="" required="">
+					<label>密码</label>
+				</div>
+				<div class="inputBox">
+					<div class="inputBox1">
+						<input type="text" id="authcode" name="" required="">
+						<button class="box1" id="getauthcode">获取</button>
+						<label>验证码</label>
+					</div>
+				</div>
+				
+				<input class="btn btn-primary col-md-12" type="button" id="signin" name="" value="提交">
 
-            </form>
-        </div>
-    </div>
+			</form>
+		</div>
+	</div>
 </body>
 
 <script type="module">
-    import SignIn from '/js/Auth/SignIn.js'
-    SignIn.SignIn();
+	import SignIn from '/js/Auth/SignIn.js'
+	SignIn.SignIn();
 </script>
 
 </html>
