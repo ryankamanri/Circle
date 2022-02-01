@@ -1,0 +1,3 @@
+[submodule "Kamanri"]
+	path = Kamanri
+	url = https://gitee.com/ryankamanri/Kamanri.git
