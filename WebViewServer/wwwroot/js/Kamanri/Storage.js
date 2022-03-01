@@ -45,6 +45,9 @@ function Clear()
 	window.localStorage.removeItem("kamanriStorage");
 }
 
+export {
+	Storage, Clear
+}
 
 export default{
 	Storage, Clear

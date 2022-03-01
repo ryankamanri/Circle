@@ -1,4 +1,4 @@
-﻿using Kamanri.Self;
+﻿using Kamanri.Utils;
 using Microsoft.AspNetCore.Http;
 
 namespace WebViewServer.Services.Cookie

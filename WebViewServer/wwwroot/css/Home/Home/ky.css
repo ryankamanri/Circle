@@ -28,6 +28,8 @@ html {
 /* 帖子内容板块 */
 .content{
 	float: left;
+	min-width: 70%;
+	max-width: 760px;
 }
 /* 全局样式 */
 div{

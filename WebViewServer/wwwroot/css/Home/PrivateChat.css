@@ -7,9 +7,10 @@
 	align-items: center;
 	cursor: pointer;
 }
-.head-image img {
+.chat-head-image>img {
 	width: 2.5rem;
 	height: 2.5rem;
+	border-radius: 100rem;
 }
 .userinfo-right-box {
 	width: 100%;
@@ -42,20 +43,21 @@
 .time-message-item {
 	text-align: center;
 }
-.other-message-item .head-image,
+.other-message-item .chat-head-image,
 .other-message-item .message-background, 
-.self-message-item .head-image, 
+.self-message-item .chat-head-image, 
 .self-message-item .message-background {
 	display: inline-block;
 } 
 .self-message-item {
 	height: 60px;
+	display: grid;
 }
 .self-message-item div {
 	float: right;
 }
 
-.head-image {
+.chat-head-image {
 	margin: 0.5em;
 }
 .message {

@@ -221,18 +221,7 @@ namespace WebViewServer.Services
 
 		#region Carculate
 
-
-		public async Task<double> CarculateSimilarity(User user_1, User user_2, Action<dynamic> SetMyTagsType)
-		{
-			dynamic selections = new ExpandoObject();
-			SetMyTagsType(selections);
-			return await _api.Post<double>("/User/CarculateSimilarity", new Form()
-			{
-				{"User_1", user_1},
-				{"User_2", user_2},
-				{"Selections", selections}
-			});
-		}
+		
 
 
 		public async Task<double> CarculateSimilarityFix(User user_1, User user_2, Action<dynamic> SetMyTagsType)
@@ -240,7 +229,7 @@ namespace WebViewServer.Services
 
 			dynamic selections = new ExpandoObject();
 			SetMyTagsType(selections);
-			return await _api.Post<double>("/User/CarculateSimilarity", new Form()
+			return await _api.Post<double>("/User/CarculateSimilarityFix", new Form()
 			{
 				{"User_1", user_1},
 				{"User_2", user_2},

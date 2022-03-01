@@ -59,6 +59,11 @@ function FindChildTags(parentTag, tagTreeNode) {
 		Tag.FlushDropEvent();
 	});
 }
+
+export {
+	TagTree, FlushTagTree, AppendChildTree, FindChildTags
+}
+
 export default{
 	TagTree,FlushTagTree,AppendChildTree,FindChildTags
 }

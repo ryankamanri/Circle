@@ -224,6 +224,9 @@ async function ShowSecondLevelComment(event, flCommentModel, flCommentView) {
 	
 }
 
+export {
+	Comment, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow
+}
 
 export default {
 	Comment, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow

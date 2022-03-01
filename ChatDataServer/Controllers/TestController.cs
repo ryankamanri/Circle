@@ -35,7 +35,7 @@ namespace ChatDataServer.Controllers
 			jToken["description"] = "description";
 			var dObj = new ExpandoObject();
 
-			Kamanri.Self.Dynamic.Cover(jToken, dObj);
+			Kamanri.Utils.Dynamic.Cover(jToken, dObj);
 
 			return dObj.ToJson();
 		}

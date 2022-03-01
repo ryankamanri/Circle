@@ -37,6 +37,10 @@ function HignlightReplace(matchString,searchString)
 	searchResult = searchResult.replace(matchString,matchStringReplace);
 }
 
+export {
+	SearchResult
+}
+
 export default{
 	SearchResult
 }

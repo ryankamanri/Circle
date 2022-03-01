@@ -2,7 +2,6 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<RestoreSources>../Kamanri/bin/Debug/</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>

@@ -76,7 +76,7 @@ async function InitFocusUserList() {
 			return templateElement;
 		})
 		.SetTemplateViewToModelBinder((view, modelItem, viewType) => {
-			let headImage = view.querySelector(".head-image img");
+			let headImage = view.querySelector(".chat-head-image img");
 			let nickName = view.querySelector(".nickname");
 			let time = view.querySelector(".time");
 			let lastMessage = view.querySelector(".last-message");
@@ -145,11 +145,13 @@ function InitMessageContentView(messageViewModelList) {
 					return;
 				}
 			});
-			let headImage = view.querySelector(".head-image img");
+			let headImage = view.querySelector(".chat-head-image img");
 			let message = view.querySelector(".message");
 			headImage.setAttribute("src", messageUser.HeadImage);
 			message.innerText = modelItem.Content;
 		}).Show();
+
+	SetStackFromEnd();
 }
 
 
@@ -232,10 +234,14 @@ function InitMyWebSocket() {
 	}
 
 	
-
-	
 }
 
+function SetStackFromEnd() {
+	let messageContentView = document.querySelector(".message-content-view");
+	let messageCountMount = document.querySelector("#message-content-mount");
+	messageContentView.scrollTop = messageCountMount.offsetHeight;
+
+}
 
 Array.prototype.ToWebSocketMessageList = function (wsmEvent) {
 	let msgList = [];
@@ -283,6 +289,10 @@ Array.prototype.ToMessages = function (offset = 0, length = -1) {
 		}
 	}
 	return result;
+}
+
+export {
+	PrivateChat
 }
 
 

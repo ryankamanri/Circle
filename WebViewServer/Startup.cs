@@ -36,6 +36,13 @@ namespace WebViewServer
 			services.AddControllers();
 			//增加控制器与视图(观察者模式)服务
 			services.AddControllersWithViews();
+
+			services.AddWebOptimizer(pipeline =>
+			{
+				//pipeline.MinifyJsFiles("/js/**/*");
+				pipeline.MinifyCssFiles("/css/**/*");
+				pipeline.AddCssBundle("/bundle.css", "/css/Global.css", "/css/Home/**/*", "/css/Shared/**/*");
+			});
 			//增加(SystemLogIn)的认证服务,如果没有这个Cookie将无法进入主页面
 			services.AddAuthentication("CookiesAuth").AddCookie("CookiesAuth", options =>
 			 {
@@ -84,6 +91,8 @@ namespace WebViewServer
 			}
 			//使用路由
 			app.UseRouting();
+			//打包资源文件
+			app.UseWebOptimizer();
 			//可访问静态文件,位于wwwroot/
 			app.UseStaticFiles();
 
@@ -102,6 +111,7 @@ namespace WebViewServer
 			app.UseCors("any");
 			//获取用户登录信息
 			app.UseMiddleware<UserMiddleware>();
+			
 			//定位到对应的服务
 			app.UseEndpoints(endpoints =>
 			{

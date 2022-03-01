@@ -60,7 +60,7 @@ namespace ApiServer.Services
 
 			var tagsGroupByUser = await _dbc.MappingSelectUnionStatistics<Tag, User>(
 				searchedTags.ConvertAll(tag => tag as Entity<Tag>), ID_IDList.OutPutType.Key,
-				selection => selection.Type = new List<string>() { "Self" });
+				selection => selection.Type = new List<string>() { "Utils" });
 
 			Key_ListValue_Pairs<UserInfo, Tag> tagsGroupByUserInfo = new Key_ListValue_Pairs<UserInfo, Tag>();
 			Key_ListValue_Pairs<UserInfo, Tag> tagsGroupByUserInfoBase = new Key_ListValue_Pairs<UserInfo, Tag>();

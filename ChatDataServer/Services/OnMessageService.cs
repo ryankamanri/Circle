@@ -8,7 +8,7 @@ using Kamanri.WebSockets;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
 using Kamanri.Database;
-using Kamanri.Self;
+using Kamanri.Utils;
 using ChatDataServer.Models;
 using ChatDataServer.Services.Extensions;
 
@@ -34,15 +34,15 @@ namespace ChatDataServer.Services
 			_userService = new UserService(loggerFactory);
 			_messageService = new MessageService(dbc, loggerFactory);
 
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnConnect, OnConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnServerConnect, OnServerConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnServerMessage, OnServerMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnClientDisconnect, OnClientDisconnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnServerPreviousMessage, OnServerPreviousMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideDisconnect, OnDataSideDisconnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDisconnect, OnDisconnect);
+			_wsmService.AddEventHandler(WebSocketMessageEvent.OnConnect, OnConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnServerConnect, OnServerConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnServerMessage, OnServerMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnClientDisconnect, OnClientDisconnect)
+				.AddEventHandler(WebSocketMessageEvent.OnServerPreviousMessage, OnServerPreviousMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSideDisconnect, OnDataSideDisconnect)
+				.AddEventHandler(WebSocketMessageEvent.OnDisconnect, OnDisconnect);
 
 		}
 

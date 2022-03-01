@@ -38,6 +38,10 @@ async function SelectCircle()
 	
 
 }
+
+export {
+	SelectCircle
+}
 export default{
 	SelectCircle
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Kamanri.Extensions;
-using Kamanri.Self;
+using Kamanri.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;

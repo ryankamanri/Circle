@@ -32,6 +32,10 @@ function LogIn()
 	return this;
 }
 
+export {
+	LogIn
+}
+
 export default{
 	LogIn
 }

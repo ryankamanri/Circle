@@ -16,7 +16,6 @@ namespace ApiServer.Models.Post
 
 		public string Content { get; set; }
 		[CandidateKeyIgnore]
-		[ParameterPlaceHolder("@DateTime")]
 		public DateTime CommentDateTime { get; set; }
 		public override string TableName { get; set; } = "comments";
 

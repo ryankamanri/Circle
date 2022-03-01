@@ -137,7 +137,7 @@ namespace WebViewServer.Controllers
 			if (!HttpContext.Request.Form.TryGetValue("postID", out var postID)) return "bad request".ToJson();
 			var commentList = await _postService.SelectFormedCommentsAndUser(new Post(Convert.ToInt64(postID.ToString())), _user);
 
-			return commentList.ToJson(dateTimeFormatString: "yyyy-MM-dd hh:mm");
+			return commentList.ToJson(dateTimeFormatString: "yyyy-MM-dd HH:mm");
 		}
 
 		

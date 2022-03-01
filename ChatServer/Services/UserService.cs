@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
-using Kamanri.Self;
+using Kamanri.Utils;
 using Microsoft.Extensions.Logging;
 namespace ChatServer.Services
 {

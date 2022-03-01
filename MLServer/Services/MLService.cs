@@ -3,6 +3,9 @@ using Microsoft.ML;
 using Microsoft.ML.Data;
 using static Microsoft.ML.DataOperationsCatalog;
 using MLServer.Models;
+using StackExchange.Redis;
+using System.Threading.Tasks;
+
 namespace MLServer.Services
 {
 	public interface IMLService
@@ -30,10 +33,17 @@ namespace MLServer.Services
 			var splitDataView = LoadData();
 		}
 
-		private TrainTestData LoadData()
+		private async Task<TrainTestData> LoadData()
 		{
 			// 1. 结构化数据
 			//_mlContext.Data.LoadFromEnumerable<DoubleUserData>();
+			var redis = await ConnectionMultiplexer.ConnectAsync("localhost");
+			var rdb = redis.GetDatabase();
+			if(await rdb.StringSetAsync("test_data", "kamanri"))
+			{
+				var value = await rdb.StringGetAsync("test_data");
+				_logger.LogDebug(value);
+			}
 			return default;
 		}
 	}

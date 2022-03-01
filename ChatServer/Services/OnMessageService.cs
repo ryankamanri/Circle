@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Kamanri.WebSockets;
 using Kamanri.WebSockets.Model;
 using Kamanri.Extensions;
-using Kamanri.Self;
+using Kamanri.Utils;
 using ChatServer.Services.Extensions;
 
 namespace ChatServer.Services
@@ -28,15 +28,15 @@ namespace ChatServer.Services
 			_wsmService = wsmService;
 			_logger = loggerFactory.CreateLogger<OnMessageService>();
 			_userService = new UserService(loggerFactory);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnConnect, OnConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideTempMessage, OnDataSideTempMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnClientMessage, OnClientMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSideMessage, OnDataSideMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnClientPreviousMessage, OnClientPreviousMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDataSidePreviousMessage, OnDataSidePreviousMessage);
-			_wsmService.AddEventHandler(WebSocketMessageEvent.OnDisconnect, OnDisconnect);
+			_wsmService.AddEventHandler(WebSocketMessageEvent.OnConnect, OnConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSideConnect, OnDataSideConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnClientConnect, OnClientConnect)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSideTempMessage, OnDataSideTempMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnClientMessage, OnClientMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSideMessage, OnDataSideMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnClientPreviousMessage, OnClientPreviousMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnDataSidePreviousMessage, OnDataSidePreviousMessage)
+				.AddEventHandler(WebSocketMessageEvent.OnDisconnect, OnDisconnect);
 		}
 
 		public Task<IList<WebSocketMessage>> OnConnect(IWebSocketSession client, IList<WebSocketMessage> messages)
@@ -102,7 +102,7 @@ namespace ChatServer.Services
 				await session.ClientClose(webSocketID, WebSocketCloseStatus.NormalClosure,
 					"You Have Signed In To Another Platform");
 				// 需要当响应OnDisconnect并发送消息到数据端后才能进行下一步
-				await _userService.onlineUserID_WebSocketIDsMutex[userID].Wait();
+				_userService.onlineUserID_WebSocketIDsMutex[userID].Wait();
 			}
 			_userService.onlineUserID_WebSocketIDs[userID] = clientAssignedID;
 			_userService.onlineUserID_WebSocketIDsMutex[userID] = new Mutex(true);

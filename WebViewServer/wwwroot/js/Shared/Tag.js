@@ -56,6 +56,9 @@ function FlushDropEvent() {
 	});
 }
 
+export {
+	Tag, FlushDrugEvent, FlushDropEvent
+}
 
 export default{
 	Tag,FlushDrugEvent,FlushDropEvent

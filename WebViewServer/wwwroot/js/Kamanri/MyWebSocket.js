@@ -185,6 +185,10 @@ function SendMessages(websocket, wsMessages)
 	
 }
 
+export {
+	MyWebSocket, WebSocketMessage, WebSocketMessageType, WebSocketMessageEvent
+}
+
 export default
 {
 	MyWebSocket, WebSocketMessage, WebSocketMessageType, WebSocketMessageEvent

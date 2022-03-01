@@ -1,7 +1,7 @@
-start cmd /k dotnet run --project ChatDataServer/ChatDataServer.csproj
+start cmd /k "cd ChatDataServer&&dotnet run"
 timeout /T 3
-start cmd /k dotnet run --project ChatServer/ChatServer.csproj
+start cmd /k "cd ChatServer&&dotnet run"
 timeout /T 3
-start cmd /k dotnet run --project ApiServer/ApiServer.csproj
+start cmd /k "cd ApiServer&&dotnet run"
 timeout /T 3
-start cmd /k dotnet run --project WebViewServer/WebViewServer.csproj
+start cmd /k "cd WebViewServer&&dotnet run"

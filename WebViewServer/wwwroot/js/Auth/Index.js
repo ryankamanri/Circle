@@ -20,7 +20,9 @@ function Index()
 }
 
 
-
+export {
+	Index
+}
 
 
 export default{

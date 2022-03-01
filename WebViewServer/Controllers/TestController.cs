@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Kamanri.Extensions;
 using Kamanri.Http;
-using Kamanri.Self;
+using Kamanri.Utils;
 using Microsoft.AspNetCore.Mvc;
 using WebViewServer.Models.User;
 

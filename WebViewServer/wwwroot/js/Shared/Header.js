@@ -71,6 +71,10 @@ function Header()
 		$("#searchResult").empty();
 	}
 }
+
+export {
+	Header
+}
 export default{
 	Header
 }

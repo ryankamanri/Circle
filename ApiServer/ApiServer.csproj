@@ -2,11 +2,11 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<RestoreSources>../Kamanri/bin/Debug</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
 	<PackageReference Include="MySql.Data" Version="8.0.26" />
+	<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
   </ItemGroup>
 
   <ItemGroup>

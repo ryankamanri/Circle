@@ -237,5 +237,5 @@ export default {
 }
 
 export {
-	GetPostID_commentLabel
+	Post, GetPostID_commentLabel
 }

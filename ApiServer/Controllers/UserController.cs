@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Kamanri.Self;
+using Kamanri.Utils;
 using Kamanri.Extensions;
 using ApiServer.Models.User;
 using ApiServer.Services;

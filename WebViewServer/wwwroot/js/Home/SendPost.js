@@ -41,6 +41,10 @@ function SendPostSubmit()
 	},()=>{});
 }
 
+export {
+	SendPost
+}
+
 export default{
 	SendPost
 }

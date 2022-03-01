@@ -12,15 +12,13 @@ namespace WebViewServer.Middlewares
 {
 	public class UserMiddleware
 	{
-		private Api _api;
 
 		private ICookie _cookie;
 
 		private RequestDelegate _next;
 
-		public UserMiddleware(Api api, ICookie cookie, RequestDelegate next)
+		public UserMiddleware(ICookie cookie, RequestDelegate next)
 		{
-			_api = api;
 			_cookie = cookie;
 			_next = next;
 		}
