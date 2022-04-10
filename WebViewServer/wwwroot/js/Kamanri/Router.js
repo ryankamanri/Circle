@@ -10,6 +10,7 @@ function Router() {
     this.Execute = () => {
         window.addEventListener("load", this._Delegate);
         window.addEventListener("hashchange", this._Delegate);
+        this._Delegate();
     }
     this._Delegate = () => {
         let hash = window.location.hash.split("?")[0];

@@ -1,4 +1,4 @@
-import { Router, Api, AddScript } from "../My.js";
+import { Router, Api, AddScript, Sleep } from "../My.js";
 import Tag from "./Tag.js";
 import Post from "./Post.js";
 import Home from "../Home/Home.js";
@@ -6,13 +6,12 @@ import SendPost from "../Home/SendPost.js";
 import PrivateChat from "../Home/PrivateChat.js";
 import SearchResult from "../Home/SearchResult.js";
 import TagTree from "../Home/TagTree.js";
+
+let ckeditor = null;
+
 async function Routes() {
     let mainMount = document.querySelector(".main-container main");
     let api = new Api();
-    mainMount.innerHTML = await api.Get(`/Home/${window.location.hash.replace("#", "")}`);
-    Tag.Tag();
-	Post.Post();
-    Home.Home();
 
     new Router().AddRoute("Home/Posts", async() => {
         mainMount.innerHTML = await api.Get("/Home/Home/Posts");
@@ -25,7 +24,7 @@ async function Routes() {
 	    Post.Post();
         Home.Home();
         SendPost.SendPost();
-        AddScript(mainMount, "/lib/ckeditor/ckeditor.js");
+        await AddCKEditor(mainMount);
     }).AddRoute("Home/Zone", async() => {
         mainMount.innerHTML = await api.Get("/Home/Home/Zone");
         Tag.Tag();
@@ -52,6 +51,26 @@ async function Routes() {
         TagTree.TagTree();
     })
     .Execute();
+}
+
+function AddCKEditor(mainMount) {
+    if (ckeditor !== null) {
+        let ckeditorTextarea = document.querySelector(".ckeditor");
+        ckeditorTextarea.parentNode.insertBefore(ckeditor, ckeditorTextarea);
+        ckeditorTextarea.style.display = "none";
+        return;
+    }
+
+    AddScript(mainMount, "/lib/ckeditor/ckeditor.js");
+
+    setTimeout(async() => {
+        while(document.querySelector("#cke_edit") === null){
+            await Sleep(500);
+        }
+        ckeditor = document.querySelector("#cke_edit");
+    }, 500);
+    
+
 }
 
 export default {

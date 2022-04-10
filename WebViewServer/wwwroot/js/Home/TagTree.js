@@ -30,9 +30,9 @@ function FlushTagTree() {
 
 
 function AppendChildTree(parentTag, childTags) {
-	for (let i in childTags) {
+	childTags.forEach( childTag => {
 		let resultItem = document.createElement("div");
-		resultItem.innerHTML = childTags[i];
+		resultItem.innerHTML = childTag;
 		resultItem.setAttribute("class", "ceiledTagNode");
 		parentTag.append(resultItem);
 		resultItem.ondblclick = event => {
@@ -40,7 +40,7 @@ function AppendChildTree(parentTag, childTags) {
 			event.stopPropagation();
 			FindChildTags(event.target.parentElement.parentElement, resultItem);
 		}
-	}
+	});
 }
 
 function FindChildTags(parentTag, tagTreeNode) {

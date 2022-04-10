@@ -87,7 +87,20 @@ function AddScript(mountElement, src=null, statement=null, isModule=false) {
 		script.innerText = statement;
 		if(isModule) script.type = "module";
 	}
-	mountElement.appendChild(script);
+	return new Promise((resolve, reject) => {
+		try {
+			mountElement.appendChild(script);
+			script.onerror = (e) => reject(e);
+			script.onreadystatechange = () => {
+				if(script.readyState == "loaded" || script.readyState == "completed"){
+					resolve();
+				}
+			}
+		} catch (error) {
+			reject(error);
+		}
+	});
+	
 }
 
 export {

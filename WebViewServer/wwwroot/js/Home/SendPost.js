@@ -36,7 +36,7 @@ function SendPostSubmit()
 		if(resData == "add succeed")
 		{
 			await ShowAlert("alert alert-success","😀","发布成功");
-			window.location.href = "/Home";
+			window.location.href = "/Home#Home/Posts";
 		} 
 	},()=>{});
 }
