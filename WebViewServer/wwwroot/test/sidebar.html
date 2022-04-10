@@ -1,0 +1,321 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            max-width: 1920px;
+        }
+        
+        #btn {
+            position: absolute;
+            top: 22%;
+            left: 298px;
+            height: 75px;
+            border: 0;
+            border-left: 1px solid rgb(23, 32, 43, 0.2);
+            background: #AA3344;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        .box {
+            float: left;
+            position: relative;
+            left: 0;
+            height: 1000px;
+            width: 300px;
+            margin-left: 0;
+            display: block;
+            background-color: #a34;
+            -moz-transition: margin-left 1s;
+            transition: margin-left 1s;
+        }
+        
+        aside ul li {
+            height: 40px;
+            line-height: 40px;
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            list-style-type: none;
+            text-align: center;
+        }
+        
+        aside ul li a {
+            width: 100%;
+            height: 100%;
+            text-decoration-line: none;
+            color: #fff;
+            display: block;
+        }
+        
+        aside ul li a:hover {
+            background: #d3d;
+        }
+        
+        section {
+            width: 100%;
+            height: 100%;
+            background: #d4d4d4;
+            height: 1000px;
+        }
+        
+        section h1 {
+            text-align: center;
+            border-bottom: 1px solid #fff;
+        }
+    </style>
+    
+</head>
+<body>
+    <aside class="box" id="test">
+        <button id="btn">三</button>
+        <ul>
+            <li>
+                <h3>ZZES</h3>
+            </li>
+            <li><a href="#">MENU TITLE 1</a></li>
+            <li><a href="#">MENU TITLE 2</a></li>
+            <li><a href="#">MENU TITLE 3</a></li>
+            <li><a href="#">MENU TITLE 4</a></li>
+            <li><a href="#">MENU TITLE 5</a></li>
+            <li><a href="#">MENU TITLE 6</a></li>
+            <li><a href="#">MENU TITLE 7</a></li>
+        </ul>
+    </aside>
+    <section>
+        <h1>Main Content</h1>
+    </section>
+    
+</body>
+</html>
+
+<script>
+    var box = document.getElementById("test")
+    var btn = document.getElementById("btn")
+    btn.onclick = function() {
+        if (box.offsetLeft == 0) {
+            box.style['margin-left'] = -300 + "px"
+        } else {
+            box.style['margin-left'] = 0 + "px"
+        }
+    }
+</script>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background: cyan;
+            overflow-x: hidden;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        aside a {
+            text-decoration-line: none;
+            color: #fff;
+        }
+
+        aside {
+            height: 100%;
+            width: 25vw;
+            position: relative;
+            left: 0;
+            top: 0;
+            background: #243747;
+            transition: width 1s;
+            float: right;
+        }
+
+        aside .first {
+            height: 20px;
+            text-align: center;
+            padding-top: 20px;
+            padding-bottom: 35px;
+        }
+
+        aside .first .logo {
+            color: #243747;
+            font-size: 30px;
+            background: lightcyan;
+            border-radius: 20px;
+            transition: color 1s;
+        }
+
+        aside .first .logo:hover {
+            color: crimson;
+        }
+
+        aside ul li {
+            width: 100%;
+            list-style-type: none;
+            padding-top: 5px;
+        }
+
+        aside ul li a {
+            display: block;
+            padding-left: 20px;
+            text-align: left;
+            color: #fff;
+            transition: color 1s;
+        }
+
+        aside .listtext {
+            font-size: 30px;
+            display: inline-block;
+        }
+
+        aside ul li a:hover {
+            color: #000;
+            background: lightblue;
+        }
+
+        aside .icon-package {
+            width: 30px;
+            height: 30px;
+        }
+
+        aside .btn {
+            border-radius: 5px;
+            border: 0;
+            background: #243747;
+            color: #fff;
+            position: absolute;
+            top: 50%;
+            left: -13px;
+            height: 44px;
+            cursor: pointer;
+        }
+
+
+        /*mini*/
+
+        .minibody .listtext {
+            display: none;
+        }
+
+        .minibody aside {
+            width: 0;
+            text-align: center;
+        }
+
+        .minibody aside ul li a {
+            padding-left: 0;
+        }
+
+        .minibody aside .first .logo {
+            font-size: 0;
+        }
+
+        /* left container */
+
+        #main-container {
+            background: white;
+            width: 100%;
+            height: 100%;
+            display: inline-block;
+            transition: width 1s;
+        }
+
+        .left-moved {
+            width: 75vw !important;
+        }
+    </style>
+</head>
+
+<body class="minibody">
+
+    <div id="main-container">
+        <h1 style="text-align: center;">Text...</h1>
+    </div>
+
+    <aside>
+        <button class="btn" onclick="list()">三</button>
+        <ul>
+            <li class="first">
+                <div class="logo">
+                    LOGO
+                </div>
+
+            </li>
+            <li>
+                <a href="">![](icon.png)<span class="listtext"> and List</span></a>
+            </li>
+            <li>
+                <a href="">![](icon.png)<span class="listtext"> and List</span></a>
+            </li>
+            <li>
+                <a href="">![](icon.png)<span class="listtext"> and List</span></a>
+            </li>
+            <li>
+                <a href="">![](icon.png)<span class="listtext"> and List</span></a>
+            </li>
+            <li>
+                <a href="">![](icon.png)<span class="listtext"> and List</span></a>
+            </li>
+        </ul>
+        <div class="sidebar-container"></div>
+    </aside>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var body = document.getElementsByTagName("body")[0]
+    var aside = document.getElementsByTagName("aside")[0]
+    let leftContainer = document.querySelector("#main-container");
+
+    function list() {
+        if (aside.clientWidth <= 40) {
+            body.className = "";
+            leftContainer.className = "left-moved";
+        } else if (aside.clientWidth > 40) {
+            console.log("side")
+            body.className = "minibody";
+            leftContainer.className = "";
+        }
+
+    }
+</script>

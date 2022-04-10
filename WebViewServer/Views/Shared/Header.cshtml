@@ -1,11 +1,8 @@
 @using WebViewServer.Models.User
 @using WebViewServer.Services
-@model User
+@model UserInfo
 @inject Dictionary<string,string> _dict
-@inject UserService _userService
-@{
-	var userInfo = await _userService.GetUserInfo(Model);
-}
+
 
 
 <header>
@@ -48,10 +45,10 @@
 
 				<div class="form-inline">
 					<div class="self-dropdown">
-						<img src="@userInfo.HeadImage" class="drop"
+						<img src="@Model.HeadImage" class="drop"
 							 style="border-radius: 100px; height: 40px;width: 40px;float: right;">
 						<ul class="self-dropdown-block" style="position:fixed;float: right;transform:translate(25%, 0); top:48px;right:3rem">
-							<li class="self-dropdown-item">@Model.Account</li>
+							<li class="self-dropdown-item">@Model.NickName</li>
 							<li class="self-dropdown-item">个人信息</li>
 							<li class="self-dropdown-item">设置</li>
 							<li class="self-dropdown-item" id="logout">注销</li>

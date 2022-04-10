@@ -1,6 +1,7 @@
 import Header from './Header.js';
 import Tag from './Tag.js';
 import Post from './Post.js';
+import Sidebar from './Sidebar.js';
 import { ShowAlert } from '../Show.js';
 import { Api } from '../My.js';
 
@@ -42,6 +43,7 @@ function _Layout()
 	Header.Header();
 	Tag.Tag();
 	Post.Post();
+	Sidebar.Sidebar();
 }
 
 async function ChangeTagRelation(event, url, relationName, relation)

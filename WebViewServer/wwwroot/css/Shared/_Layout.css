@@ -46,3 +46,35 @@ iframe::-webkit-scrollbar-track {/*滚动条里面轨道*/
 
 }
 
+div.message-content-view::-webkit-scrollbar{
+	width: 5px;
+	height: 5px;
+}
+div.message-content-view::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+	border-radius: 10px;
+
+	 -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+	background: #CCC;
+
+}
+
+div.message-content-view::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+	border-radius: 10px;
+
+	background: #FFF;
+
+}
+.main-container {
+	padding-top: 100px;
+	transition: width 1s;
+}
+
+.main-container main{
+    margin: auto;
+}
+

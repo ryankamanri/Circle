@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="#1">1</a>
+    <a href="#2">2</a>
+    <h1 class="view"></h2>
+</body>
+</html>
+
+<script>
+    function Router() {
+        this._eventHandlers = {}
+        this.AddRoute = (url, Delegate) => {
+            if(!url.startsWith("#")) {
+                url = `#${url}`;
+            }
+            this._eventHandlers[url] = Delegate;
+            return this;
+        }
+        this.Execute = () => {
+            window.addEventListener("load", this._Delegate);
+            window.addEventListener("hashchange", this._Delegate);
+        }
+        this._Delegate = () => {
+            let hash = window.location.hash;
+            this._eventHandlers[hash]();
+        }
+    }
+
+    new Router()
+        .AddRoute("1", () => ShowView())
+        .AddRoute("2", () => ShowView())
+        .Execute();
+    
+
+    function ShowView() {
+        hash = window.location.hash;
+        view = document.querySelector('.view');
+        view.innerText = hash;
+    }
+</script>

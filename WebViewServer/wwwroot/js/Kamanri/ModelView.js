@@ -17,6 +17,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		this._SetModelArray = value => this._modelArray = value;
 
 		this.GetLength = () => this._modelArray.length;
+		this.Get = index => this._modelArray[index];
 
 		this._modelView = null;
 		this.GetModelView = () => this._modelView;

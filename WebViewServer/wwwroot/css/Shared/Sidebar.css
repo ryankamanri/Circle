@@ -1,0 +1,108 @@
+aside a {
+    text-decoration-line: none;
+    color: #fff;
+}
+
+aside {
+    height: 100vh;
+    width: 25vw;
+    position: relative;
+    right: 0;
+    top: 0;
+    background: #243747;
+    transition: width 1s;
+    float: right;
+    position: fixed;
+}
+
+aside .first {
+    height: 20px;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 35px;
+}
+
+aside .first .self-info {
+    color: #243747;
+    background: lightcyan;
+    border-radius: 20px;
+    transition: color 1s;
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+aside .first .self-info:hover {
+    color: crimson;
+}
+
+aside .first .self-info .head-image {
+    padding: 10px;
+}
+
+aside .first .self-info .head-image img {
+    width: 70px;
+    border-radius: 100px;
+}
+
+aside .first .self-info .nick-name {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+aside .listtext {
+    font-size: 30px;
+    display: inline-block;
+}
+
+
+aside .icon-package {
+    width: 30px;
+    height: 30px;
+}
+
+aside .btn {
+    border-radius: 5px;
+    border: 0;
+    background: #243747;
+    color: #fff;
+    position: absolute;
+    top: 50vh;
+    left: -20px;
+    height: 44px;
+    cursor: pointer;
+}
+
+
+/*mini*/
+
+.minibody .listtext {
+    display: none;
+}
+
+.minibody aside {
+    width: 0;
+    text-align: center;
+}
+
+.minibody aside ul li a {
+    padding-left: 0;
+}
+
+.minibody aside .first .logo {
+    font-size: 0;
+}
+
+.main-container {
+    transition: margin 1s;
+    transition: width 1s;
+}
+
+.left-moved {
+    width: 75vw !important;
+}
+
+
+
+.sidebar-container {
+    margin-top: 8vh;
+}

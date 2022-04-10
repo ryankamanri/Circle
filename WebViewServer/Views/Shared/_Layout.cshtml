@@ -2,6 +2,10 @@
 @using WebViewServer.Services
 @inject User _user
 @inject Dictionary<string,string> _dict
+@inject UserService _userService
+@{
+	UserInfo userInfo = await _userService.GetUserInfo(_user);
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,16 +31,17 @@
 	
 </head>
 
-<body>
-	@await Html.PartialAsync("Header",_user)
-	@await Html.PartialAsync("MyInterestedTags")
+<body class="minibody">
+	@await Html.PartialAsync("Header", userInfo)
+	@* @await Html.PartialAsync("MyInterestedTags") *@
 
-	<div style=" margin:auto" class="col-md-8">
-		<main>
+	<div class="main-container">
+		<main class="col-md-8">
 			@RenderBody()
 		</main>
 	</div>
 
+	@await Html.PartialAsync("Sidebar", userInfo)
 </body>
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
