@@ -78,6 +78,18 @@ function GenerateIDString() {
 	return `${Date.now()}+${(Math.random() * 10000)}`
 }
 
+function AddScript(mountElement, src=null, statement=null, isModule=false) {
+	let script = document.createElement("script");
+	if(src !== null){
+		script.src = src;
+	}
+	else if(statement !== null){
+		script.innerText = statement;
+		if(isModule) script.type = "module";
+	}
+	mountElement.appendChild(script);
+}
+
 export {
-	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString
+	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString, AddScript
 }

@@ -3,7 +3,9 @@ import Tag from './Tag.js';
 import Post from './Post.js';
 import Sidebar from './Sidebar.js';
 import { ShowAlert } from '../Show.js';
+import Routes from './Routes.js';
 import { Api } from '../My.js';
+
 
 
 
@@ -44,6 +46,7 @@ function _Layout()
 	Tag.Tag();
 	Post.Post();
 	Sidebar.Sidebar();
+	Routes.Routes();
 }
 
 async function ChangeTagRelation(event, url, relationName, relation)

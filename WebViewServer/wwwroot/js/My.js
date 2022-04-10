@@ -1,4 +1,4 @@
-import { Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement ,GenerateIDString } from "./Kamanri/Utils.js";
+import { Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement ,GenerateIDString, AddScript } from "./Kamanri/Utils.js";
 import { Mutex, Critical } from "./Kamanri/Mutex.js";
 import { Api } from "./Kamanri/Api.js";
 import { Router } from "./Kamanri/Router.js";
@@ -15,7 +15,7 @@ async function Configuration(prop) {
 }
 
 export {
-	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString,
+	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString, AddScript,
 	Mutex, Critical, 
 	Api, 
 	Router,

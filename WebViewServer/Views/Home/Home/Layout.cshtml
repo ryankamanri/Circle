@@ -6,7 +6,7 @@
 
 
 @{
-	Layout = "../../Shared/_Layout.cshtml";
+	@* Layout = "../_Layout.cshtml"; *@
 	ViewData["Title"] = ViewData["SecondTitle"] + " - 个人主页";
 
 }
@@ -18,10 +18,10 @@
 				<div class="menu-box">
 					<ul class="menu clearfix">
 						<li class="selected">
-							<a href="/Home/Home/Posts">帖子</a>
+							<a href="/Home#Home/Posts">帖子</a>
 						</li>
 						<li class="selected">
-							<a href="/Home/Home/Zone">动态</a>
+							<a href="/Home#Home/Zone">动态</a>
 						</li>
 					</ul>
 				</div>
@@ -29,13 +29,15 @@
 				<div class="menu-box menu-line-box">
 					<ul class="menu clearfix">
 						<li class="selected">
-							<a href="/Home/Home/SendPost">发帖子</a>
+							<a href="/Home#Home/SendPost">发帖子</a>
 						</li>
 					</ul>
 				</div>
 
 			</div>
-			@RenderBody()
+			<div class="content-mount">
+				@RenderBody()
+			</div>
 		</div>
 	</div>
 

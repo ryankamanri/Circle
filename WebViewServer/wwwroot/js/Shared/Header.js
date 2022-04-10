@@ -27,7 +27,7 @@ function Header()
 		});
 		$("form #searchButton").on("click",() => {
 			let searchString = $("#search").val();
-			window.location.href = `/Home/SearchResult?searchString=${encodeURIComponent(searchString)}`;
+			window.location.href = `/Home#SearchResult?searchString=${encodeURIComponent(searchString)}`;
 		})
 	});
 

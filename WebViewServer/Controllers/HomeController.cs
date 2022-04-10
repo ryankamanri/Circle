@@ -36,13 +36,26 @@ namespace WebViewServer.Controllers
 			_postService = postService;
 		}
 
+		[HttpGet]
+		[Route("Template")]
+		public IActionResult Template()
+		{
+			return View("_Template");
+		}
 
 		#region Home
 
 		[HttpGet]
 		public IActionResult Home()
 		{
-			return View("Home/Posts");
+			return View("_Template");
+		}
+
+		[HttpGet]
+		[Route("Home/Template")]
+		public IActionResult HomeTemplate()
+		{
+			return View("Home/Template");
 		}
 
 		[HttpGet]

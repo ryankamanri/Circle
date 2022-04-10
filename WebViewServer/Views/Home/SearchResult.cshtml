@@ -2,7 +2,7 @@
 @using WebViewServer.Services
 @inject SearchService _search
 @{
-	Layout = "../Shared/_Layout.cshtml";
+	@* Layout = "_Layout.cshtml"; *@
 	ViewData["Title"] = "搜索结果";
 	ViewData["searchString"] = Model;
 	//IList<Tag> tagList = new Tag().GetList(_sql.Query($"select * from tags where tag like '%{Model}%'"));

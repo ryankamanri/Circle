@@ -19,7 +19,7 @@ async function SelectCircle()
 			}
 		}).done(data => {
 			console.log(data);
-			window.location.href = "/Home";
+			window.location.href = "/Home#Home/Posts";
 		});
 	});
 
@@ -32,7 +32,7 @@ async function SelectCircle()
 			}
 		}).done(data => {
 			console.log(data);
-			window.location.href = "/Home";
+			window.location.href = "/Home#Home/Posts";
 		});
 	});
 	
