@@ -91,10 +91,8 @@ function AddScript(mountElement, src=null, statement=null, isModule=false) {
 		try {
 			mountElement.appendChild(script);
 			script.onerror = (e) => reject(e);
-			script.onreadystatechange = () => {
-				if(script.readyState == "loaded" || script.readyState == "completed"){
-					resolve();
-				}
+			script.onload = () => {
+				resolve();
 			}
 		} catch (error) {
 			reject(error);

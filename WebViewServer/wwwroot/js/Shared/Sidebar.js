@@ -1,4 +1,4 @@
-function Sidebar() {
+function Init() {
     let body = document.getElementsByTagName("body")[0];
     let aside = document.getElementsByTagName("aside")[0];
     let mainContainer = document.querySelector(".main-container");
@@ -18,5 +18,5 @@ function Sidebar() {
 }
 
 export default {
-    Sidebar
+    Init
 }

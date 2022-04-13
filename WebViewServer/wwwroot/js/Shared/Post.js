@@ -1,4 +1,4 @@
-import { PostChangeRelation } from './_Layout.js';
+import { PostChangeRelation } from './MyInterestedTags.js';
 import { ShowAlert, ShowInput } from '../Show.js';
 import { Api, StrIncrement } from '../My.js';
 import Comment from './Comment.js';
@@ -7,7 +7,7 @@ let contentItems, focusLabels, likeLabels, collectLabels, commentLabels;
 let postID_commentLabel = [];
 
 let api = new Api();
-function Post() {
+function Init() {
 
 
 	contentItems = document.querySelectorAll(".post-content>input");
@@ -186,7 +186,7 @@ async function ShowContent(node, postID) {
 	let content = JSON.parse(resData).Content;
 	let contentNode = document.createElement("div");
 	contentNode.innerHTML = content;
-	contentNode.className = "content-item col-md-12";
+	contentNode.className = "ck ck-content content-item col-md-12";
 
 	node.parentElement.insertBefore(contentNode, node);
 
@@ -233,9 +233,9 @@ function HideContent(node, contentNode) {
 
 
 export default {
-	Post
+	Init
 }
 
 export {
-	Post, GetPostID_commentLabel
+	Init, GetPostID_commentLabel
 }

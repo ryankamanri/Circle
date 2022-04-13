@@ -15,7 +15,7 @@
 	var allPosts = await _postService.GetAllPost();
 	IList<Post> myPosts = myInterestedPosts.Union(allPosts,new Post()).ToList();
 	
-	int count = Math.Min(25,myPosts.Count);
+	int count = Math.Min(20, myPosts.Count);
 
 }
 

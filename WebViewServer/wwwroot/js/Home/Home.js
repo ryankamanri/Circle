@@ -1,9 +1,8 @@
-import _Layout from '../Shared/_Layout.js';
 import { ParseFunc, Storage } from '../My.js';
 import { ShowAlert } from '../Show.js';
 
 
-function Home()
+function Init()
 {
 	
 	let circleName = document.querySelector("a.navbar-brand").innerText;
@@ -14,11 +13,11 @@ function Home()
 }
 
 export {
-	Home
+	Init
 }
 
 export default{
-	Home
+	Init
 }
 
 

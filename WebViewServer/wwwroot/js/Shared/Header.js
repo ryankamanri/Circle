@@ -1,7 +1,7 @@
 import { Sleep } from '../My.js'
 import Tag from '../Shared/Tag.js'
 
-function Header()
+function Init()
 {
 	let count = 0;//统计一段时间要发送的ajax请求个数
 	let resultList;
@@ -56,13 +56,13 @@ function Header()
 	function AppendResults(obj)
 	{
 		let searchResult = document.querySelector("#searchResult");
-		for(let i in obj)
+		obj.forEach(item =>
 		{
 			let resultItem = document.createElement("li");
-			resultItem.innerHTML = obj[i];
+			resultItem.innerHTML = item;
 			resultItem.setAttribute("class","self-dropdown-item");
 			searchResult.append(resultItem);
-		}
+		});
 		
 	}
 
@@ -73,8 +73,8 @@ function Header()
 }
 
 export {
-	Header
+	Init
 }
 export default{
-	Header
+	Init
 }

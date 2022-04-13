@@ -3,9 +3,9 @@ import Tag from '../Shared/Tag.js'
 
 let tagRoot;
 
-function TagTree()
+function Init()
 {
-	Tag.Tag();
+	Tag.Init();
 
 	FlushTagTree();
 
@@ -61,11 +61,11 @@ function FindChildTags(parentTag, tagTreeNode) {
 }
 
 export {
-	TagTree, FlushTagTree, AppendChildTree, FindChildTags
+	Init, FlushTagTree, AppendChildTree, FindChildTags
 }
 
 export default{
-	TagTree,FlushTagTree,AppendChildTree,FindChildTags
+	Init,FlushTagTree,AppendChildTree,FindChildTags
 }
 
 

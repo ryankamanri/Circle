@@ -5,7 +5,7 @@ let btn,title,focus,tagIDs,summary,contentDocument;
 let tagCollection;
 
 
-function SendPost()
+function Init()
 {
 
 	btn = document.querySelector("input#submit");
@@ -19,7 +19,7 @@ function SendPostSubmit()
 	title = document.querySelector("#title").value;
 	focus = document.querySelector("#focus").value;
 	
-	contentDocument = document.querySelector("iframe").contentDocument.querySelector("body");
+	contentDocument = document.querySelector(".ck-editor__main .ck-content");
 
 	tagCollection = document.querySelector("#post-tags").querySelectorAll(".ID");
 	tagCollection.forEach(tagID => {
@@ -42,9 +42,9 @@ function SendPostSubmit()
 }
 
 export {
-	SendPost
+	Init
 }
 
 export default{
-	SendPost
+	Init
 }

@@ -42,7 +42,7 @@ namespace ChatServer
 			});
 
 
-			services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
+			services.AddKamanriWebSocket().AddSingleton<OnMessageController>();
 
 		}
 

@@ -21,7 +21,7 @@ let assignID;
 let storage = Storage.Storage();
 
 
-async function PrivateChat() {
+async function Init() {
 
 
 	await InitSelfInfo();
@@ -346,10 +346,10 @@ Array.prototype.ToMessages = function (offset = 0, length = -1) {
 }
 
 export {
-	PrivateChat
+	Init
 }
 
 
 export default {
-	PrivateChat
+	Init
 }

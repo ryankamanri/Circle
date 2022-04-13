@@ -1,7 +1,7 @@
 import { Mutex , Sleep} from '/js/My.js'
 
 let mutex = new Mutex();
-function Tag()
+function Init()
 {
 	
 	FlushDrugEvent();
@@ -57,11 +57,11 @@ function FlushDropEvent() {
 }
 
 export {
-	Tag, FlushDrugEvent, FlushDropEvent
+	Init, FlushDrugEvent, FlushDropEvent
 }
 
 export default{
-	Tag,FlushDrugEvent,FlushDropEvent
+	Init,FlushDrugEvent,FlushDropEvent
 }
 
 

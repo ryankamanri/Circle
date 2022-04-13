@@ -47,7 +47,7 @@ namespace ChatDataServer
 
 			}, options => new MySql.Data.MySqlClient.MySqlConnection(options));
 
-			services.AddKamanriWebSocket().AddSingleton<OnMessageService>();
+			services.AddKamanriWebSocket().AddSingleton<OnMessageController>();
 
 			services.AddSingleton<MessageService>();
 		}

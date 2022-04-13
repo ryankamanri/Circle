@@ -16,16 +16,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>@ViewData["Title"] - @_dict["Circle"]</title>
 	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
-	<link rel="stylesheet" href="/lib/ckeditor/contents.css">
+	@* <link rel="stylesheet" href="/lib/ckeditor/contents.css"> *@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-	@*<link rel="stylesheet" href="/css/Global.css">
-	<link rel="stylesheet" href="/css/Home/Home/main.css">
-	<link rel="stylesheet" href="/css/Home/Home/ky.css">
-	<link rel="stylesheet" href="/css/Shared/_Layout.css">
-	<link rel="stylesheet" href="/css/Shared/Header.css">
-	<link rel="stylesheet" href="/css/Shared/Post.css">
-	<link rel="stylesheet" href="/css/Shared/Comment.css">
-	<link rel="stylesheet" href="/css/Shared/Tag.css">*@
 	<link rel="stylesheet" href="/bundle.css" />
 	
 	
@@ -33,7 +25,6 @@
 
 <body class="minibody">
 	@await Html.PartialAsync("Header", userInfo)
-	@* @await Html.PartialAsync("MyInterestedTags") *@
 
 	<div class="main-container">
 		<main class="col-md-8">
@@ -45,11 +36,12 @@
 </body>
 
 <script type="module">
-	import _Layout from '/js/Shared/_Layout.js'
-	_Layout._Layout();
+	import Main from '/js/Main.js'
+	Main.Init();
 </script>
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/lib/ckeditor5-build-classic/ckeditor.js"></script>
 
 </html>
 			

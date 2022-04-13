@@ -1,6 +1,6 @@
 ﻿import { Api, ModelView, StrIncrement } from '../My.js';
 import { ShowAlert, ShowInput } from '../Show.js';
-import { PostChangeRelation } from './_Layout.js';
+import { PostChangeRelation } from './MyInterestedTags.js';
 import { GetPostID_commentLabel } from './Post.js';
 
 

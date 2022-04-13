@@ -7,72 +7,73 @@ import PrivateChat from "../Home/PrivateChat.js";
 import SearchResult from "../Home/SearchResult.js";
 import TagTree from "../Home/TagTree.js";
 
-let ckeditor = null;
 
-async function Routes() {
+
+
+async function Init() {
+
     let mainMount = document.querySelector(".main-container main");
     let api = new Api();
 
     new Router().AddRoute("Home/Posts", async() => {
-        mainMount.innerHTML = await api.Get("/Home/Home/Posts");
-        Tag.Tag();
-	    Post.Post();
-        Home.Home();
+
+        await InitBase(mainMount, api);
+        Home.Init();
+
     }).AddRoute("Home/SendPost", async() => {
-        mainMount.innerHTML = await api.Get("/Home/Home/SendPost");
-        Tag.Tag();
-	    Post.Post();
-        Home.Home();
-        SendPost.SendPost();
+
+        await InitBase(mainMount, api);
+        Home.Init();
         await AddCKEditor(mainMount);
+        SendPost.Init();
+
     }).AddRoute("Home/Zone", async() => {
-        mainMount.innerHTML = await api.Get("/Home/Home/Zone");
-        Tag.Tag();
-	    Post.Post();
-        Home.Home();
+
+        await InitBase(mainMount, api);
+        Home.Init();
+
     }).AddRoute("Match", async() => {
-        mainMount.innerHTML = await api.Get("/Home/Match");
-        Tag.Tag();
-	    Post.Post();
+
+        await InitBase(mainMount, api);
+
     }).AddRoute("PrivateChat", async() => {
-        mainMount.innerHTML = await api.Get("/Home/PrivateChat");
-        Tag.Tag();
-	    Post.Post();
-        PrivateChat.PrivateChat();
+
+        await InitBase(mainMount, api);
+        PrivateChat.Init();
+
     }).AddRoute("SearchResult", async() => {
-        mainMount.innerHTML = await api.Get(`/Home/${window.location.hash.replace("#", "")}`);
-        Tag.Tag();
-	    Post.Post();
-        SearchResult.SearchResult();
+
+        await InitBase(mainMount, api);
+        SearchResult.Init();
+
     }).AddRoute("TagTree", async() => {
-        mainMount.innerHTML = await api.Get("/Home/TagTree");
-        Tag.Tag();
-	    Post.Post();
-        TagTree.TagTree();
+
+        await InitBase(mainMount, api);
+        TagTree.Init();
+
     })
     .Execute();
 }
 
-function AddCKEditor(mainMount) {
-    if (ckeditor !== null) {
-        let ckeditorTextarea = document.querySelector(".ckeditor");
-        ckeditorTextarea.parentNode.insertBefore(ckeditor, ckeditorTextarea);
-        ckeditorTextarea.style.display = "none";
-        return;
-    }
-
-    AddScript(mainMount, "/lib/ckeditor/ckeditor.js");
-
-    setTimeout(async() => {
-        while(document.querySelector("#cke_edit") === null){
-            await Sleep(500);
-        }
-        ckeditor = document.querySelector("#cke_edit");
-    }, 500);
+async function InitBase(mainMount, api){
     
+    mainMount.innerHTML = await api.Get(`/Home/${window.location.hash.replace("#", "")}`);
+    Tag.Init();
+	Post.Init();
+}
+
+async function AddCKEditor(mainMount) {
+
+    // await AddScript(mainMount, "/lib/ckeditor5-build-classic/ckeditor.js");
+
+    ClassicEditor
+    .create( document.querySelector( '.ckeditor' ) )
+    .catch( error => {
+        console.error( error );
+    } );
 
 }
 
 export default {
-    Routes
+    Init
 }
