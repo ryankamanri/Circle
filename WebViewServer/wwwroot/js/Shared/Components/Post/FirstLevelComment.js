@@ -27,9 +27,15 @@ function SetTemplateViewToModelBinder(view, model, viewType) {
     let replyCount = view.querySelector(".comment>.count");
     replyCount.innerText = model.Key.Value.ReplyCount;
 
-    let commentLabel = view.querySelector(".comment");
+    const likeLabel = view.querySelector(".more .like");
+    likeLabel.setAttribute("postid", model.Key.Key.PostID);
+
+    const commentLabel = view.querySelector(".comment");
+    commentLabel.setAttribute("postid", model.Key.Key.PostID);
     commentLabel.setAttribute("owner-name", model.Key.Value.OwnerNickName);
     commentLabel.setAttribute("comment-id", model.Key.Key.ID);
+
+    
 
     view.style.display = "inherit";
 }

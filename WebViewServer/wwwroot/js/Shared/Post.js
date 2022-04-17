@@ -1,5 +1,5 @@
 import { PostChangeRelation } from './MyInterestedTags.js';
-import { ShowAlert, ShowInput } from '../Show.js';
+import { ShowAlert, ShowInput } from '../../lib/Kamanri/Show.js';
 import { Api, StrIncrement } from '../My.js';
 import Comment from './Comment.js';
 

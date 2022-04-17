@@ -49,10 +49,12 @@
 		</div>
 		<!---->
 		<div class="feed-tags">
+
 			@foreach (var tag in tags)
 			{
-			<div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
+				<div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
 			}
+
 		</div>
 
 		<div class="more" >

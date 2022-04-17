@@ -1,5 +1,5 @@
 import {Site} from '../My.js'
-import { ShowAlert } from '../Show.js'
+import { ShowAlert } from '../../lib/Kamanri/Show.js'
 
 let btn,title,focus,tagIDs,summary,contentDocument;
 let tagCollection;

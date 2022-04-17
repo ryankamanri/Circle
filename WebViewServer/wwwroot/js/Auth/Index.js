@@ -1,5 +1,4 @@
-import { Show, ShowAlert, ShowLoad } from "../Show.js"
-import { ParseFunc, Sleep, Storage, Animate } from '../My.js'
+import { ParseFunc, Sleep, Storage, Animate, Show, ShowAlert, ShowLoad } from '../My.js'
 
 
 let storage;

@@ -209,6 +209,26 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			});
 		}
 
+		this.ShowAsync = () => {
+			return new Promise(resolve => {
+				let modelCount = 0;
+				if(this._modelList.GetLength() === 0) resolve(modelCount);
+				this._modelList.GetModelArray().forEach(modelItem => {
+
+					let itemKey = GenerateIDString();
+					modelItem.itemKey = itemKey;
+					let viewItem = this._GenerateAViewItem(modelItem);
+					
+					//Append To MountElement
+					this._mountElement.append(viewItem);
+					modelCount++;
+					if(modelCount === this._modelList.GetLength()) {
+						resolve(modelCount);
+					}
+				});
+			});
+		}
+
 		this.Clean = () => {
 			this._mountElement.innerHTML = "";
 		}

@@ -28,6 +28,7 @@ function SetTemplateViewToModelBinder(view, model, viewType) {
     commentContent.innerText = model.Key.Content;
 
     let commentLabel = view.querySelector(".comment");
+    commentLabel.setAttribute("postid", model.Key.PostID);
     commentLabel.setAttribute("owner-name", model.Value.OwnerNickName);
     commentLabel.setAttribute("comment-id", model.Key.ID);
 

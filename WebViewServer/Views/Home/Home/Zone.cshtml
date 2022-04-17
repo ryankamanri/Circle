@@ -1,41 +1,5 @@
-@using System.Globalization
-@using System.Collections.Generic
-@using WebViewServer.Models.User
-@using WebViewServer.Models.Post
-@using WebViewServer.Services
-@inject User _user
-@inject UserService _userService
+
 @{
 	Layout = "Layout.cshtml";
-	ViewData["SecondTitle"] = "动态";
-
-	IList<User> myFocusUsers = await _userService.SelectUserInitiative(_user,
-		selections => selections.Type = new List<string>(){"Focus"});
-
-	List<Post> myFocusPosts = new List<Post>();
-	foreach(var myFocusUser in myFocusUsers)
-	{
-		IList<Post> myFocusUserPosts = await _userService.SelectPost(myFocusUser,selection => {});
-		foreach(var myFocusUserPost in myFocusUserPosts)
-		{
-			myFocusPosts.Add(myFocusUserPost);
-		}
-	}
-
-	myFocusPosts.Sort((post_1,post_2) => (post_2.PostDateTime - post_1.PostDateTime).Seconds);
-
-	DateTime dateTemp = default;
 }
-@* <link rel="stylesheet" href="/css/Home/Home/Zone.css"> *@
 
-@foreach (var myFocusPost in myFocusPosts)
-{
-	if(dateTemp.Year != myFocusPost.PostDateTime.Year || 
-	dateTemp.Month != myFocusPost.PostDateTime.Month || 
-	dateTemp.Day != myFocusPost.PostDateTime.Day)
-	{
-		<div class="date mt-4">@myFocusPost.PostDateTime.ToString("D",CultureInfo.CreateSpecificCulture("zh-CN"))</div>
-		dateTemp = myFocusPost.PostDateTime;
-	}
-	@await Html.PartialAsync("Post",myFocusPost)
-}

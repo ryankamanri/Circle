@@ -1,5 +1,4 @@
-import { ParseFunc } from '../My.js';
-import { ShowAlert } from '../Show.js'
+import { ShowAlert } from '../My.js';
 
 function SignIn()
 {

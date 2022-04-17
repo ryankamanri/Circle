@@ -1,20 +1,18 @@
 import { Mutex , Sleep, CopyElement } from '../My.js';
+import Tag from "./Components/Tag.js"
 
-let mutex = new Mutex();
 function Init(services)
 {
 	FlushDrugEvent();
 	FlushDropEvent();
 }
 
-let dragTagID = "";
-
 function FlushDrugEvent() {
 	let tags = document.querySelectorAll(".tag");
 	tags.forEach(tag => {
 		tag.ondragstart = event => {
 			event.dataTransfer.setData("id", event.target.id);
-			dragTagID = event.target.id;
+			// Tag.SetDrugID(event.target.id);
 		}
 	});
 }
@@ -41,7 +39,8 @@ function FlushDropEvent() {
 			let tag = document.getElementById(id);
 			if (tag != null) tagbox.appendChild(tag);
 			else tagbox.appendChild(document.querySelector("iframe.tag-tree").contentDocument.getElementById(id));
-			isDropped = true;
+			// isDropped = true;
+			Tag.SetIsDroppedTag(true);
 		};
 		
 	});
@@ -54,8 +53,8 @@ function FlushDropEvent() {
 			moveTag = document.getElementById(id);
 			originTag = CopyElement(moveTag);
 			originTag.id++;
-			mutex.mutex = true;
-			isDropped = false;
+			// isDropped = false;
+			Tag.SetIsDroppedTag(false);
 			do{
 				await Sleep(100);
 				if (tagNode.children[0] === undefined)//标签已被取走
@@ -63,7 +62,7 @@ function FlushDropEvent() {
 				originTag.addEventListener("dragstart", event => {
 					event.dataTransfer.setData("id", event.target.id);
 				});
-			}while(!isDropped);
+			}while(!Tag.GetIsDroppedTag());
 			
 		};
 	});

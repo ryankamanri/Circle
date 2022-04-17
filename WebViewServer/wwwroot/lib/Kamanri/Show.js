@@ -1,4 +1,4 @@
-import { Animate, Sleep } from './My.js';
+import { Animate, Sleep } from './Utils.js';
 
 function Show() 
 {
@@ -8,7 +8,8 @@ function Show()
 async function ShowLoad(mountElement, loadText, LoadedCallback) {
 
 
-	let showLoadWindow = `<div class="show-load-window" >
+	let showLoadWindow = `
+		<div class="show-load-window" >
             <div class="show-load" >
                 <h5 class="show-load-text">Loading...</h5>
                 <div class="progress show-load-progress">
@@ -60,7 +61,7 @@ async function ShowAlert(bootstrapClass, emphasis, message, alertTime=1500)
 	});
 }
 
-function ShowInput(textPlaceHolder = "ÆÀÂÛ»ò»Ø¸´ÓÃ»§...", buttonPlaceHolder = "·¢ËÍ", delegateObject, CallBack) {
+function ShowInput(textPlaceHolder = "ï¿½ï¿½ï¿½Û»ï¿½Ø¸ï¿½ï¿½Ã»ï¿½...", buttonPlaceHolder = "ï¿½ï¿½ï¿½ï¿½", delegateObject, CallBack) {
 	let inputElem = document.querySelector("body>#input");
 	if (inputElem == null) {
 		inputElem = document.createElement("div");

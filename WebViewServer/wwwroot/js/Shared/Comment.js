@@ -1,7 +1,7 @@
 ﻿import { Api, ModelView, StrIncrement } from '../My.js';
-import { ShowAlert, ShowInput } from '../Show.js';
+import { ShowAlert, ShowInput } from '../../lib/Kamanri/Show.js';
 import { PostChangeRelation } from './MyInterestedTags.js';
-import { GetPostID_commentLabel } from './Post.js';
+import { GetPostID_commentLabel } from './Components/Post/Post.js';
 import FirstLevelComment from './Components/Post/FirstLevelComment.js';
 import SecondLevelComment from './Components/Post/SecondLevelComment.js';
 

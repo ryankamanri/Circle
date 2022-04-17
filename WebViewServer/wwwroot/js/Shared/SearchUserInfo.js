@@ -1,6 +1,6 @@
 import { Site, ParseFunc} from '../My.js'
 import { PostChangeRelation } from './MyInterestedTags.js'
-import { ShowAlert } from '../Show.js'
+import { ShowAlert } from '../../lib/Kamanri/Show.js'
 
 let attentions;
 let privateChats;

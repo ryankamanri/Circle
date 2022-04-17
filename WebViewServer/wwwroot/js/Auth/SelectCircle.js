@@ -1,5 +1,4 @@
-import { ShowLoad } from '../Show.js';
-import { Sleep } from '../My.js';
+import { Sleep, ShowLoad } from '../My.js';
 
 async function SelectCircle()
 {

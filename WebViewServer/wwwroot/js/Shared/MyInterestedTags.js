@@ -1,5 +1,5 @@
 import { Api } from '../My.js';
-import { ShowAlert } from '../Show.js';
+import { ShowAlert } from '../../lib/Kamanri/Show.js';
 
 let mySelfTags;
 let myInterestedTags;

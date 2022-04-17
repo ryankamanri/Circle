@@ -6,60 +6,73 @@ import SendPost from "./Home/SendPost.js";
 import PrivateChat from "./Home/PrivateChat.js";
 import SearchResult from "./Home/SearchResult.js";
 import TagTree from "./Home/TagTree.js";
+import Zone from "./Home/Zone.js";
 
+const baseTitle = document.title;
+const mainMount = document.querySelector(".main-container main");
 
+function SetSubtitle(subtitle) {
+    document.title = `${subtitle} ${baseTitle}`;
+}
 
 
 async function Init(services) {
 
-    let mainMount = document.querySelector(".main-container main");
-    let api = services.Api;
-
     await new Router().AddRoute("Home/Posts", async() => {
-
-        await InitBase(services, mainMount, api);
+        SetSubtitle("帖子");
+        await InitView(services);
         Home.Init(services);
+        await InitBase(services);
 
     }).AddRoute("Home/SendPost", async() => {
-
-        await InitBase(services, mainMount, api);
-        Home.Init(services);
-        await AddCKEditor();
+        SetSubtitle("发帖");
+        await InitView(services);
+        await InitBase(services);
         SendPost.Init(services);
+        await AddCKEditor();
 
     }).AddRoute("Home/Zone", async() => {
-
-        await InitBase(services, mainMount, api);
-        Home.Init(services);
+        SetSubtitle("动态");
+        await InitView(services);
+        Zone.Init(services);
+        await InitBase(services);
 
     }).AddRoute("Match", async() => {
-
-        await InitBase(services, mainMount, api);
+        SetSubtitle("匹配");
+        await InitView(services);
+        await InitBase(services);
 
     }).AddRoute("PrivateChat", async() => {
-
-        await InitBase(services, mainMount, api);
+        SetSubtitle("私聊");
+        await InitView(services);
+        await InitBase(services);
         PrivateChat.Init(services);
 
     }).AddRoute("SearchResult", async() => {
-
-        await InitBase(services, mainMount, api);
+        SetSubtitle("搜索结果");
+        await InitView(services);
+        await InitBase(services);
         SearchResult.Init(services);
 
     }).AddRoute("TagTree", async() => {
-
-        await InitBase(services, mainMount, api);
+        SetSubtitle("标签树");
+        await InitView(services);
+        await InitBase(services);
         TagTree.Init(services);
 
     })
     .Execute();
 }
 
-async function InitBase(services, mainMount, api){
-    
-    mainMount.innerHTML = await api.Get(`/Home/${window.location.hash.replace("#", "")}`);
+async function InitView(services) {
+    const viewStr = await services.Api.Get(`/Home/${window.location.hash.replace("#", "")}`);
+    mainMount.innerHTML = viewStr;
+}
+
+async function InitBase(services){
+
     Tag.Init(services);
-	Post.Init(services);
+	// Post.Init(services);
     PrivateChat.InitBase(services);
 
     services.MyWebSocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async (wsMessages) => {

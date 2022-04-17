@@ -1,5 +1,5 @@
 
-import { ShowAlert } from '../Show.js';
+import { ShowAlert } from '../My.js';
 
 function LogIn()
 {

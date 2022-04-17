@@ -1,6 +1,7 @@
 import { Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement ,GenerateIDString, AddScript } from "../lib/Kamanri/Utils.js";
 import { Mutex, Critical } from "../lib/Kamanri/Mutex.js";
 import { Api } from "../lib/Kamanri/Api.js";
+import { Show, ShowAlert, ShowLoad, ShowInput } from "../lib/Kamanri/Show.js";
 import { Router } from "../lib/Kamanri/Router.js";
 import MyWebSocket from "../lib/Kamanri/MyWebSocket.js";
 import ModelView from "../lib/Kamanri/ModelView.js";
@@ -18,6 +19,7 @@ export {
 	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString, AddScript,
 	Mutex, Critical, 
 	Api, 
+	Show, ShowAlert, ShowLoad, ShowInput,
 	Router,
 	MyWebSocket, 
 	ModelView, 

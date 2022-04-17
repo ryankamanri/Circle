@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kamanri.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Kamanri.Http;
+using Kamanri.Extensions;
 using WebViewServer.Models;
 using WebViewServer.Models.User;
 using WebViewServer.Services;
@@ -18,6 +19,8 @@ namespace WebViewServer.Controllers
 	public class HomeController : Controller
 	{
 		private User _user;
+
+		private ViewModelService _vmService;
 		private ICookie _cookie;
 
 		private UserService _userService;
@@ -27,10 +30,11 @@ namespace WebViewServer.Controllers
 		private PostService _postService;
 
 
-		public HomeController(ICookie cookie, User user, UserService userService, TagService tagService, PostService postService)
+		public HomeController(ICookie cookie, User user, ViewModelService vmService, UserService userService, TagService tagService, PostService postService)
 		{
 			_cookie = cookie;
 			_user = user;
+			_vmService = vmService;
 			_userService = userService;
 			_tagService = tagService;
 			_postService = postService;
@@ -65,11 +69,47 @@ namespace WebViewServer.Controllers
 			return View("Home/Posts");
 		}
 
+		[HttpPost]
+		[Route("Home/PostsModel")]
+		public async Task<string> PostsModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetHomePostsViewModels())
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
+		}
+
+		[HttpPost]
+		[Route("Home/PostsExtraModel")]
+		public async Task<string> PostsExtraModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetExtraPostsViewModels())
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
+		}
+
 		[HttpGet]
 		[Route("Home/Zone")]
 		public IActionResult Zone()
 		{
 			return View("Home/Zone");
+		}
+
+		[HttpPost]
+		[Route("Home/ZoneModel")]
+		public async Task<string> ZoneModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetZonePostsViewModels())
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
 		}
 
 		[HttpGet]
