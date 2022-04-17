@@ -1,4 +1,4 @@
-import { Sleep } from '../My.js';
+import { Sleep } from './Utils.js';
 
 const IS_EFFECTIVE_CODE = 200;
 const HEADER_LENGTH = 10;

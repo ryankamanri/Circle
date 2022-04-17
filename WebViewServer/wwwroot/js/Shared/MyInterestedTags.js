@@ -3,9 +3,11 @@ import { ShowAlert } from '../Show.js';
 
 let mySelfTags;
 let myInterestedTags;
-let api = new Api();
+let api;
 
-function Init() {
+function Init(services) {
+	api = services.Api;
+
     mySelfTags = document.querySelector("#mySelfTags");
 	myInterestedTags = document.querySelector("#myInterestedTags");
 

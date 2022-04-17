@@ -3,9 +3,9 @@ import Tag from '../Shared/Tag.js'
 
 let tagRoot;
 
-function Init()
+function Init(services)
 {
-	Tag.Init();
+	Tag.Init(services);
 
 	FlushTagTree();
 

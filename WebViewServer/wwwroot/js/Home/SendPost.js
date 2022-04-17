@@ -5,7 +5,7 @@ let btn,title,focus,tagIDs,summary,contentDocument;
 let tagCollection;
 
 
-function Init()
+function Init(services)
 {
 
 	btn = document.querySelector("input#submit");

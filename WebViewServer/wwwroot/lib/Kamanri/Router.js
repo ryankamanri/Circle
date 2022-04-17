@@ -7,14 +7,14 @@ function Router() {
         this._eventHandlers[url] = Delegate;
         return this;
     }
-    this.Execute = () => {
+    this.Execute = async() => {
         window.addEventListener("load", this._Delegate);
         window.addEventListener("hashchange", this._Delegate);
-        this._Delegate();
+        await this._Delegate();
     }
-    this._Delegate = () => {
+    this._Delegate = async() => {
         let hash = window.location.hash.split("?")[0];
-        this._eventHandlers[hash]();
+        await this._eventHandlers[hash]();
     }
 }
 

@@ -6,9 +6,10 @@ import Comment from './Comment.js';
 let contentItems, focusLabels, likeLabels, collectLabels, commentLabels;
 let postID_commentLabel = [];
 
-let api = new Api();
-function Init() {
+let api;
 
+function Init(services) {
+	api = services.Api;
 
 	contentItems = document.querySelectorAll(".post-content>input");
 	focusLabels = document.querySelectorAll("p>a.tag-label");
@@ -39,7 +40,7 @@ function Init() {
 			commentLabel.onclick = async event => {
 				let commentLabel = event.currentTarget;
 				event.stopPropagation();
-				Comment.Comment(commentLabel.offsetParent.querySelector(".comment-mount"),
+				await Comment.Init(services, commentLabel.offsetParent.querySelector(".comment-mount"),
 					commentLabel.getAttribute("postid"));
 				await Comment.BuildAndShowModelView(commentLabel);
 				Comment.ShowInputWindow(commentLabel);

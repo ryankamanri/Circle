@@ -35,7 +35,7 @@ function Sleep(value) {
 function ParseElement(str) {
 	var o=document.createElement("div");
 	o.innerHTML=str;
-	return o.childNodes[0];
+	return o.children[0];
 }
 
 function Stringlify(obj){
@@ -65,6 +65,7 @@ async function Animate(element, properties, duration="slow", easing="swing") {
 function GetType(obj) {
 	return Object.prototype.toString.call(obj)
 }
+
 function CopyElement(element) {
 	let copyElement = document.createElement(element.tagName);
 	copyElement.innerHTML = element.innerHTML;
@@ -74,6 +75,7 @@ function CopyElement(element) {
 	}
 	return copyElement;
 }
+
 function GenerateIDString() {
 	return `${Date.now()}+${(Math.random() * 10000)}`
 }

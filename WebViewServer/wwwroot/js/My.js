@@ -1,10 +1,10 @@
-import { Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement ,GenerateIDString, AddScript } from "./Kamanri/Utils.js";
-import { Mutex, Critical } from "./Kamanri/Mutex.js";
-import { Api } from "./Kamanri/Api.js";
-import { Router } from "./Kamanri/Router.js";
-import MyWebSocket from "./Kamanri/MyWebSocket.js";
-import ModelView from "./Kamanri/ModelView.js";
-import Storage from "./Kamanri/Storage.js";
+import { Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement ,GenerateIDString, AddScript } from "../lib/Kamanri/Utils.js";
+import { Mutex, Critical } from "../lib/Kamanri/Mutex.js";
+import { Api } from "../lib/Kamanri/Api.js";
+import { Router } from "../lib/Kamanri/Router.js";
+import MyWebSocket from "../lib/Kamanri/MyWebSocket.js";
+import ModelView from "../lib/Kamanri/ModelView.js";
+import Storage from "../lib/Kamanri/Storage.js";
 
 let api = new Api();
 

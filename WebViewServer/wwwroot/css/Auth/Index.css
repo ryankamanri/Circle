@@ -93,7 +93,7 @@ body{
   #home{
 	height: 100vh;
 	min-height: 500px;
-	background: url("/Images/1.jpg") no-repeat center; 
+	background: url("/StaticFiles/Images/1.jpg") no-repeat center; 
 	/*background-color: gray;*/
 	background-size: cover;
 	background-attachment: fixed;

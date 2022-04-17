@@ -1,7 +1,7 @@
 import { Sleep } from '../My.js'
 import Tag from '../Shared/Tag.js'
 
-function Init()
+function Init(services)
 {
 	let count = 0;//统计一段时间要发送的ajax请求个数
 	let resultList;

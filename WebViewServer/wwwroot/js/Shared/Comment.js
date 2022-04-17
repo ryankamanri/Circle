@@ -2,36 +2,28 @@
 import { ShowAlert, ShowInput } from '../Show.js';
 import { PostChangeRelation } from './MyInterestedTags.js';
 import { GetPostID_commentLabel } from './Post.js';
+import FirstLevelComment from './Components/Post/FirstLevelComment.js';
+import SecondLevelComment from './Components/Post/SecondLevelComment.js';
 
 
-let api = new Api();
-let postID_commentModelList = [], postID_commentModelView = [];
+let api;
+const postID_commentModelList = [], postID_commentModelView = [];
 
 let formedComments;
 let commentModelList, commentModelView;
 let mountElement, postID;
-let commentTemplate;
-let slCommentTemplate;
 
-function Comment(mountElement_param, postID_param) {
+
+async function Init(services, mountElement_param, postID_param) {
+	api = services.Api;
 	mountElement = mountElement_param;
 	postID = postID_param;
-	GenerateCommentTemplate(mountElement.children[0]);
 }
 
 function GetPostID_commentModelList() {
 	return postID_commentModelList;
 }
 
-function GenerateCommentTemplate(templateElement) {
-	if (slCommentTemplate == undefined || commentTemplate == undefined) {
-		slCommentTemplate = document.createElement("template");
-		slCommentTemplate.content.append(templateElement.querySelector(".sl-comment"));
-		commentTemplate = document.createElement("template");
-		commentTemplate.content.append(templateElement);
-	}
-	
-}
 
 async function Show(commentLabel) {
 	commentLabel.onclick = event => Clean(event.currentTarget, modelView);
@@ -64,33 +56,23 @@ async function BuildAndShowModelView(commentLabel) {
 
 	commentLabel.onclick = event => Clean(event.currentTarget, commentModelView);
 
-	commentModelView.SetItemTemplate(_ => {
-		return commentTemplate;
-	}).SetTemplateViewToModelBinder((view, model, _) => {
-		let headImage = view.querySelector(".head-image>img");
-		headImage.setAttribute("src", model.Key.Value.OwnerHeadImage);
-		let nickName = view.querySelector(".nickname");
-		nickName.innerText = model.Key.Value.OwnerNickName;
-		let commentDateTime = view.querySelector(".comment-datetime");
-		commentDateTime.innerText = model.Key.Key.CommentDateTime;
-		let commentContent = view.querySelector(".comment-content");
-		commentContent.innerText = model.Key.Key.Content;
-		let likeCount = view.querySelector(".like>.count");
-		likeCount.innerText = model.Key.Value.LikeCount;
-		let replyCount = view.querySelector(".comment>.count");
-		replyCount.innerText = model.Key.Value.ReplyCount;
+	commentModelView.SetItemTemplate(viewType => {
+		return FirstLevelComment.SetItemTemplate(viewType);
+	}).SetTemplateViewToModelBinder((view, model, viewType) => {
+		
+		FirstLevelComment.SetTemplateViewToModelBinder(view, model, viewType);
 
 		JudgeLike(event, model, view);
+
 		let commentLabel = view.querySelector(".comment");
-		commentLabel.setAttribute("owner-name", model.Key.Value.OwnerNickName);
-		commentLabel.setAttribute("comment-id", model.Key.Key.ID);
+
 		commentLabel.onclick = event => {
 			let commentLabel = event.currentTarget;
 			ShowSecondLevelComment(event, model, view);
 			ShowInputWindow(commentLabel);
 		}
 
-		view.style.display = "inherit";
+		
 	}).Show();
 }
 
@@ -195,39 +177,26 @@ async function ShowSecondLevelComment(event, flCommentModel, flCommentView) {
 
 	commentLabel.onclick = event => Clean(event.currentTarget, slCommentModelView);
 
-	slCommentModelView.SetItemTemplate(_ => {
-		return slCommentTemplate;
+	slCommentModelView.SetItemTemplate(viewType => {
+		return SecondLevelComment.SetItemTemplate(viewType);
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
-		let headImage = view.querySelectorAll(".head-image>img")[0];
-		headImage.setAttribute("src", model.Value.OwnerHeadImage);
-		let nickName = view.querySelectorAll(".nickname")[0];
-		nickName.innerText = model.Value.OwnerNickName;
-		let replyHeadImage = view.querySelectorAll(".head-image>img")[1];
-		replyHeadImage.setAttribute("src", model.Value.ReplyUserHeadImage);
-		let replyNickName = view.querySelectorAll(".nickname")[1];
-		replyNickName.innerText = model.Value.ReplyUserNickName;
-		let commentDateTime = view.querySelector(".comment-datetime");
-		commentDateTime.innerText = model.Key.CommentDateTime;
-		let commentContent = view.querySelector(".comment-content");
-		commentContent.innerText = model.Key.Content;
+		
+		SecondLevelComment.SetTemplateViewToModelBinder(view, model, viewType);
 
 		let commentLabel = view.querySelector(".comment");
-		commentLabel.setAttribute("owner-name", model.Value.OwnerNickName);
-		commentLabel.setAttribute("comment-id", model.Key.ID);
 		commentLabel.addEventListener("click", event => {
 			ShowInputWindow(event.currentTarget);
 		});
 		
-		view.style.display = "inherit";
 	}).Show();
 
 	
 }
 
 export {
-	Comment, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow
+	Init, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow
 }
 
 export default {
-	Comment, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow
+	Init, BuildAndShowModelView, GetPostID_commentModelList, Show, Clean, ShowInputWindow
 }

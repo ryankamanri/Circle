@@ -3,20 +3,38 @@ import Tag from './Shared/Tag.js';
 import Post from './Shared/Post.js';
 import Sidebar from './Shared/Sidebar.js';
 import MyInterestedTags from './Shared/MyInterestedTags.js';
-import Routes from './Shared/Routes.js';
+import Routes from './Routes.js';
+import { Api, Configuration, MyWebSocket } from './My.js';
 
+const wsuri = await Configuration("WebSocketUri");
 
-
-function Init()
+async function Init()
 {
-	MyInterestedTags.Init();
-	Header.Init();
-	Tag.Init();
-	Post.Init();
-	Sidebar.Init();
-	Routes.Init();
+	const services = await InitServices();
+
+	InitLayout(services);
+
+	await Routes.Init(services);
+	services.MyWebSocket.Open();
 }
 
+function InitLayout(services) {
+	MyInterestedTags.Init(services);
+	Header.Init(services);
+	Tag.Init(services);
+	Post.Init(services);
+	Sidebar.Init(services);
+}
+
+async function InitServices() {
+	const api = new Api();
+	const userInfoStr = await api.Post("/Api/User/GetSelfInfo", {});
+	return {
+		Api: api,
+		MyWebSocket: new MyWebSocket.MyWebSocket(wsuri),
+		UserInfo: JSON.parse(userInfoStr)
+	}
+}
 
 export{
 	Init

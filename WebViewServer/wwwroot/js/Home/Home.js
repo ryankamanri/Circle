@@ -2,7 +2,7 @@ import { ParseFunc, Storage } from '../My.js';
 import { ShowAlert } from '../Show.js';
 
 
-function Init()
+function Init(services)
 {
 	
 	let circleName = document.querySelector("a.navbar-brand").innerText;

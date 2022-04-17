@@ -62,6 +62,8 @@ namespace WebViewServer
 
 
 			services.AddScoped<User>();
+
+			services.AddScoped<ViewService>();
 			//增加Cookie服务
 			services.AddSingleton<ICookie, Cookie>();
 

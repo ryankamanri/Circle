@@ -4,7 +4,7 @@ import Post from '../Shared/Post.js'
 
 let userContainer,searchResult,searchString,splitedSearchStrings;
 let HasBeenExecuted = false;
-function Init()
+function Init(services)
 {
 	if(HasBeenExecuted) return;
 
@@ -13,8 +13,8 @@ function Init()
 	MatchKeyWords();
 	///
 
-	SearchUserInfo.Init();
-	Post.Init();
+	SearchUserInfo.Init(services);
+	Post.Init(services);
 	
 	HasBeenExecuted = true;
 }

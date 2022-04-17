@@ -1,4 +1,4 @@
-function Init() {
+function Init(services) {
     let body = document.getElementsByTagName("body")[0];
     let aside = document.getElementsByTagName("aside")[0];
     let mainContainer = document.querySelector(".main-container");
