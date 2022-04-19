@@ -1,19 +1,4 @@
-@* @using WebViewServer.Models
-@using WebViewServer.Models.Post
-@using WebViewServer.Models.User
-@using WebViewServer.Services
-@model Post
-@inject User _user
-@inject PostService _postService
-@inject UserService _userService
-@{
-	UserInfo authorInfo = await _postService.SelectAuthorInfo(Model);
-	ICollection<Tag> tags = await _postService.SelectTags(Model);
 
-	bool isFocus = await _userService.IsUserRelationExist(_user, new User(authorInfo.ID), "Type","Focus");
-	var likeCollectCommentCount = await _postService.SelectLikeCollectCommentCount(Model);
-	var isLikeOrCollect = await _postService.SelectIsLikeOrCollect(Model, _user);
-} *@
 
 <div class="feed-item-box clearfix col-md-12">
 	<a href="" target="_blank" class="feed-head-pic" style="border-radius: 0px;">
@@ -29,7 +14,7 @@
 			</p>
 		</div>
 		<div class="nc-post-content">
-			<a href="javascript:void(0);">
+			<a class="a" href="javascript:void(0);">
 				<div class="feed-title">
 					<span>@@Model.Title</span>
 				</div>
@@ -43,16 +28,14 @@
 				</div>
 			</a>
 			<div class="post-content">
+				<div class="ckeditor"></div>
 				<input type="button" postid="@@Model.ID" value="查看全文" jump="" class="btn btn-link font-green"
-					style="cursor:pointer;width:90px;">
+				       style="cursor:pointer;width:90px;">
 			</div>
 		</div>
 		<!---->
 		<div class="feed-tags">
-			@* @foreach (var tag in tags)
-			{
-			<div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
-			} *@
+			
 		</div>
 
 		<div class="more" >
@@ -73,7 +56,7 @@
 	</div>
 	
 	<div class="comment-mount">
-		@* @await Html.PartialAsync("FirstLevelComment", Model.ID) *@
+
 	</div>
 	
 </div>

@@ -100,10 +100,10 @@ namespace WebViewServer
 
 			app.UseStaticFiles(new StaticFileOptions()
 			{
-				RequestPath = new PathString("/StaticFiles"),
+				RequestPath = new PathString(Configuration["VirtualFilesPath"]),
 				ServeUnknownFileTypes = true,
 				FileProvider = new PhysicalFileProvider(
-					Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "StaticFiles")),
+					Path.Combine(Directory.GetCurrentDirectory(), Configuration["PhysicalFilesPath"])),
 			});
 			//使用认证服务
 			app.UseAuthentication();

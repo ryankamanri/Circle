@@ -1,5 +1,5 @@
 body::-webkit-scrollbar{
-	width: 10px;
+	width: 5px;
 	height: 5px;
 }
 body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
@@ -18,12 +18,12 @@ body::-webkit-scrollbar-track {/*滚动条里面轨道*/
 
 	border-radius: 10px;
 
-	background: #FFF;
+	background: #FFFFFF80;
 
 }
 
 iframe::-webkit-scrollbar{
-	width: 10px;
+	width: 5px;
 	height: 5px;
 }
 iframe::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
@@ -42,7 +42,7 @@ iframe::-webkit-scrollbar-track {/*滚动条里面轨道*/
 
 	border-radius: 10px;
 
-	background: #FFF;
+	/* background: #FFF; */
 
 }
 
@@ -66,9 +66,34 @@ div.message-content-view::-webkit-scrollbar-track {/*滚动条里面轨道*/
 
 	border-radius: 10px;
 
-	background: #FFF;
+	/* background: #FFF; */
 
 }
+
+aside .sidebar-container .first::-webkit-scrollbar{
+	width: 5px;
+	height: 5px;
+}
+aside .sidebar-container .first::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+	border-radius: 10px;
+
+	 -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+	background: #CCC;
+
+}
+
+aside .sidebar-container .first::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+	border-radius: 10px;
+
+	/* background: #FFF; */
+
+}
+
 .main-container {
 	padding-top: 100px;
 	transition: width 1s;

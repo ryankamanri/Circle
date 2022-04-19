@@ -16,10 +16,13 @@ aside {
 }
 
 aside .first {
-    height: 20px;
     text-align: center;
     padding-top: 20px;
     padding-bottom: 35px;
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    overflow-y: scroll;
 }
 
 aside .first .self-info {
@@ -27,7 +30,7 @@ aside .first .self-info {
     background: lightcyan;
     border-radius: 20px;
     transition: color 1s;
-    margin: 20px 0;
+    margin: 10px 0;
     padding: 10px 0;
 }
 

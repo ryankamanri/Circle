@@ -50,9 +50,13 @@ namespace WebViewServer.Services
 				var rand = new Random().Next();
 				if (rand % 3 == 0)
 				{
-					yield return GetPostViewModel(myInterestedPosts[rand%myInterestedPosts.Count]);
+					if(myInterestedPosts.Count != 0)
+						yield return GetPostViewModel(myInterestedPosts[rand%myInterestedPosts.Count]);
 				} 
-				else yield return GetPostViewModel(allPosts[rand%allPosts.Count]);
+				else{
+					if(allPosts.Count != 0)
+						yield return GetPostViewModel(allPosts[rand%allPosts.Count]);
+				} 
 			}
 			
 		}

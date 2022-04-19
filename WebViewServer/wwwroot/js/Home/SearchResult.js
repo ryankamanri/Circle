@@ -6,7 +6,7 @@ let userContainer,searchResult,searchString,splitedSearchStrings;
 let HasBeenExecuted = false;
 function Init(services)
 {
-	if(HasBeenExecuted) return;
+	// if(HasBeenExecuted) return;
 
 	///由于这一部分作用为替换关键字为高亮,将部分dom元素进行了替换,所以在此之前绑定过的监听元素会失效
 	///如需绑定监听元素,请在此段之后
@@ -21,7 +21,7 @@ function Init(services)
 
 function MatchKeyWords(){
 	searchResult = document.querySelector("#search-result").innerHTML;
-	searchString = window.location.href.split('searchString=')[1];
+	searchString = decodeURI(window.location.href.split('searchString=')[1]);
 	document.querySelector("input#search").value = searchString;
 	splitedSearchStrings = searchString.split(" ");
 	

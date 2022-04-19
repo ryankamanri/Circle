@@ -29,7 +29,6 @@ async function Init(services) {
         await InitView(services);
         await InitBase(services);
         SendPost.Init(services);
-        await AddCKEditor();
 
     }).AddRoute("Home/Zone", async() => {
         SetSubtitle("动态");
@@ -99,15 +98,7 @@ async function InitBase(services){
 	});
 }
 
-async function AddCKEditor() {
 
-    ClassicEditor
-    .create( document.querySelector( '.ckeditor' ) )
-    .catch( error => {
-        console.error( error );
-    } );
-
-}
 
 export default {
     Init

@@ -76,8 +76,8 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
 		throw error;
 	}
 	
-	Tag.FlushDropEvent(view);
-	Tag.FlushDrugEvent(view);
+	Tag.FlushDropEvent(view, model);
+	Tag.FlushDrugEvent(view, model);
 
     const likeLabel = view.querySelector(".more .like");
     likeLabel.setAttribute("isLike", model.IsLike);
@@ -95,10 +95,10 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
     commentLabel.setAttribute("post-title", model.Title);
     commentLabel.querySelector(".count").innerText = model.CommentCount;
 
-    InitEvents(view);
+    InitEvents(view, model);
 }
 
-function InitEvents(view) {
+function InitEvents(view, model) {
 
     const contentItem = view.querySelector(".post-content>input");
     const focusLabel = view.querySelector("p>a.tag-label");
@@ -110,7 +110,7 @@ function InitEvents(view) {
     contentItem.onclick = async event => {
         event.preventDefault();
         event.stopPropagation();
-        await ShowContent(event.target, event.currentTarget.getAttribute("postid"));
+        await ShowContent(event.target, view, model);
     }
     // 给a标签同样添加点击事件
     let a = contentItem.parentElement.parentElement.children[0];
@@ -118,7 +118,7 @@ function InitEvents(view) {
         event.preventDefault();
         event.stopPropagation();
         let contentItemElement = event.currentTarget.parentElement.children[1].children[0];
-        await ShowContent(contentItemElement, contentItemElement.getAttribute("postid"));
+        await ShowContent(view, model);
     }
 
 
@@ -134,11 +134,11 @@ function InitEvents(view) {
     }
 
 
-    JudgeFocus(focusLabel);
+    JudgeFocus(focusLabel, view, model);
 
-    JudgeLike(likeLabel);
+    JudgeLike(likeLabel, view, model);
 
-    JudgeCollect(collectLabel);
+    JudgeCollect(collectLabel, view, model);
 
 
 }
@@ -147,44 +147,44 @@ function GetPostID_commentLabel() {
 }
 
 
-function JudgeFocus(focusLabel) {
+function JudgeFocus(focusLabel, view, model) {
 	if (focusLabel.getAttribute("isFocus") == "False") {
-		focusLabel.onclick = async event => await AppendFocus(event);
+		focusLabel.onclick = async event => await AppendFocus(event, view, model);
 		return;
 	}
-	focusLabel.onclick = async event => await RemoveFocus(event);
+	focusLabel.onclick = async event => await RemoveFocus(event, view, model);
 	focusLabel.innerText = "已关注";
 	focusLabel.style.color = "#25bb9b";
 	focusLabel.style.border = "1px solid #25bb9b";
 
 }
 
-function JudgeLike(likeLabel) {
+function JudgeLike(likeLabel, view, model) {
 	if (likeLabel.getAttribute("isLike") == "False") {
-		likeLabel.onclick = async event => await AppendLike(event);
+		likeLabel.onclick = async event => await AppendLike(event, view, model);
 		return;
 	}
-	likeLabel.onclick = async event => await RemoveLike(event);
+	likeLabel.onclick = async event => await RemoveLike(event, view, model);
 	likeLabel.classList.add("liked");
 }
 
-function JudgeCollect(collectLabel) {
+function JudgeCollect(collectLabel, view, model) {
 	if (collectLabel.getAttribute("isCollect") == "False") {
-		collectLabel.onclick = async event => await AppendCollect(event);
+		collectLabel.onclick = async event => await AppendCollect(event, view, model);
 		return;
 	}
-	collectLabel.onclick = async event => await RemoveCollect(event);
+	collectLabel.onclick = async event => await RemoveCollect(event, view, model);
 	collectLabel.classList.add("collected");
 }
 
-async function AppendFocus(event)
+async function AppendFocus(event, view, model)
 {
 	let btn = event.target;
 	event.stopPropagation();
 	let keyID = btn.getAttribute("ID");
 	let resData = await PostChangeRelation("/Shared/AppendRelation", keyID,"User","Type","Focus");
 	console.log(resData);
-	btn.onclick = async event => await RemoveFocus(event);//这种必须写成匿名函数形式,直接写一个函数名会发生不可预知的执行情况
+	btn.onclick = async event => await RemoveFocus(event, view, model);//这种必须写成匿名函数形式,直接写一个函数名会发生不可预知的执行情况
 	btn.innerText = "已关注";
 	btn.style.color = "#25bb9b";
 	btn.style.border = "1px solid #25bb9b";
@@ -192,14 +192,14 @@ async function AppendFocus(event)
 	
 }
 
-async function RemoveFocus(event)
+async function RemoveFocus(event, view, model)
 {
 	let btn = event.target;
 	event.stopPropagation();
 	let keyID = event.target.getAttribute("ID");
 	let resData = await PostChangeRelation("/Shared/RemoveRelation", keyID,"User","Type","Focus");
 	console.log(resData);
-	event.target.onclick = async event => await AppendFocus(event);
+	event.target.onclick = async event => await AppendFocus(event, view, model);
 	btn.innerText = "+ 关注";
 	btn.style.color = "";
 	btn.style.border = "";
@@ -207,10 +207,10 @@ async function RemoveFocus(event)
 
 }
 
-async function AppendLike(event) {
+async function AppendLike(event, view, model) {
 	event.stopPropagation();
 	let likeLabel = event.currentTarget;
-	likeLabel.onclick = async event => await RemoveLike(event);
+	likeLabel.onclick = async event => await RemoveLike(event, view, model);
 	let postID = likeLabel.getAttribute("postid");
 	let resData = await PostChangeRelation("/Shared/AppendRelation", postID, "Post", "Type", "Like");
 	console.log(resData);
@@ -220,10 +220,10 @@ async function AppendLike(event) {
 	ShowAlert("alert alert-info", "已点赞", "");
 }
 
-async function RemoveLike(event) {
+async function RemoveLike(event, view, model) {
 	event.stopPropagation();
 	let likeLabel = event.currentTarget;
-	likeLabel.onclick = async event => await AppendLike(event);
+	likeLabel.onclick = async event => await AppendLike(event, view, model);
 	let postID = likeLabel.getAttribute("postid");
 	let resData = await PostChangeRelation("/Shared/RemoveRelation", postID, "Post", "Type", "Like");
 	console.log(resData);
@@ -233,10 +233,10 @@ async function RemoveLike(event) {
 	ShowAlert("alert alert-info", "已取消点赞", "");
 }
 
-async function AppendCollect(event) {
+async function AppendCollect(event, view, model) {
 	event.stopPropagation();
 	let collectLabel = event.currentTarget;
-	collectLabel.onclick = async event => await RemoveCollect(event);
+	collectLabel.onclick = async event => await RemoveCollect(event, view, model);
 	let postID = collectLabel.getAttribute("postid");
 	let resData = await PostChangeRelation("/Shared/AppendRelation", postID, "Post", "Type", "Collect");
 	console.log(resData);
@@ -246,10 +246,10 @@ async function AppendCollect(event) {
 	ShowAlert("alert alert-info", "已收藏", "");
 }
 
-async function RemoveCollect(event) {
+async function RemoveCollect(event, view, model) {
 	event.stopPropagation();
 	let collectLabel = event.currentTarget;
-	collectLabel.onclick = async event => await AppendCollect(event);
+	collectLabel.onclick = async event => await AppendCollect(event, view, model);
 	let postID = collectLabel.getAttribute("postid");
 	let resData = await PostChangeRelation("/Shared/RemoveRelation", postID, "Post", "Type", "Collect");
 	console.log(resData);
@@ -260,29 +260,64 @@ async function RemoveCollect(event) {
 }
 
 
-async function ShowContent(node, postID) {
-	let resData = await api.Post("/Shared/ShowPostInfo", {
-		postID: postID
+async function ShowContent(view, model) {
+	const resData = await api.Post("/Shared/ShowPostInfo", {
+		postID: model.ID
 	});
-	let content = JSON.parse(resData).Content;
-	let contentNode = document.createElement("div");
-	contentNode.innerHTML = content;
-	contentNode.className = "ck ck-content content-item col-md-12";
+	const content = JSON.parse(resData).Content;
 
-	node.parentElement.insertBefore(contentNode, node);
+	const node = view.querySelector("input.btn");
+	const a = view.querySelector("a.a");
+
+	const ckeditor = view.querySelector('.ckeditor');
+	ckeditor.innerHTML = content;
+	ClassicEditor
+		.create(ckeditor, {
+			language: 'zh',
+			mediaEmbed: {
+				providers: [{
+					name: 'myProvider',
+					url: [
+						/^.*/
+					],
+					html: match => {
+						const input = match['input'];
+						return(
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 70%;">' +
+							`<iframe src="${input}" ` +
+							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+							'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'</iframe>' +
+							'</div>'
+						)
+					}
+				}]
+			}
+		})
+		.then(editor => {
+			editor.isReadOnly= true;
+			const toolbar = editor.ui.view.toolbar.element;
+			toolbar.style.display = 'none';
+		})
+		.catch(error => {
+			console.error(error);
+		});
+
+	// node.parentElement.insertBefore(contentNode, node);
+	
 
 	node.onclick = event => {
 		event.preventDefault();
 		event.stopPropagation();
-		HideContent(event.target, contentNode);
+		HideContent(view, model);
 	}
 	// a
-	let a = node.parentElement.parentElement.children[0];
+	
 	a.onclick = event => {
 		event.preventDefault();
 		event.stopPropagation();
 		let contentItemElement = event.currentTarget.parentElement.children[1].children[1];
-		HideContent(contentItemElement, contentNode);
+		HideContent(view, model);
 	}
 	node.value = "收起全文";
 	
@@ -290,22 +325,26 @@ async function ShowContent(node, postID) {
 
 
 
-function HideContent(node, contentNode) {
+function HideContent(view, model) {
 	
-	node.parentElement.removeChild(contentNode);
+	// node.parentElement.removeChild(contentNode);
+	const ckDivs = view.querySelectorAll(".ck");
+	ckDivs.forEach(ckDiv => ckDiv.remove());
+
+	const node = view.querySelector("input.btn");
+	const a = view.querySelector("a.a");
 
 	node.onclick = async event => {
 		event.preventDefault();
 		event.stopPropagation();
-		await ShowContent(event.target, event.target.getAttribute("postid"));
+		await ShowContent(view, model);
 	}
 	// a
-	let a = node.parentElement.parentElement.children[0];
 	a.onclick = event => {
 		event.preventDefault();
 		event.stopPropagation();
 		let contentItemElement = event.currentTarget.parentElement.children[1].children[0];
-		ShowContent(contentItemElement, contentItemElement.getAttribute("postid"));
+		ShowContent(view, model);
 	}
 	node.value = "查看全文";
 	console.log("hide content");

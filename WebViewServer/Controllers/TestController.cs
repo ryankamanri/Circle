@@ -26,49 +26,49 @@ namespace WebViewServer.Controllers
 			_api = api;
 		}
 
-		[HttpGet]
-		[Route("email")]
-		public IActionResult SendEmail(string emailto, string title, string body)
-		{
-			EmailHelper.SendThread(emailto, title, body);
-			return new JsonResult("OK");
-		}
-
-		[HttpGet]
-		[Route("getapi")]
-		public async Task<string> GetApi()
-		{
-			return await _api.Get<string>("/api/get");
-		}
-
-		[HttpGet]
-		[Route("postapi")]
-		public async Task<string> PostApi()
-		{
-			return await _api.Post<string>("/User/SelectPost",
-			new Form()
-			{
-				{"User",_user},
-				{"Selection",new Form()
-				{
-
-				}}
-			});
-		}
-
-		[HttpGet]
-		[Route("directory")]
-		public string GetDirectory()
-		{
-			return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "StaticFiles");
-		}
-
-		[HttpGet]
-		[Route("getattr")]
-		public string GetAttr()
-		{
-			return _user.Get<string>("Account");
-		}
+		// [HttpGet]
+		// [Route("email")]
+		// public IActionResult SendEmail(string emailto, string title, string body)
+		// {
+		// 	EmailHelper.SendThread(emailto, title, body);
+		// 	return new JsonResult("OK");
+		// }
+		//
+		// [HttpGet]
+		// [Route("getapi")]
+		// public async Task<string> GetApi()
+		// {
+		// 	return await _api.Get<string>("/api/get");
+		// }
+		//
+		// [HttpGet]
+		// [Route("postapi")]
+		// public async Task<string> PostApi()
+		// {
+		// 	return await _api.Post<string>("/User/SelectPost",
+		// 	new Form()
+		// 	{
+		// 		{"User",_user},
+		// 		{"Selection",new Form()
+		// 		{
+		//
+		// 		}}
+		// 	});
+		// }
+		//
+		// [HttpGet]
+		// [Route("directory")]
+		// public string GetDirectory()
+		// {
+		// 	return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "StaticFiles");
+		// }
+		//
+		// [HttpGet]
+		// [Route("getattr")]
+		// public string GetAttr()
+		// {
+		// 	return _user.Get<string>("Account");
+		// }
 
 	}
 }
