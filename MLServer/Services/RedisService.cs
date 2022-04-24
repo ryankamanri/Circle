@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
-namespace ApiServer.Services
+
+namespace MLServer.Services
 {
     public class RedisService
     {
         public static class StoredObjectType
         {
             public const int IMAGE = 1;
+            public const int JSON_OBJECT = 2;
         }
-        
         private ConnectionMultiplexer _redis;
 
         public RedisService(IConfiguration config)
@@ -17,7 +18,7 @@ namespace ApiServer.Services
             var server = config["Redis:Server"];
             _redis = ConnectionMultiplexer.ConnectAsync(server).Result;
         }
-
+        
         public Task<RedisValue> GetAsync(int storedObjectType, RedisKey key)
         {
             var db = _redis.GetDatabase(storedObjectType, true);
@@ -29,7 +30,6 @@ namespace ApiServer.Services
             var db = _redis.GetDatabase(storedObjectType, true);
             return db.StringSetAsync(key, vaLue);
         }
-        
         
     }
 }

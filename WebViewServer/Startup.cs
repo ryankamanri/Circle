@@ -60,7 +60,6 @@ namespace WebViewServer
 			services.AddSingleton(new Api(Configuration["Api"]));
 
 
-
 			services.AddScoped<User>();
 
 			services.AddScoped<ViewModelService>();

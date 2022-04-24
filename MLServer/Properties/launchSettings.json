@@ -13,8 +13,8 @@
 	"MLServer": {
 	  "commandName": "Project",
 	  "launchBrowser": false,
-	  "launchUrl": "weatherforecast",
-	  "applicationUrl": "http://localhost:5060",
+	  "launchUrl": "http://127.0.0.1:5062/User/Index",
+	  "applicationUrl": "http://0.0.0.0:5062",
 	  "environmentVariables": {
 		"ASPNETCORE_ENVIRONMENT": "Development"
 	  }

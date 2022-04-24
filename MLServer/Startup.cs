@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kamanri.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,15 @@ namespace MLServer
 		{
 			services.AddControllers();
 			services.AddSingleton<IMLService, MLService>();
+			services.AddSingleton<IUserService, UserService>();
+			services.AddKamanriDataBase(options =>
+			{
+				options.Server = Configuration["SQL:Server"];
+				options.Port = Configuration["SQL:Port"];
+				options.Database = Configuration["SQL:Database"];
+				options.Uid = Configuration["SQL:Uid"];
+				options.Pwd = Configuration["SQL:Pwd"];
+			}, option => new MySql.Data.MySqlClient.MySqlConnection(option));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +57,7 @@ namespace MLServer
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
+				endpoints.MapDefaultControllerRoute();
 			});
 		}
 	}

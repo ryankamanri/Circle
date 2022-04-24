@@ -6,12 +6,13 @@
 
   <ItemGroup>
 	<PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.357" />
-	<PackageReference Include="MySql.Data" Version="8.0.26" />
+	<PackageReference Include="MySql.Data" Version="8.0.28" />
 	<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
   </ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\Kamanri\Kamanri.csproj"></ProjectReference>
+	<ProjectReference Include="..\MLServer\MLServer.csproj" />
   </ItemGroup>
 
 </Project>

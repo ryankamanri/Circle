@@ -13,6 +13,7 @@ using Kamanri.Extensions;
 using Kamanri.Database;
 using ApiServer.Services;
 using ApiServer.Models.User;
+using Kamanri.Http;
 
 namespace ApiServer
 {
@@ -51,12 +52,12 @@ namespace ApiServer
 				options.Pwd = Configuration["SQL:Pwd"];
 
 			}, options => new MySql.Data.MySqlClient.MySqlConnection(options));
-
+			
+			//添加跨域api访问
+			services.AddSingleton(new Api(Configuration["ML:Api"]));
 			//增加数据库上下文服务
 			services.AddSingleton<DatabaseContext>();
 			
-			//增加Redis服务
-			services.AddSingleton<RedisService>();
 
 			//增加标签索引,匹配服务
 			services.AddSingleton<TagService>();
@@ -67,6 +68,8 @@ namespace ApiServer
 			services.AddSingleton<SearchService>();
 
 			services.AddSingleton<PostService>();
+
+			services.AddSingleton<MatchService>();
 
 		}
 
