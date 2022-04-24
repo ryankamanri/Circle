@@ -1,3 +1,4 @@
+<!--
 <html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
@@ -44,6 +45,83 @@
 	import SignIn from '/js/Auth/SignIn.js'
 	SignIn.SignIn();
 </script>
-
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
 </html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>注册-圈</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/css/Auth/bootstrap.css">
+<link rel="stylesheet" href="/css/Auth/style.css">
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+
+</head>
+<body>
+
+<!-- MultiStep Form -->
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <form id="msform">
+      <!-- progressbar -->
+      <ul id="progressbar">
+        <li class="active">Personal Details</li>
+        <li>Social Profiles</li>
+        <li>Account Setup</li>
+      </ul>
+      <!-- fieldsets -->
+      <fieldset>
+        <h2 class="fs-title">Create your account</h2>
+        <h3 class="fs-subtitle">Fill in your email and password</h3>
+        <input type="text" id="account" name="" required="" placeholder="用户名（邮箱）">
+        <input type="password" id="password" name="" required="" placeholder="密码">
+        <input type="text" id="authcode" placeholder="验证码">
+		<input type="button" id="getauthcode" class="action-button" value="获取验证码">
+		<input type="button" name="" class="next action-button" id="signin" name="" value="提交">
+      </fieldset>
+      <fieldset>
+        <h2 class="fs-title">Personal Details</h2>
+        <h3 class="fs-subtitle">Tell us something more about you</h3>
+        <input type="text" id="nickname" placeholder="昵称">
+        <input type="text" id="realname" placeholder="真实姓名">
+        <input type="text" id="university" placeholder="学校">
+        <input type="button" name="" class="next action-button" value="Next">
+      </fieldset>
+      <fieldset>
+        <h2 class="fs-title">Personal Details</h2>
+        <h3 class="fs-subtitle">Tell us something more about you</h3>
+        <input type="text" id="school" placeholder="学院">
+        <input type="text" id="speciality" placeholder="专业">
+		<h3 class="fs-signal">Choose a time for your appointment:</h3>
+        <input type="datetime-local" class="time_style" id="schoolyear" placeholder="入学年份">
+		<input type="button" name="" class="previous action-button-previous" value="Previous">
+        <a href="/SelectCircle"><input type="button" name="" class="action-button" id="summit" value="summit"></a>
+        
+		
+      </fieldset>
+    </form>
+    
+  </div>
+</div>
+<!-- /.MultiStep Form --> 
+
+@* <script src="/js/Auth/jquery-1.10.2.js"></script> *@
+@* <script src="/js/Auth/bootstrap-3.3.4.js"></script>  *@
+<script src='/js/Auth/jquery.easing.min.js'></script>
+<script src="/js/Auth/script.js"></script>
+<script type="module">
+	import SignIn from '/js/Auth/SignIn.js'
+	SignIn.Init();
+</script>
+</body>
+</html>
+
+
+
+
 

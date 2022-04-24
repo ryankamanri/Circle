@@ -60,6 +60,15 @@ namespace WebViewServer.Models.User
 
 		public UserInfo(long ID) : base(ID) { }
 
+		public UserInfo(string NickName, string RealName, string University, string School, string Speciality, DateTime SchoolYear)
+		{
+			this.NickName = NickName;
+			this.RealName = RealName;
+			this.University = University;
+			this.School = School;
+			this.Speciality = Speciality;
+			this.SchoolYear = SchoolYear;
+		}
 		public UserInfo(string NickName, string RealName, string University, string School, string Speciality, DateTime SchoolYear, string Introduction, string HeadImage)
 		{
 			this.NickName = NickName;

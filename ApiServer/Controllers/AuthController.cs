@@ -43,5 +43,18 @@ namespace ApiServer.Controllers
 			}
 
 		}
+		[HttpPost]
+		[Route("InfoSummit")]
+		public string InfoSummit(){
+			if (!HttpContext.Request.Form.TryGetValue("nickname", out var nicknameJson)) return "-2".ToJson();
+			if (!HttpContext.Request.Form.TryGetValue("realname", out var realnameJson)) return "-2".ToJson();
+			if (!HttpContext.Request.Form.TryGetValue("university", out var universityJson)) return "-2".ToJson();
+			if (!HttpContext.Request.Form.TryGetValue("school", out var schoolJson)) return "-2".ToJson();
+			if (!HttpContext.Request.Form.TryGetValue("speciality", out var specialityJson)) return "-2".ToJson();
+			if (!HttpContext.Request.Form.TryGetValue("schoolyear", out var schoolyearJson)) return "-2".ToJson();
+
+			UserInfo userInfo
+
+		}
 	}
 }
