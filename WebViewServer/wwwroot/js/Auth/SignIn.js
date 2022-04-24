@@ -1,7 +1,7 @@
 import { ParseFunc } from '../My.js';
 import { ShowAlert } from '../Show.js'
 
-function SignIn()
+function Init()
 {
 
 	$("#getauthcode").on("click",() => 
@@ -66,8 +66,30 @@ function SignIn()
         let school = $("#school").val();
 		let speciality = $("#speciality").val();
 		let schoolyear = $("#schoolyear").val();
+		if(schoolyear === "")
+		{
+			ShowAlert("alert alert-warning","🤷‍♂️","请输入时间");
+			return;
+		}
+			
+		if(nickname === ""){
+			ShowAlert("alert alert-warning","🤷‍♂️","请输入昵称");
+			return;
+		}
+		if(university === ""){
+			ShowAlert("alert alert-warning","🤷‍♂️","请输入学校");
+			return;
+		}
+		if(school === ""){
+			ShowAlert("alert alert-warning","🤷‍♂️","请输入学院");
+			return;
+		}
+		if(speciality === ""){
+			ShowAlert("alert alert-warning","🤷‍♂️","请输入专业");
+			return;
+		}
 		$.ajax({
-			url : "/Information_Submit",
+			url : "/Information_Summit",
 			type : "POST",
 			data : {
 				UserInfo : [
@@ -79,7 +101,7 @@ function SignIn()
 					schoolyear	
 				]
 			}
-		}).done( data => {
+		}).done((data) => {
 			if(data == "1") 
 			{   
 				ShowAlert("alert alert-success","😀","信息提交成功");
@@ -125,8 +147,8 @@ function SignIn()
 }
 
 export {
-	SignIn
+	Init
 }
 export default{
-	SignIn
+	Init
 }

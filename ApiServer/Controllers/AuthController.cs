@@ -1,22 +1,33 @@
 ﻿using System;
+using System.Threading.Tasks;
+using ApiServer.Models.User;
+using Kamanri.Database;
 using Kamanri.Extensions;
 using Kamanri.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 
 namespace ApiServer.Controllers
 {
+
+
+
 	[Controller]
 	[Route("Auth/")]
 	public class AuthController : Controller
 	{
+		private DatabaseContext _dbc;
+
+
 		private readonly ILogger<AuthController> _logger;
 
 
-		public AuthController(ILoggerFactory loggerFactory)
+		public AuthController(ILoggerFactory loggerFactory,DatabaseContext dbc)
 		{
 			_logger = loggerFactory.CreateLogger<AuthController>();
+			_dbc = dbc;
 		}
 
 		[HttpPost]
@@ -45,7 +56,8 @@ namespace ApiServer.Controllers
 		}
 		[HttpPost]
 		[Route("InfoSummit")]
-		public string InfoSummit(){
+		public async Task<string> InfoSummit(){
+			if (!HttpContext.Request.Form.TryGetValue("userID", out var userIDJson)) return "-2".ToJson();
 			if (!HttpContext.Request.Form.TryGetValue("nickname", out var nicknameJson)) return "-2".ToJson();
 			if (!HttpContext.Request.Form.TryGetValue("realname", out var realnameJson)) return "-2".ToJson();
 			if (!HttpContext.Request.Form.TryGetValue("university", out var universityJson)) return "-2".ToJson();
@@ -53,7 +65,14 @@ namespace ApiServer.Controllers
 			if (!HttpContext.Request.Form.TryGetValue("speciality", out var specialityJson)) return "-2".ToJson();
 			if (!HttpContext.Request.Form.TryGetValue("schoolyear", out var schoolyearJson)) return "-2".ToJson();
 
-			UserInfo userInfo
+			
+			UserInfo userInfo = new UserInfo(Convert.ToInt64(userIDJson),nicknameJson,realnameJson,universityJson,schoolJson,specialityJson, JsonConvert.DeserializeObject<DateTime> (schoolyearJson),"","");
+			var id = Convert.ToInt64(userIDJson);
+			_logger.LogInformation($"Insert {userInfo.ToJson()}");
+			if((await _dbc.Select(new UserInfo(id))) == null)
+				await _dbc.InsertWithID(userInfo);
+			else await _dbc.Update(userInfo);
+			return "1";
 
 		}
 	}

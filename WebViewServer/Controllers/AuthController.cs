@@ -31,12 +31,12 @@ namespace WebViewServer.Controllers
 		private Dictionary<string, string> account_authCode;
 
 		private readonly ILogger<AuthController> _logger;
-		public AuthController(Api api, UserService userService, ICookie cookie, Dictionary<string, string> account_authCode, ILoggerFactory loggerFactory)
+		public AuthController(User user, Api api, UserService userService, ICookie cookie, Dictionary<string, string> account_authCode, ILoggerFactory loggerFactory)
 		{
+			_user = user;
 			_api = api;
 			_cookie = cookie;
 			_userService = userService;
-			_user = new User();
 			this.account_authCode = account_authCode;
 			_logger = loggerFactory.CreateLogger<AuthController>();
 		}
@@ -205,9 +205,9 @@ namespace WebViewServer.Controllers
 			string schoolyear = authInfo[5];
 
 			
-
-			return (await _api.Post<string>("/Auth/InfoSummmit", new Form()
+			var result = (await _api.Post<string>("/Auth/InfoSummit", new Form()
 			{
+				{"userID", _user.ID},
 				{"nickname", nickname},
 				{"realname", realname},
 				{"university", university},
@@ -216,6 +216,9 @@ namespace WebViewServer.Controllers
 				{"schoolyear", schoolyear}
 
 			}));
+
+			_logger.LogDebug(result);
+			return result;
 
 		}
 
