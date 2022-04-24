@@ -1,0 +1,50 @@
+@using WebViewServer.Models.User
+@using WebViewServer.Services
+@inject User _user
+@inject Dictionary<string,string> _dict
+@inject UserService _userService
+@{
+	UserInfo userInfo = await _userService.GetUserInfo(_user);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"] - @_dict["Circle"]</title>
+	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+	@* <link rel="stylesheet" href="/lib/ckeditor/contents.css"> *@
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="/bundle.css" />
+	
+	
+</head>
+
+<body class="minibody">
+	@await Html.PartialAsync("Header", userInfo)
+
+	<div class="main-container">
+		<main class="col-md-8">
+			@RenderBody()
+		</main>
+	</div>
+
+	@await Html.PartialAsync("Sidebar", userInfo)
+</body>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/lib/ckeditor5-build-classic/ckeditor.js"></script>
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<script type="module">
+	import Main from '/js/Main.js'
+	Main.Init();
+</script>
+
+</html>
+			

@@ -4,14 +4,25 @@ import Post from '../Shared/Post.js'
 
 let userContainer,searchResult,searchString,splitedSearchStrings;
 let HasBeenExecuted = false;
-function SearchResult()
+function Init(services)
 {
-	if(HasBeenExecuted) return;
+	// if(HasBeenExecuted) return;
 
 	///由于这一部分作用为替换关键字为高亮,将部分dom元素进行了替换,所以在此之前绑定过的监听元素会失效
 	///如需绑定监听元素,请在此段之后
+	MatchKeyWords();
+	///
+
+	SearchUserInfo.Init(services);
+	Post.Init(services);
+	
+	HasBeenExecuted = true;
+}
+
+function MatchKeyWords(){
 	searchResult = document.querySelector("#search-result").innerHTML;
-	searchString = document.querySelector("input#search").value;
+	searchString = decodeURI(window.location.href.split('searchString=')[1]);
+	document.querySelector("input#search").value = searchString;
 	splitedSearchStrings = searchString.split(" ");
 	
 	let divMatchStrings = searchResult.match(/<div.*>.*<\/div>/g);
@@ -21,12 +32,6 @@ function SearchResult()
 	if(spanMatchStrings != undefined) spanMatchStrings.forEach(matchString => 
 		splitedSearchStrings.forEach(splitedSearchString => HignlightReplace(matchString,splitedSearchString)));
 	document.querySelector("#search-result").innerHTML = searchResult;
-	///
-
-	SearchUserInfo.SearchUserInfo();
-	Post.Post();
-	
-	HasBeenExecuted = true;
 }
 
 function HignlightReplace(matchString,searchString)
@@ -38,11 +43,11 @@ function HignlightReplace(matchString,searchString)
 }
 
 export {
-	SearchResult
+	Init
 }
 
 export default{
-	SearchResult
+	Init
 }
 
 

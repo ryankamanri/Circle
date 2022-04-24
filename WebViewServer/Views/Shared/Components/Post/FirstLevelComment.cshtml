@@ -1,0 +1,33 @@
+﻿@* @model long *@
+<div class="fl-comment col-md-12" style="display: none">
+    <hr />
+    <div class="comment-info">
+        <div class="head-image">
+            <img src="/StaticFiles/Images/HeadImage/syt5.com.1638601084.jpg">
+        </div>
+        <div class="top-bar">
+            <div class="nickname">兄贵</div>
+            <div class="comment-datetime">18:00</div>
+        </div>
+
+    </div>
+    <div class="comment-content">写得'太好了</div>
+    <div class="more-frame">
+        <div class="more">
+            <div title="点赞" class="like" isLike="" postid="@@Model">
+                <div class="icon">👍</div>
+                <div class="sm-font count">99+</div>
+            </div>
+
+            <div title="回复" class="comment" postid="@@Model">
+                <div class="icon">💬</div>
+                <div class="sm-font count">99+</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="second-comment-mount">
+        @* @await Html.PartialAsync("SecondLevelComment", Model) *@
+    </div>
+    
+</div>

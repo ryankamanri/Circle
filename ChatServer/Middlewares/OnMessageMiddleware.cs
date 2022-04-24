@@ -8,11 +8,11 @@ namespace ChatServer.Middlewares
 	{
 		public RequestDelegate _next;
 		//启动OnMessageServive服务
-		public OnMessageService OnMessageService { get; set; }
-		public OnMessageMiddleware(RequestDelegate next, OnMessageService onMsService)
+		public OnMessageController OnMessageController { get; set; }
+		public OnMessageMiddleware(RequestDelegate next, OnMessageController onMsController)
 		{
 			_next = next;
-			OnMessageService = onMsService;
+			OnMessageController = onMsController;
 		}
 
 		public async Task Invoke(HttpContext httpContext)

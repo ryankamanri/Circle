@@ -1,5 +1,4 @@
 @{
-	Layout = "../Shared/_Layout.cshtml";
 	ViewData["Title"] = "私聊";
 }
 
@@ -30,20 +29,6 @@
 			<div id="userinfolist-mount">
 
 			</div>
-			<div id="userinfo-template" class="template">
-				<div class="userinfo">
-					<div class="chat-head-image">
-						<img src="/favicon.ico">
-					</div>
-					<div class="userinfo-right-box">
-						<div class="nickname-time">
-							<div class="nickname">NickName</div>
-							<div class="time"></div>
-						</div>
-						<div class="last-message"></div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 	<div class="right-box">
@@ -59,36 +44,7 @@
 				<div id="message-content-mount">
 
 				</div>
-				<div id="time-message-item-template" class="template">
-					<div class="time-message-item">10:00</div>
-				</div>
 
-				<div id="other-message-item-template" class="template">
-					<div class="other-message-item">
-						<div>
-							<div class="chat-head-image">
-								<img src="/favicon.ico">
-							</div>
-							<div class="message-background">
-								<div class="message btn btn-info">消息</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div id="self-message-item-template" class="template">
-					<div class="self-message-item">
-						<div>
-							<div class="chat-head-image">
-								<img src="/favicon.ico">
-							</div>
-							<div class="message-background">
-								<div class="message btn btn-info">消息</div>
-							</div>
-						</div>
-
-					</div>
-				</div>
 			</div>
 		</div>
 		<textarea maxlength="1000" class="input1"></textarea>
@@ -99,7 +55,3 @@
 	</div>
 
 </div>
-<script type="module">
-	import PrivateChat from '/js/Home/PrivateChat.js';
-	PrivateChat.PrivateChat();
-</script>

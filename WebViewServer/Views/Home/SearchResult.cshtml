@@ -2,7 +2,6 @@
 @using WebViewServer.Services
 @inject SearchService _search
 @{
-	Layout = "../Shared/_Layout.cshtml";
 	ViewData["Title"] = "搜索结果";
 	ViewData["searchString"] = Model;
 	//IList<Tag> tagList = new Tag().GetList(_sql.Query($"select * from tags where tag like '%{Model}%'"));
@@ -30,9 +29,9 @@
 
 
 </div>
-<link rel="stylesheet" href="/css/Home/SearchResult.css">
+@* <link rel="stylesheet" href="/css/Home/SearchResult.css">
 <script type="module">
 	import SearchResult from '/js/Home/SearchResult.js'
 	SearchResult.SearchResult();
-</script>
+</script> *@
 

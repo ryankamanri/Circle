@@ -33,10 +33,6 @@ namespace ApiServer
 
 			services.AddControllers();
 
-			// services.AddSingleton<ILoggerFactory,LoggerFactory>();
-
-			// loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
-
 			services.AddCors(options =>
 			{
 				options.AddPolicy("dotnet", builder =>
@@ -58,6 +54,9 @@ namespace ApiServer
 
 			//增加数据库上下文服务
 			services.AddSingleton<DatabaseContext>();
+			
+			//增加Redis服务
+			services.AddSingleton<RedisService>();
 
 			//增加标签索引,匹配服务
 			services.AddSingleton<TagService>();

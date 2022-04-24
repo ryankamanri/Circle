@@ -49,18 +49,20 @@
 		</div>
 		<!---->
 		<div class="feed-tags">
+
 			@foreach (var tag in tags)
 			{
-			<div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
+				<div class="tagNode">@await Html.PartialAsync("Tag",tag)</div>
 			}
+
 		</div>
 
 		<div class="more" >
-			<div title="点赞" class="like" isLike="@isLikeOrCollect["IsLike"]" postid="@Model.ID">
+			<div title="点赞" class="like" isLike='@isLikeOrCollect["IsLike"]' postid="@Model.ID">
 				<div class="icon">👍</div> 
 				<div class="sm-font count">@likeCollectCommentCount["LikeCount"]</div>
 			</div>
-			<div title="收藏" class="collect" isCollect="@isLikeOrCollect["IsCollect"]" postid="@Model.ID">
+			<div title="收藏" class="collect" isCollect='@isLikeOrCollect["IsCollect"]' postid="@Model.ID">
 				<div class="icon">📂</div>
 				<div class="sm-font count">@likeCollectCommentCount["CollectCount"]</div>
 			</div>
@@ -73,7 +75,7 @@
 	</div>
 	
 	<div class="comment-mount">
-		@await Html.PartialAsync("FirstLevelComment", Model.ID)
+
 	</div>
 	
 </div>

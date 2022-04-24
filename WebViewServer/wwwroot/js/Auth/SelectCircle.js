@@ -1,5 +1,4 @@
-import { ShowLoad } from '../Show.js';
-import { Sleep } from '../My.js';
+import { Sleep, ShowLoad } from '../My.js';
 
 async function SelectCircle()
 {
@@ -19,7 +18,7 @@ async function SelectCircle()
 			}
 		}).done(data => {
 			console.log(data);
-			window.location.href = "/Home";
+			window.location.href = "/Home#Home/Posts";
 		});
 	});
 
@@ -32,7 +31,7 @@ async function SelectCircle()
 			}
 		}).done(data => {
 			console.log(data);
-			window.location.href = "/Home";
+			window.location.href = "/Home#Home/Posts";
 		});
 	});
 	

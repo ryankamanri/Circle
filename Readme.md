@@ -13,6 +13,13 @@
 ### 三、项目运行
 
 #### 如何运行项目
-1. 将`dotnet_ubuntu.sql`文件导入`MySQL`数据库
+1. 通过`git`拉取子模块`Kamanri` 
+``` bash
+git submodule update --init --recursive
+```
+如果本地没有安装`git`, 则
+> - 在项目根目录新建文件夹`Kamanri`
+> - 下载项目`https://gitee.com/ryankamanri/Kamanri.git`, 并解压至新建的文件夹中
+1. 将`Circle.sql`文件导入`MySQL`数据库
 2. 单击`start_all.bat`文件(仅在windows操作系统下)
 3. [安卓项目地址](https://gitee.com/ryankamanri/android-final-works)

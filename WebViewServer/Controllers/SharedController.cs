@@ -39,7 +39,80 @@ namespace WebViewServer.Controllers
 
 		}
 
+        #region Components
+
+		#region Post
+		
 		[HttpGet]
+        [Route("Components/Post/FirstLevelComment")]
+        public IActionResult Components_Post_FirstLevelComment()
+        {
+			return View("Components/Post/FirstLevelComment");
+        }
+
+		[HttpGet]
+        [Route("Components/Post/SecondLevelComment")]
+        public IActionResult Components_Post_SecondLevelComment()
+        {
+			return View("Components/Post/SecondLevelComment");
+        }
+
+		[HttpGet]
+        [Route("Components/Post/Post")]
+        public IActionResult Components_Post()
+        {
+			return View("Components/Post/Post");
+        }
+
+		#endregion
+        
+		#region PrivateChat
+		[HttpGet]
+		[Route("Components/PrivateChat/OtherMessageItem")]
+		public IActionResult Components_PrivateChat_OtherMessageItem()
+		{
+			return View("Components/PrivateChat/OtherMessageItem");
+		}
+
+		[HttpGet]
+		[Route("Components/PrivateChat/SelfMessageItem")]
+		public IActionResult Components_PrivateChat_SelfMessageItem()
+		{
+			return View("Components/PrivateChat/SelfMessageItem");
+		}
+
+		[HttpGet]
+		[Route("Components/PrivateChat/TimeMessageItem")]
+		public IActionResult Components_PrivateChat_TimeMessageItem()
+		{
+			return View("Components/PrivateChat/TimeMessageItem");
+		}
+
+		[HttpGet]
+		[Route("Components/PrivateChat/UserInfo")]
+		public IActionResult Components_PrivateChat_UserInfo()
+		{
+			return View("Components/PrivateChat/UserInfo");
+		}
+		#endregion
+
+		[HttpGet]
+        [Route("Components/SearchUserInfo")]
+        public IActionResult Components_SearchUserInfo()
+        {
+			return View("Components/SearchUserInfo");
+        }
+
+		[HttpGet]
+        [Route("Components/Tag")]
+        public IActionResult Components_Tag()
+        {
+			return View("Components/Tag");
+        }
+
+        #endregion
+
+        [HttpGet]
 		[Route("SharedTagTree")]
 		public IActionResult SharedTagTree()
 		{

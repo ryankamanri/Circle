@@ -1,11 +1,11 @@
 import { Site, ParseFunc} from '../My.js'
-import { PostChangeRelation } from './_Layout.js'
-import { ShowAlert } from '../Show.js'
+import { PostChangeRelation } from './MyInterestedTags.js'
+import { ShowAlert } from '../../lib/Kamanri/Show.js'
 
 let attentions;
 let privateChats;
 
-function SearchUserInfo()
+function Init(services)
 {
 
 
@@ -67,10 +67,10 @@ async function RemoveFocus(event,ChangeStyleAction)
 }
 
 export{
-	SearchUserInfo,AppendFocus,RemoveFocus 
+	Init,AppendFocus,RemoveFocus 
 }
 
 export default
 {
-	SearchUserInfo,AppendFocus,RemoveFocus	
+	Init,AppendFocus,RemoveFocus	
 }
