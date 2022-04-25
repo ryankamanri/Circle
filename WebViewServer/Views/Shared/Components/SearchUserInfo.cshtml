@@ -1,38 +1,38 @@
-@* @using WebViewServer.Models.User
-@using WebViewServer.Models
-@using WebViewServer.Services
-@model KeyValuePair<UserInfo,IList<Tag>>
-@inject User _user
-@inject UserService _userService
+@* @using WebViewServer.Models.User *@
+@* @using WebViewServer.Models *@
+@* @using WebViewServer.Services *@
+@* @model KeyValuePair<UserInfo,IList<Tag>> *@
+@* @inject User _user *@
+@* @inject UserService _userService *@
 @{
-	IList<Tag> userTags = await _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"});
-	IEnumerable<Tag> showTags = Model.Value.Union(userTags,new Tag());
-	int count = 0;
-	bool isFocus = await _userService.IsUserRelationExist(_user,new User(Model.Key.ID),"Type","Focus");
-	double similarity = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"});
-	double interesty = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
-} *@
+	// IList<Tag> userTags = await _userService.SelectTag(new User(Model.Key.ID),relation => relation.Type = new List<string>{"Self"});
+	// IEnumerable<Tag> showTags = Model.Value.Union(userTags,new Tag());
+	// int count = 0;
+	// bool isFocus = await _userService.IsUserRelationExist(_user,new User(Model.Key.ID),"Type","Focus");
+	// double similarity = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Self"});
+	// double interesty = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
+}
 <div class="user mt-4 mb-4 ml-4 mr-4">
 	<link rel="stylesheet" href="/css/Shared/SearchUserInfo.css">
 		<div class="headimage col-md-12">
 			<img src="@@Model.Key.HeadImage" alt="">
 		</div>
-		<div class="col-md-12 text-center">@@Model.Key.NickName</div>
-		<div class="sm-font col-md-12 text-center">@@Model.Key.SchoolYear.Year 级 @@Model.Key.Speciality</div>
-		<div class="tags col-md-12 text-center" style="height: 70px;">
+		<div class="nickname col-md-12 text-center">@@Model.Key.NickName</div>
+		<div class="year-speciality sm-font col-md-12 text-center">@@Model.Key.SchoolYear.Year 级 @@Model.Key.Speciality</div>
+		<div class="tags col-md-12 text-center" style="height: 70px; overflow: hidden">
 			
 
-			@* @foreach (var showTag in showTags)
-			{
-				if(count >= 4){ break;}
-				<div class="tagNode">@await Html.PartialAsync("Tag",showTag)</div>
-				count++;
-			} *@
+			@* @foreach (var showTag in showTags) *@
+			@* { *@
+			@* 	if(count >= 4){ break;} *@
+			@* 	<div class="tagNode">@await Html.PartialAsync("Tag",showTag)</div> *@
+			@* 	count++; *@
+			@* } *@
 		</div>
-		<div class="col-md-12 sm-font text-center">
+		<div class="similarity col-md-12 sm-font text-center">
 			与我的相似度 : @@((int)(similarity * 100)) %
 		</div>
-		<div class="col-md-12 sm-font text-center">
+		<div class="interesty col-md-12 sm-font text-center">
 			我的感兴趣度 : @@((int)(interesty * 100)) %
 		</div>
 		<div class="buttons col-md-12 text-center">

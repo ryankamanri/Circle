@@ -1,6 +1,5 @@
 import { Router, Api, AddScript, Sleep, MyWebSocket } from "./My.js";
-import Tag from "./Shared/Tag.js";
-import Post from "./Shared/Post.js";
+import Tag from "./Shared/Components/Tag.js";
 import Home from "./Home/Home.js";
 import SendPost from "./Home/SendPost.js";
 import PrivateChat from "./Home/PrivateChat.js";
@@ -29,6 +28,7 @@ async function Init(services) {
         await InitView(services);
         await InitBase(services);
         SendPost.Init(services);
+        TagTree.Init(services);
 
     }).AddRoute("Home/Zone", async() => {
         SetSubtitle("动态");
@@ -70,9 +70,8 @@ async function InitView(services) {
 
 async function InitBase(services){
 
-    Tag.Init(services);
-	// Post.Init(services);
-    PrivateChat.InitBase(services);
+    await Tag.Init(services);
+    await PrivateChat.InitBase(services);
 
     services.MyWebSocket.AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerConnect, async (wsMessages) => {
 		console.log(wsMessages);

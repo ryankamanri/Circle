@@ -17,7 +17,7 @@ namespace ApiServer.Controllers
 		}
 		[HttpGet]
 		[Route("1")]
-		public async Task<string> Test1()
+		public string Test1()
 		{
 		
 			return new Comment()

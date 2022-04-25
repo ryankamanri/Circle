@@ -185,6 +185,14 @@ namespace WebViewServer.Controllers
 			return View("SearchResult", searchString);
 		}
 
+		[HttpGet]
+		[Route("SearchResultModel")]
+		public async Task<string> SearchResultModel(string searchString)
+		{
+			if (searchString == null) return "NO Search String".ToJson();
+			return (await _vmService.GetSearchResultViewModel(searchString)).ToJson();
+		}
+
 		#endregion
 
 	}

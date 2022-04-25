@@ -20,7 +20,7 @@
 <div id="post-tags" class="tagbox"></div>
 
 <span>标签树 : </span>
-<iframe class="tag-tree" src="/Shared/SharedTagTree" frameborder="0" style="width: 100%;"></iframe>
-
+@* <iframe class="tag-tree" src="/Shared/SharedTagTree" frameborder="0" style="width: 100%;"></iframe> *@
+@await Html.PartialAsync("TagTree")
 <input id="submit" type="button" class="btn btn-info" value="发布">
 

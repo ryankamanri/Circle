@@ -1,11 +1,11 @@
 
-import Tag from '../Shared/Tag.js'
+import Tag from '../Shared/Components/Tag.js'
 
 let tagRoot;
 
-function Init(services)
+async function Init(services)
 {
-	Tag.Init(services);
+	await Tag.Init(services);
 
 	FlushTagTree();
 
@@ -55,8 +55,8 @@ function FindChildTags(parentTag, tagTreeNode) {
 		AppendChildTree(parentTag, JSON.parse(resData));
 		//FlushTagTree(parentTag);
 		parentTag.ondblclick = undefined;
-		Tag.FlushDrugEvent();
-		Tag.FlushDropEvent();
+		Tag.FlushDrugEvent(document.querySelector(".tagRoot"));
+		Tag.FlushDropEvent(document.querySelector(".tagRoot"));
 	});
 }
 

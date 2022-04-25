@@ -1,15 +1,22 @@
-import { Api } from '../My.js';
+import Tag from "./Components/Tag.js";
 import { ShowAlert } from '../../lib/Kamanri/Show.js';
 
 let mySelfTags;
 let myInterestedTags;
 let api;
 
-function Init(services) {
+async function Init(services) {
 	api = services.Api;
+	await Tag.Init(services);
+	
+	const myTags = document.querySelector(".my-tags");
+	Tag.FlushDrugEvent(myTags);
+	Tag.FlushDropEvent(myTags);
+	
 
     mySelfTags = document.querySelector("#mySelfTags");
 	myInterestedTags = document.querySelector("#myInterestedTags");
+	
 
 	mySelfTags.addEventListener("dragstart", async event => {
 		let resData = await ChangeTagRelation(event, "/Shared/RemoveRelation", "Type", "Self");

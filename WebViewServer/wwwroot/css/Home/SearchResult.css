@@ -27,3 +27,7 @@
 	background: #EDEDED;
 
 }
+
+.user-container .user .nickname{
+	margin-left: 0;
+}

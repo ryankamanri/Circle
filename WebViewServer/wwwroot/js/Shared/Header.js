@@ -1,5 +1,5 @@
 import { Sleep } from '../My.js'
-import Tag from '../Shared/Tag.js'
+import Tag from '../Shared/Components/Tag.js'
 
 function Init(services)
 {
@@ -47,7 +47,7 @@ function Init(services)
 			resultList = JSON.parse(data);
 			ClearResults();
 			AppendResults(resultList);
-			Tag.FlushDrugEvent();
+			Tag.FlushDrugEvent(document.querySelector("header"));
 		}).fail(() =>
 			console.log("send failure")
 		);

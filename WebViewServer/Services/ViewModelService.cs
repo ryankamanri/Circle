@@ -15,10 +15,12 @@ namespace WebViewServer.Services
     {
         private readonly PostService _postService;
         private readonly UserService _userService;
+        private readonly SearchService _searchService;
 
         private readonly User _user;
-        public ViewModelService(PostService postService, UserService userService, User user)
+        public ViewModelService(SearchService searchService, PostService postService, UserService userService, User user)
         {
+	        _searchService = searchService;
             _postService = postService;
             _userService = userService;
             _user = user;
@@ -94,6 +96,51 @@ namespace WebViewServer.Services
                 }
                 yield return GetPostViewModel(myFocusPost);
             }
+        }
+
+        public async Task<Form> GetSearchResultViewModel(string searchString)
+        {
+	        var userInfo_tagLists = await _searchService.SearchUserInfoAndTags(searchString);
+	        var posts = await _searchService.SearchPosts(searchString);
+	        var userinfoModelList = new List<Form>();
+	        foreach (var userInfo_tagList in userInfo_tagLists)
+	        {
+		        userinfoModelList.Add(await GetSearchUserInfoViewModel(userInfo_tagList));
+	        }
+
+	        var postModels = new List<Form>();
+	        foreach (var post in posts)
+	        {
+		        postModels.Add(await GetPostViewModel(post));
+	        }
+	        return new Form()
+	        {
+		        {"UserInfos", userinfoModelList},
+		        {"Posts", postModels}
+	        };
+        }
+
+        public async Task<Form> GetSearchUserInfoViewModel(KeyValuePair<UserInfo,IList<Tag>> userInfo_tagList)
+        {
+	        IList<Tag> userTags = await _userService.SelectTag(new User(userInfo_tagList.Key.ID),relation => relation.Type = new List<string>{"Self"});
+	        IEnumerable<Tag> showTags = userInfo_tagList.Value.Union(userTags,new Tag()).Take(Math.Min(4, userTags.Count));
+	        int count = 0;
+	        bool isFocus = await _userService.IsUserRelationExist(_user,new User(userInfo_tagList.Key.ID),"Type","Focus");
+	        double similarity = await _userService.CarculateSimilarityFix(_user,new User(userInfo_tagList.Key.ID),selection => selection.Type = new List<string>(){"Self"});
+	        double interesty = await _userService.CarculateSimilarityFix(_user,new User(userInfo_tagList.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
+
+	        return new Form()
+	        {
+		        { "HeadImage", userInfo_tagList.Key.HeadImage },
+		        { "NickName", userInfo_tagList.Key.NickName },
+		        { "SchoolYear", userInfo_tagList.Key.SchoolYear },
+		        { "Speciality", userInfo_tagList.Key.Speciality },
+		        { "Tags", showTags },
+		        { "Similarity", similarity },
+		        { "Interesty", interesty },
+		        { "ID", userInfo_tagList.Key.ID },
+		        { "IsFocus", isFocus }
+	        };
         }
 
         public async Task<Form> GetPostViewModel(Post post)

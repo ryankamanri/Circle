@@ -1,4 +1,6 @@
+import { AddScript } from "./Utils.js";
 
+await AddScript(document.body, "/lib/jquery/dist/jquery.min.js");
 
 function Api() {
 
