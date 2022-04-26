@@ -1,11 +1,12 @@
 .user{
 	display: inline-block;
 	min-width: 250px;
-	min-height: 250px;
+	min-height: 310px;
 	max-width: 250px;
-	max-height: 250px;
-	box-shadow: 1px 1px 8px 0px;
+	max-height: 310px;
+	/* box-shadow: 1px 1px 8px 0px; */
 	border-radius: 30px;
+	border: 0;
 	background-color: white;
 }
 .headimage{

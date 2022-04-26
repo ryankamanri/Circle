@@ -1,0 +1,115 @@
+.jx {
+    width: 375px;
+    margin: 100px auto;
+    display: block;
+}
+.jx .ysu{float:left;    margin-top: 0;}
+.jx .ti {
+    float: left;
+    width: 100%;
+    font-size: 18px;
+    text-align: center;
+    color: #2a2a2a;
+    line-height: 36px;    margin-bottom: 6px;
+}
+.jx .y_info{line-height:24px;font-size: 14px;color: #999fb1;text-align: center;}
+.jx .mfbtn{background: #00c8d5;width: 240px;height: 46px;    margin-left: 170px;display: inline-block;line-height: 46px;color: #fff;font-size: 16px;    margin-top: 36px;text-align: center;
+    box-shadow: 0 2px 5px #dedede;
+    float: right;margin-right: 70px;}
+.L_transform{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* width: 375px;
+    height: 310px; */
+    /* margin-left: 315px;
+    margin-right: 200px; */
+    margin-top: 15px;
+}
+.L_transform .trans_bg{
+    display: flex;
+    position: relative;
+    float: left;
+    width: 400px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+    /* margin-left: 40px; */
+   
+    /* margin-top: 105px; */
+}
+
+.L_transform .bg_shade {
+    background: url(/StaticFiles/images/quan_bg.png) no-repeat;
+    width: 419px;
+    height: 390px;
+    position: relative;
+    /* left: -56px; */
+    top: -39px;
+}
+.L_transform .trans_bg .circles{
+    position: absolute;
+    }
+
+.trans_bg .topcircle{left:119px;top:-15px;}
+.trans_bg .topcircle .pos{position: absolute;left: 65px;top: 10px;}
+.trans_bg .active .pos span{color:#00c8d4;}
+.trans_bg .leftcircle .pos{position:absolute;left:-28px;top:62px;}
+.trans_bg .rightcircle .pos{position:absolute;left: -34px;top: 68px;}
+.trans_bg .topcircle .pos span{width: 73px;display: inline-block;}
+.trans_bg .leftcircle{left:8px;top:194px;}
+.trans_bg .rightcircle{left: 256px;top: 153px;}
+
+.trans_bg .pos{position:relative;width: 133px;}
+.trans_bg .trio{color: #ffffff;font-size: 16px;text-align: center;margin: 0 auto;width: 60px;height: 60px;background: #00c8d4;position: absolute;border-radius: 50%;}
+.trans_bg .trio p{width: 38px;margin-left: 11px;margin-top: 8px;}
+.trans_bg .pos span{color: #999fb1;font-size: 14px;}
+.trans_bg .circles.active .trio i{width:18px;height:18px;background: url(/StaticFiles/images/quan_active.png) no-repeat;display: inline-block;position: absolute;top: 43px;left: 35px;}
+.trans_bg .heart_box{display: inline-block;}
+.trans_bg .heart_box .heart{position:absolute;width:88px;height:88px;background: url(/StaticFiles/images/quan_circle.png) no-repeat;left: 165px;top: 62px;}
+.trans_bg .heart_box .shan{width: 211px;height: 129px;background: url(/StaticFiles/images/quan_rotate.png) no-repeat;top: -20px;left: 99px;position: absolute;
+    -webkit-transform-origin: 107px 124px;
+    transform-origin: 108px 124px;
+    transform: rotate(0deg);
+    animation: radar 5s linear infinite;
+}
+@keyframes radar{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(180deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+.match-container{
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 25px;
+    text-align: center;
+    flex-direction: column;
+
+}
+
+.match-user{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* .btn-result{
+    background-color: #96cdcd;
+    border-radius:10px;
+    border-color:#96cdcd;
+    color: #fff;
+    margin-top: 15px;
+    margin-left: 10px;
+} */

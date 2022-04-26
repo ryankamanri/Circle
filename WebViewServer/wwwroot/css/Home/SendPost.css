@@ -1,0 +1,24 @@
+.sendpost{
+    margin-top: 17px;
+}
+
+.sendpost .editor{
+    margin-left: 85px;
+    margin-right: 85px;
+    box-shadow: 0 3px 20px rgb(12 62 56 / 46%) !important;
+    width: 80%;}
+
+.sendpost .ck{
+    border-radius: 15px;
+}
+
+.sendpost-tag{
+    width: 80%;
+    margin-left: 85px;
+    margin-right: 85px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+

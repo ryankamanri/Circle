@@ -23,19 +23,23 @@
 	
 </head>
 
-<body class="minibody">
+<body class="minibody mont-font">
 	@await Html.PartialAsync("Header", userInfo)
+	@* @await Html.PartialAsync("Userpage", userInfo) *@
+	@await Html.PartialAsync("Option")
 
 	<div class="main-container">
-		<main class="col-md-8">
+		<main class=" main-content">
 			@RenderBody()
 		</main>
+		
 	</div>
 
 	@await Html.PartialAsync("Sidebar", userInfo)
 </body>
 
-
+<script src='/lib/matchButton/three.min.js'></script>
+<script src='/lib/matchButton/gsap.min.js'></script>
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/lib/ckeditor5-build-classic/ckeditor.js"></script>
