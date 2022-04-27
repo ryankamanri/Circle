@@ -167,6 +167,42 @@ namespace WebViewServer.Controllers
 			return View("TagTree");
 		}
 
+		[HttpGet]
+		[Route("Match")]
+		public IActionResult Match()
+		{
+			return View("Match");
+		}
+
+		[HttpGet]
+		[Route("Userpage")]
+		public async Task<IActionResult> UserPage()
+		{
+			var userInfo = await _userService.GetUserInfo(_user);
+			return View("UserPage",userInfo);
+		}
+
+		[HttpGet]
+		[Route("Setting")]
+		public IActionResult Setting()
+		{
+			return View("Setting");
+		}
+
+		[HttpGet]
+		[Route("AccountInfo")]
+		public IActionResult AccountInfo()
+		{
+			return View("AccountInfo");
+		}
+		
+		[HttpGet]
+		[Route("Password")]
+		public IActionResult Password()
+		{
+			return View("Password");
+		}
+
 		[HttpPost]
 		[Route("FindChildTags")]
 		public async Task<IActionResult> FindChildTags()

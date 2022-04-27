@@ -1,26 +1,36 @@
 @{
-	Layout = "Layout.cshtml";
+	@* Layout = "../_Layout.cshtml"; *@
 	ViewData["SecondTitle"] = "发帖";
 }
 @* <link rel="stylesheet" href="/lib/ckeditor/contents.css"> *@
+<div class="sendpost">
+	<div class="editor">
+		<div class="input-group mb-1">
+			<label class="form-control col-md-2" for="title">文章标题</label>
+			<input id="title" class="form-control" type="text" placeholder="请输入文章标题...">
+		</div>
 
-<div class="input-group mb-1">
-	<label class="form-control col-md-2" for="title">文章标题</label>
-	<input id="title" class="form-control" type="text" placeholder="请输入文章标题...">
+		<div class="input-group mb-1">
+			<label class="form-control col-md-2" for="focus">关键词</label>
+			<input id="focus" class="form-control" type="text" placeholder="请输入你的文章关键词...">
+		</div>
+
+		<textarea name="edit" class="ckeditor" id="" ></textarea>
+	</div>
+	
+	<div class="sendpost-tag">
+		<strong style="color:#888">添加文章标签 : </strong>
+		<div id="post-tags" class="tagbox"></div>
+	</div>
+	
+
+	
+	@* <iframe class="tag-tree" src="/Shared/SharedTagTree" frameborder="0" style="width: 100%;"></iframe> *@
+	<div class="sendpost-tagtree">
+		@await Html.PartialAsync("TagTree")
+	</div>
+	
+	<input id="submit" type="button" style="background-color:#25bb9b; margin-left:85px;" class="btn btn-info text-center text-white font-xsss fw-600 p-3 w175 rounded-4 d-inline-block" value="发布">
+
 </div>
-
-<div class="input-group mb-1">
-	<label class="form-control col-md-2" for="focus">关键词</label>
-	<input id="focus" class="form-control" type="text" placeholder="请输入你的文章关键词...">
-</div>
-
-<textarea name="edit" class="ckeditor" id="" ></textarea>
-
-<span>文章标签 : </span>
-<div id="post-tags" class="tagbox"></div>
-
-<span>标签树 : </span>
-@* <iframe class="tag-tree" src="/Shared/SharedTagTree" frameborder="0" style="width: 100%;"></iframe> *@
-@await Html.PartialAsync("TagTree")
-<input id="submit" type="button" class="btn btn-info" value="发布">
 

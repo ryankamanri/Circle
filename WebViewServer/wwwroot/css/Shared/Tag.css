@@ -37,4 +37,6 @@
 .tagbox{
 	min-height: 30px;
 	min-width: 50px;
+	border-radius: 15px;
+	background-color: #f7f7f79c;
 }

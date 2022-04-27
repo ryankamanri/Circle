@@ -13,7 +13,6 @@
 	// double interesty = await _userService.CarculateSimilarityFix(_user,new User(Model.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
 }
 <div class="user mt-4 mb-4 ml-4 mr-4">
-	<link rel="stylesheet" href="/css/Shared/SearchUserInfo.css">
 		<div class="headimage col-md-12">
 			<img src="@@Model.Key.HeadImage" alt="">
 		</div>
@@ -36,8 +35,8 @@
 			我的感兴趣度 : @@((int)(interesty * 100)) %
 		</div>
 		<div class="buttons col-md-12 text-center">
-			<input ID="@@Model.Key.ID" isFocus="@@isFocus.ToString()" class="btn btn-sm sm-font btn-outline-info attention" type="button" value="关注">
-			<input ID="@@Model.Key.ID" class="btn btn-sm sm-font btn-info private-chat" type="button" value="私聊">
+			<input ID="@@Model.Key.ID"  isFocus="@@isFocus.ToString()" class="btn btn-info sm-font btn-outline-info attention" type="button" value="关注">
+			<input ID="@@Model.Key.ID"  class="btn btn-info sm-font private-chat" type="button" value="私聊">
 		</div>
 		
 </div>

@@ -1,5 +1,6 @@
 ﻿import Tag from "./Tag.js";
-import {ModelView} from "../../My.js";
+import {ModelView, ShowAlert} from "../../My.js";
+import {PostChangeRelation} from "../MyInterestedTags.js";
 let template = document.createElement('template');
 
 async function Init(services) {

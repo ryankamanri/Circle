@@ -5,7 +5,8 @@ async function Init(services)
 {
 	await InitPostView(services);
 	
-	let circleName = document.querySelector("a.navbar-brand").innerText;
+	// let circleName = document.querySelector("a.navbar-brand").innerText;
+	const circleName = "Circle";
 	if(window.location.pathname == "/Home" && window.location.hash == "#Home/Posts")
 		ShowAlert("alert alert-info",`欢迎来到 ${circleName} ,`,"点击左上角可切换圈子");
 }

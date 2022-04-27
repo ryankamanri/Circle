@@ -1,33 +1,39 @@
 
 
-<div class="feed-item-box clearfix col-md-12">
-	<a href="" target="_blank" class="feed-head-pic" style="border-radius: 0px;">
-		<img src="@@authorInfo.HeadImage">
-	</a>
+<div class="feed-item-box clearfix card">
+	
 
 	<div class="feed-item-bd">
+		<a href="" target="_blank" class="feed-head-pic">
+			<img style="border-radius:100px;" src="@@authorInfo.HeadImage">
+		</a>
 		<div class="feed-hd-info">
-			<p> <strong class="ml-2 mr-2">@@authorInfo.NickName</strong> <a ID="@@authorInfo.ID" isfocus="@@isFocus.ToString()" href="javascript:void(0)"
+			<p> 
+				<strong class="ml-2 mr-2">@@authorInfo.NickName</strong> 
+				<a ID="@@authorInfo.ID" isfocus="@@isFocus.ToString()" href="javascript:void(0)"
 					class="tag-label selected"><i class="icon-nc-check"></i>
 					+ 关注
 				</a>
+				<span class="d-block font-xssss text-grey-500" style="padding-left:40px" >3 hour ago</span>
 			</p>
 		</div>
-		<div class="nc-post-content">
-			<a class="a" href="javascript:void(0);">
+		<div class="nc-post-content">		
 				<div class="feed-title">
-					<span>@@Model.Title</span>
+					<span class="text-black" >@@Model.Title</span>
 				</div>
-				<div class="feed-cont">
+				<a class="a" href="javascript:void(0);">
+					<div class="feed-cont">
 					<div>
 						<span class="focus" style="color: rgb(37, 187, 155);">#@@Model.Focus#</span>
-						<span class="summary">@@Model.Summary ...</span>
+						<span color=#696969 class="summary">@@Model.Summary ...</span>
 
 						<!---->
 					</div>
 				</div>
-			</a>
-			<div class="post-content">
+				</a>
+				
+
+			<div class="post-content ">
 				<div class="ckeditor"></div>
 				<input type="button" postid="@@Model.ID" value="查看全文" jump="" class="btn btn-link font-green"
 				       style="cursor:pointer;width:90px;">

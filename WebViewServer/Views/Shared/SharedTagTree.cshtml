@@ -11,7 +11,8 @@
 	ICollection<Tag> fatherTags = (await _tagService.FindChildTag(new Tag(-1)));
 	string msg = $"ID = {_user.ID}";
 }
-<div class="col-md-12 text-center" style="background-color:darkseagreen;">
+
+<div class="col-md-12 text-center" style="background-color:#f7f7f79c;border-radius: 15px; width:80%; margin-left: 85px;margin-top: 25px;">
 	<div id="tagRoot">
 		@foreach (var tag in fatherTags)
 		{
@@ -20,7 +21,7 @@
 			</div>
 		}
 	</div>
-
+	
 </div>
 
 

@@ -1219,7 +1219,7 @@ pre code {
   .col-lg-8 {
 	-ms-flex: 0 0 66.666667%;
 	flex: 0 0 66.666667%;
-	max-width: 66.666667%;
+	/* max-width: 66.666667%; */
   }
   .col-lg-9 {
 	-ms-flex: 0 0 75%;
@@ -1391,7 +1391,7 @@ pre code {
   .col-xl-8 {
 	-ms-flex: 0 0 66.666667%;
 	flex: 0 0 66.666667%;
-	max-width: 66.666667%;
+	/* max-width: 66.666667%; */
   }
   .col-xl-9 {
 	-ms-flex: 0 0 75%;
@@ -7976,10 +7976,7 @@ button.bg-dark:focus {
   margin-right: 0.5rem !important;
 }
 
-.mb-2,
-.my-2 {
-  margin-bottom: 0.5rem !important;
-}
+
 
 .ml-2,
 .mx-2 {

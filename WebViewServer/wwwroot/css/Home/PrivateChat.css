@@ -16,8 +16,9 @@
 	width: 100%;
 }
 .nickname {
+	color: #888;
+	font-weight: 545;
 	display: inline-block;
-	margin-left: 0.7em;
 }
 .nickname-time {
 	margin-right: 0.7em;
@@ -68,8 +69,9 @@
 }
 
 .box{
-	width: 100%;
+	width: 95%;
 	height: 100%;
+	margin-left: 95px;
 	background-color: rgb(195, 228, 228);
 	border-radius: 15px;
 	box-shadow: 0 15px 25px rgba(0,0,0,.5);
@@ -77,10 +79,10 @@
 	display: flex;
 }
 .box1{
-	width: 300px;
+	width: 200px;
 	border-top-left-radius: 15px;
 	border-bottom-left-radius: 15px;
-	background-color:rgb(14, 54, 54);
+	background-color:rgba(255, 255, 255, 0.677);
 	display: inline-block;
 	min-height: 600px;
 }
@@ -90,14 +92,16 @@
 }
 .box2{
 	width: 100%;
-	height: 100px;
-	background-color:rgb(183, 228, 224);
+	height: 80px;
+	background-color:rgb(220, 226, 226);
+	/* background-color:rgb(183, 228, 224); */
 	/* margin-left: 200px; */
 	border-top-right-radius: 15px;
 	display: inline-block;
 }
 .biaozhi button{
-	background-color: cornflowerblue;
+	font-weight: 550;
+	background-color: rgb(183, 228, 224);
 	color: white;
 	width: 150px;
 	height: 40px;
@@ -111,22 +115,23 @@
 	cursor: pointer;
 }
  .logo{
-	font-size: 20px;
-	color: white;
+	color: #888;
 	border-top-left-radius: 15px;
-	background-color: rgb(33, 65, 66);
-	height: 100px;
+	background-color: rgba(255, 255, 255, 0.816);
+	height: 80px;
 }
 .wenzi{
+	font-weight: 550;
 	position:absolute;
 	margin-top: 35px;
-	margin-left: 70px;
+	margin-left: 60px;
+	font-size: 15px;
 }
 .logo i{
 	position: absolute;
 	margin-top: 40px;
 	margin-left: 30px;
-	background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-box_e97e9a2.png);
+	/* background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-box_e97e9a2.png); */
 	width: 21px;
 	height: 16px;
 	background-repeat: no-repeat;
@@ -176,7 +181,7 @@ ul{
 	
 	
 }
-.a1 i{
+/* .a1 i{
 	background-image: url(http://tb2.bdstatic.com/tb/static-message/widget/left_vm/img/sixin-msg-01_140328b.png);
 	margin-top: 10px;
 	margin-left: 40px;
@@ -194,7 +199,7 @@ ul{
 	margin-left: 40px;
 	background-repeat: no-repeat;
 
-}
+} */
 .a2{
 	display: block;
 	color: white;
@@ -221,8 +226,7 @@ tubiao a:hover,tubiao a:active{
    width: 100%;
    height: 50px;
    display: inline-block;
-   background-color: rgb(14, 54, 54);
-   color: white;
+   background-color: rgb(255, 255, 255);
    border-top-left-radius: 15px;
    border-top-right-radius: 15px;
    

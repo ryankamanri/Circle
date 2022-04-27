@@ -29,6 +29,20 @@ function Init(services)
 			let searchString = $("#search").val();
 			window.location.href = `/Home#SearchResult?searchString=${encodeURIComponent(searchString)}`;
 		})
+		$("input#search").focus(() => {
+			document.onkeypress = (event) => {
+				
+				if (event.code === "Enter") {
+					event.preventDefault();
+					event.stopPropagation();
+					let searchString = $("#search").val();
+					window.location.hash = `#SearchResult?searchString=${encodeURIComponent(searchString)}`;
+				}
+			}
+		});
+		$("input#search").blur(() => {
+			document.onkeypress = null;
+		});
 	});
 
 	function SearchTag() {

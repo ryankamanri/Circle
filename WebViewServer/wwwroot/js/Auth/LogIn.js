@@ -19,7 +19,7 @@ function LogIn()
 			if(data == "登录成功") 
 			{   
 				await ShowAlert("alert alert-success","😀",data);
-				window.location.href = "/SelectCircle";
+				window.location.href = "/Home#Home/Posts";
 			}
 			else{
 				ShowAlert("alert alert-warning","😥",data)

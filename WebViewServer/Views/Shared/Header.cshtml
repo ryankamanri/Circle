@@ -6,7 +6,47 @@
 
 
 <header>
-	<nav class="navbar navbar-expand-md navbar-light box-shadow" style="background-color: white;">
+
+		<div class="nav-header bg-white">
+            <div class="nav-top">
+                <a><span class="d-inline-block fredoka-font ls-3 fw-600 font-xxl logo-text mb-0">Circle. </span></a>
+                <!-- 缩小后顶部图标 -->
+                @* <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"><i class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
+                <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
+                <button class="nav-menu me-0 ms-2"></button> *@
+            </div>
+            <!-- 搜索框 -->
+            <form onkeypress="javascript:void(0);" class="float-left header-search">
+                <div class="form-group mb-0 icon-input self-dropdown">
+                    <i class="feather-search font-sm text-grey-400"></i>
+                    <input onkeypress="javascript:void(0);" id ="search" type="text" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg" 
+                    aria-label="Search" value='@ViewData["searchString"]'>
+					<ul id="searchResult" class="self-dropdown-block" style="position:fixed;width:203.6px">
+            
+                    </ul>
+				</div>
+            </form>
+            
+            <!-- 个人信息 -->
+			<div class="form-inline">
+                <div class="self-dropdown">
+					<a href=# class="p-0 ms-3 menu-icon">
+						<img src="@Model.HeadImage" alt="user" class="drop"
+							 style="border-radius: 100px; height: 40px;width: 40px;float: right;">
+						<ul class="self-dropdown-block" style="position:fixed;float: right;transform:translate(25%, 0); top:48px;right:3rem">
+							<li class="self-dropdown-item">@Model.NickName</li>
+							<li class="self-dropdown-item">个人信息</li>
+							<li class="self-dropdown-item">设置</li>
+							<li class="self-dropdown-item" id="logout">注销</li>
+						</ul>
+					</a>
+				</div>
+            </div>
+							           
+        </div>
+	
+	
+	@* <nav class="navbar navbar-expand-md navbar-light box-shadow" style="background-color: white;">
 		<div class="container">
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 					data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
@@ -62,5 +102,5 @@
 			</div>
 
 		</div>
-	</nav>
+	</nav> *@
 </header>

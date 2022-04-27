@@ -1,4 +1,5 @@
 import { Router, Api, AddScript, Sleep, MyWebSocket } from "./My.js";
+import Header from './Shared/Header.js';
 import Tag from "./Shared/Components/Tag.js";
 import Home from "./Home/Home.js";
 import SendPost from "./Home/SendPost.js";
@@ -6,6 +7,9 @@ import PrivateChat from "./Home/PrivateChat.js";
 import SearchResult from "./Home/SearchResult.js";
 import TagTree from "./Home/TagTree.js";
 import Zone from "./Home/Zone.js";
+import UserPage from "./Home/UserPage.js"
+import Match from "./Home/Match.js"
+import MatchButton from "./Home/MatchButton.js";
 
 const baseTitle = document.title;
 const mainMount = document.querySelector(".main-container main");
@@ -40,6 +44,8 @@ async function Init(services) {
         SetSubtitle("匹配");
         await InitView(services);
         await InitBase(services);
+        Match.Init(services);
+        MatchButton.Init(services);
 
     }).AddRoute("PrivateChat", async() => {
         SetSubtitle("私聊");
@@ -59,6 +65,26 @@ async function Init(services) {
         await InitBase(services);
         TagTree.Init(services);
 
+    }).AddRoute("UserPage", async() => {
+        SetSubtitle("用户主页");
+        await InitView(services);
+        await InitBase(services);
+        UserPage.Init(services);
+
+    }).AddRoute("Setting", async() => {
+        SetSubtitle("设置");
+        await InitView(services);
+        await InitBase(services);
+
+    }).AddRoute("AccountInfo", async() => {
+        SetSubtitle("账号信息");
+        await InitView(services);
+        await InitBase(services);
+        
+    }).AddRoute("Password", async() => {
+        SetSubtitle("Password");
+        await InitView(services);
+        await InitBase(services);
     })
     .Execute();
 }
@@ -69,7 +95,7 @@ async function InitView(services) {
 }
 
 async function InitBase(services){
-
+    Header.Init(services);
     await Tag.Init(services);
     await PrivateChat.InitBase(services);
 

@@ -1,0 +1,119 @@
+@font-face {
+  font-family: "bw";
+  src: url("https://robindelaporte.fr/codepen/play/BwModelicaSS01-ExtraBold.woff") format("woff");
+}
+html {
+  font-size: 62.5%;
+}
+
+.home {
+  /* display: block; */
+  position:relative;
+  display: flex;
+  justify-content: center;/*垂直居中*/
+  align-items: center;/*水平居中*/;
+  /* position: fixed; */
+  /* height: 100vh;
+  width: 100vw; */
+  border-radius: 10rem;
+  overflow: hidden;
+  top: 0%;
+  left: 0%;
+  width: 400px;
+  height: 300px;
+  /* background-color: #e9f5ff; */
+}
+.home canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 4;
+  pointer-events: none;
+}
+.home span {
+  position: relative;
+  z-index: 6;
+  font-family: "bw";
+  text-decoration: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) scale(1);
+          transform: translate(-50%, -50%) scale(1);
+  font-size: 3rem;
+  color: #fff;
+  pointer-events: none;
+}
+.home a {
+  font-family: "bw";
+  text-decoration: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) scale(1);
+          transform: translate(-50%, -50%) scale(1);
+  font-size: 3rem;
+  color: #fff;
+  background-color: #acc7ed;
+  border-radius: 10rem;
+  padding: 1.5rem 4rem 2rem;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+  text-align: center;
+}
+.home a span {
+  position: relative;
+  opacity: 0;
+}
+.home a:after {
+  content: "";
+  background: linear-gradient(56deg, #61dafb 0%, #d6cbf6 46%, #f2056f 100%);
+  width: 80%;
+  height: 20%;
+  position: absolute;
+  bottom: -4px;
+  left: 10%;
+  opacity: 0;
+  -webkit-filter: blur(15px);
+          filter: blur(15px);
+  border-radius: 10rem;
+  -webkit-transform: translateZ(-1px);
+          transform: translateZ(-1px);
+  -webkit-transition: opacity 0.6s ease;
+  transition: opacity 0.6s ease;
+}
+.home a:before {
+  content: "";
+  background: linear-gradient(56deg, #61dafb 0%, #d6cbf6 46%, #f2056f 100%);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  border-radius: 10rem;
+  -webkit-transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease;
+}
+.home a:hover {
+  -webkit-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+  -webkit-transform: translate(-50%, -50%) scale(1.35);
+          transform: translate(-50%, -50%) scale(1.35);
+  -webkit-transform-origin: center;
+          transform-origin: center;
+}
+.home a:hover:after {
+  opacity: 1;
+  -webkit-transition: opacity 0.6s ease;
+  transition: opacity 0.6s ease;
+}
+.home a:hover:before {
+  opacity: 1;
+  -webkit-transition: opacity 0.6s linear;
+  transition: opacity 0.6s linear;
+}

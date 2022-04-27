@@ -9,7 +9,7 @@ aside {
     position: relative;
     right: 0;
     top: 0;
-    background: #243747;
+    background: #fff;
     transition: width 1s;
     float: right;
     position: fixed;
@@ -66,7 +66,7 @@ aside .icon-package {
 aside .btn {
     border-radius: 5px;
     border: 0;
-    background: #243747;
+    background: rgb(37, 187, 155);
     color: #fff;
     position: absolute;
     top: 50vh;
@@ -107,5 +107,5 @@ aside .btn {
 
 
 .sidebar-container {
-    margin-top: 8vh;
+    margin-top: 11vh;
 }

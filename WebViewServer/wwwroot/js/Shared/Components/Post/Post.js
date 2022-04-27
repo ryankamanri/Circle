@@ -115,14 +115,13 @@ function InitEvents(view, model) {
     contentItem.onclick = async event => {
         event.preventDefault();
         event.stopPropagation();
-        await ShowContent(event.target, view, model);
+        await ShowContent(view, model);
     }
     // 给a标签同样添加点击事件
-    let a = contentItem.parentElement.parentElement.children[0];
+    let a = view.querySelector("a.a");
     a.onclick = async event => {
         event.preventDefault();
         event.stopPropagation();
-        let contentItemElement = event.currentTarget.parentElement.children[1].children[0];
         await ShowContent(view, model);
     }
 

@@ -23,18 +23,20 @@
 	
 </head>
 
-<body class="minibody">
+<body class="minibody mont-font">
 	@await Html.PartialAsync("Header", userInfo)
+	@* @await Html.PartialAsync("Userpage", userInfo) *@
+	@await Html.PartialAsync("Option")
 
 	<div class="main-container">
-		<main class="col-md-8">
+		<main class=" main-content">
 			@RenderBody()
 		</main>
+		
 	</div>
 
 	@await Html.PartialAsync("Sidebar", userInfo)
 </body>
-
 
 
 <script type="module">
