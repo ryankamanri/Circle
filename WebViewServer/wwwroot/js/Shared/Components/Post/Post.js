@@ -33,7 +33,7 @@ function SetItemTemplate(viewType) {
     return postModelTemplate;
 }
 
-async function SetTemplateViewToModelBinder(view, model, viewType) {
+async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
     if(viewType === 2) {
 		view.innerText = model.Time;
         return;
@@ -76,8 +76,7 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
 		throw error;
 	}
 	
-	Tag.FlushDropEvent(view, model);
-	Tag.FlushDrugEvent(view, model);
+	
 
     const likeLabel = view.querySelector(".more .like");
     likeLabel.setAttribute("isLike", model.IsLike);
@@ -95,11 +94,17 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
     commentLabel.setAttribute("post-title", model.Title);
     commentLabel.querySelector(".count").innerText = model.CommentCount;
 
+	if(CallBack !== undefined)
+		CallBack(view, model, viewType);
     InitEvents(view, model);
 }
 
 function InitEvents(view, model) {
 
+	// add events
+	Tag.FlushDropEvent(view, model);
+	Tag.FlushDrugEvent(view, model);
+	
     const contentItem = view.querySelector(".post-content>input");
     const focusLabel = view.querySelector("p>a.tag-label");
     const likeLabel = view.querySelector(".feed-item-bd .more>.like");

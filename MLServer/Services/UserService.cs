@@ -33,7 +33,7 @@ namespace MLServer.Services
 
         public async Task<MatchResult> Match(string userID)
         {
-            while (!_mlService.IsReady())
+            while (!_mlService.IsReady)
             {
                 Thread.Sleep(100);
             }

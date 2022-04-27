@@ -17,7 +17,7 @@ function SetItemTemplate(viewType) {
     return template;
 }
 
-async function SetTemplateViewToModelBinder(view, model, viewType) {
+async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
     const headImage = view.querySelector(".headimage img");
     headImage.setAttribute("src", model.HeadImage);
 
@@ -48,9 +48,6 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
         throw error;
     }
 
-    Tag.FlushDropEvent(view, model);
-    Tag.FlushDrugEvent(view, model);
-
     const similarity = view.querySelector(".similarity");
     similarity.innerHTML = `与我的相似度 : ${(model.Similarity * 100) - (model.Similarity * 100 % 1)} %`;
     const interesty = view.querySelector(".interesty");
@@ -59,12 +56,18 @@ async function SetTemplateViewToModelBinder(view, model, viewType) {
     const attention = view.querySelector(".attention");
     attention.setAttribute("ID", model.ID);
     attention.setAttribute("isFocus", model.IsFocus);
-    JudgeFocus(attention);
+    
 
     const privateChat = view.querySelector(".private-chat");
     privateChat.setAttribute("ID", model.ID);
 
-
+    if(CallBack !== undefined)
+        CallBack(view, model, viewType);
+    
+    // set events
+    JudgeFocus(view.querySelector(".attention"));
+    Tag.FlushDropEvent(view, model);
+    Tag.FlushDrugEvent(view, model);
 }
 
 function JudgeFocus(btn)

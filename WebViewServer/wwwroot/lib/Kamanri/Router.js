@@ -14,6 +14,14 @@ function Router() {
     }
     this._Delegate = async() => {
         let hash = window.location.hash.split("?")[0];
+        if(this._eventHandlers[hash] === undefined) {
+            console.error(`The Route Hash "${hash}" Does NOT Match Any Handler`);
+            console.warn("Please Check Your Url Is Correct," +
+                " Or Use \n\n" +
+                "\tRouter.AddRoute(url: string, Delegate: () => {})" +
+                "\n\n To Add A New Route");
+            return;
+        }
         await this._eventHandlers[hash]();
     }
 }

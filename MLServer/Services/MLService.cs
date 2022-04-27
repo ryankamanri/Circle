@@ -26,7 +26,7 @@ namespace MLServer.Services
 {
 	public interface IMLService
 	{
-		public bool IsReady();
+		public bool IsReady { get; }
 		public ClusterResultDataItem Predict(long userID);
 		public IEnumerable<ClusterFeaturesDataItem> GetClusterUsers(ClusterResultDataItem predictResult);
 	}
@@ -59,7 +59,7 @@ namespace MLServer.Services
 
 		private DataLists _dataLists = new DataLists();
 
-		private TransformerChain<TransformerChain<ClusteringPredictionTransformer<KMeansModelParameters>>> _model;
+		private TransformerChain<TransformerChain<TransformerChain<ClusteringPredictionTransformer<KMeansModelParameters>>>> _model;
 
 		private IEnumerable<ClusterResultDataItem> _clusterResult;
 
@@ -67,11 +67,7 @@ namespace MLServer.Services
 
 		private const int AVG_CLUSTER_USER_COUNT = 2;
 
-		private Action _Next;
-
-		private bool _isReady = false;
-
-		public bool IsReady() => _isReady;
+		public bool IsReady { get; private set; } = false;
 
 		public MLService(ILoggerFactory loggerFactory, DatabaseContext dbc)
 		{
@@ -80,9 +76,13 @@ namespace MLServer.Services
 			_dbc = dbc;
 			Task.Run(async() =>
 			{
-				await RunMLServiceOnce();
-				_isReady = true;
-				Thread.Sleep(10 * 60 * 1000);
+				while (true)
+				{
+					await RunMLServiceOnce();
+					IsReady = true;
+					Thread.Sleep(10 * 60 * 1000);
+				}
+				
 			});
 		}
 
@@ -105,51 +105,60 @@ namespace MLServer.Services
 			
 			// extract features
 			var proceededFeaturesDatas = preprocessDatas.ToClusterFeaturesDataItems().ToList();
-
+			// foreach (var clusterFeaturesDataItem in proceededFeaturesDatas)
+			// {
+			// 	clusterFeaturesDataItem.Print();
+			// }
+			
+			
 			var clusterCount = (int)Math.Floor(((double)proceededFeaturesDatas.Count() / AVG_CLUSTER_USER_COUNT));
 			// set the pipeline
-			var dataPipeline = _mlContext.Transforms.ProjectToPrincipalComponents(
+			var dataPipeline = _mlContext.Transforms.NormalizeMinMax(
+				outputColumnName: "NormalizedFeatures",
+				inputColumnName: "Features"
+				).Append(_mlContext.Transforms.ProjectToPrincipalComponents(
 				outputColumnName: "PCAFeatures",
-				inputColumnName: "Features",
-				rank: 2
-			).Append(_mlContext.Transforms.Categorical.OneHotEncoding(
+				inputColumnName: "NormalizedFeatures",
+				rank: 5
+				).Append(_mlContext.Transforms.Categorical.OneHotEncoding(
 				outputColumnName: "UserIDKey",
 				inputColumnName: "UserID",
 				OneHotEncodingEstimator.OutputKind.Indicator
 				).Append(_mlContext.Clustering.Trainers.KMeans(
-				featureColumnName: "Features",
-				numberOfClusters: clusterCount)));
+				featureColumnName: "PCAFeatures",
+				numberOfClusters: clusterCount))));
 			
 			var data = _mlContext.Data.LoadFromEnumerable(proceededFeaturesDatas);
 			
 			// fitting the model
+			_logger.LogDebug("Start To Fitting Model...");
 			_model = dataPipeline.Fit(data);
 
 			_clusterResult = _mlContext.Data.CreateEnumerable<ClusterResultDataItem>(_model.Transform(data), false);
 			
-			//evaluate model
-			// use k-Fold Cross Validation, K = min(5, count)
-			_logger.LogDebug("Start To Evaluate Model...");
-			// var k = Math.Min(K_FOLD, proceededFeaturesDatas.Count);
-			// for (var i = 0; i < k; i++)
+			// foreach (var clusterResultDataItem in _clusterResult)
 			// {
-			// 	var count = proceededFeaturesDatas.Count / k;
-			// 	var index = i * count;
-			// 	var evaluateData = _mlContext.Data.LoadFromEnumerable(proceededFeaturesDatas.GetRange(index, count));
-			// 	var evaluatePredictions = _model.Transform(evaluateData);
-			// 	var metrics = _mlContext.Clustering.Evaluate(evaluatePredictions, scoreColumnName: "Score", featureColumnName: "Features");
-			// 	
-			// 	// ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-			// 	_logger.LogDebug($"\tEvaluate Model:\n" +
-			// 	                 $"\tIndex = {index}, Count = {count}\n" +
-			// 	                 $"\t{metrics.AverageDistance} = Average Distance\n" +
-			// 	                 $"\t{metrics.DaviesBouldinIndex} = Davies Bouldin Index\n" +
-			// 	                 $"\t{metrics.NormalizedMutualInformation} = Normalized Mutual Information\n");
+			// 	clusterResultDataItem.Print();
 			// }
+			
+			// validate model
+			_logger.LogDebug("Start To Validate Model...");
+			var validationResults = _mlContext.Clustering.CrossValidate(data, dataPipeline);
+			foreach (var validationResult in validationResults)
+			{
+				var validationMetrics = validationResult.Metrics;
+				_logger.LogDebug($"\tValidate Model:\n" +
+				                 $"\t{validationMetrics.AverageDistance} = Average Distance\n" +
+				                 $"\t{validationMetrics.DaviesBouldinIndex} = Davies Bouldin Index\n" +
+				                 $"\t{validationMetrics.NormalizedMutualInformation} = Normalized Mutual Information\n");
+			}
+			
+			//evaluate model
+			_logger.LogDebug("Start To Evaluate Model...");
+
 			
 			var evaluatePredictions = _model.Transform(data);
 			var metrics = _mlContext.Clustering.Evaluate(evaluatePredictions, scoreColumnName: "Score", featureColumnName: "Features");
-				
 			// ReSharper disable once TemplateIsNotCompileTimeConstantProblem
 			_logger.LogDebug($"\tEvaluate Model:\n" +
 			                 $"\t{metrics.AverageDistance} = Average Distance\n" +
@@ -159,7 +168,6 @@ namespace MLServer.Services
 			
 			// consume model
 			
-
 		}
 
 		

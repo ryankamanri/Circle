@@ -26,6 +26,14 @@ namespace WebViewServer.Services
             _user = user;
         }
 
+        #region Pages
+
+        #region Home
+
+        
+
+        
+
         public async IAsyncEnumerable<Task<Form>> GetHomePostsViewModels()
         {
             var myInterestedPosts = await _userService.MappingPostsByTag(_user, selection => selection.Type = new List<string>() { "Interested" });
@@ -68,21 +76,18 @@ namespace WebViewServer.Services
             IList<User> myFocusUsers = await _userService.SelectUserInitiative(_user,
         selections => selections.Type = new List<string>() { "Focus" });
 
-            List<Post> myFocusPosts = new List<Post>();
+            IEnumerable<Post> myFocusPosts = new List<Post>();
             foreach (var myFocusUser in myFocusUsers)
             {
                 IList<Post> myFocusUserPosts = await _userService.SelectPost(myFocusUser, selection => { });
-                foreach (var myFocusUserPost in myFocusUserPosts)
-                {
-                    myFocusPosts.Add(myFocusUserPost);
-                }
+                myFocusPosts = myFocusPosts.Union(myFocusUserPosts, new Post());
             }
 
-            myFocusPosts.Sort((post_1, post_2) => (post_2.PostDateTime - post_1.PostDateTime).Seconds);
-
+            var myFocusPostList = myFocusPosts.ToList();
+			myFocusPostList.Sort((post_1, post_2) => DateTime.Compare(post_2.PostDateTime, post_1.PostDateTime));
             DateTime dateTemp = default;
 
-            foreach (var myFocusPost in myFocusPosts)
+            foreach (var myFocusPost in myFocusPostList)
             {
                 if (dateTemp.Year != myFocusPost.PostDateTime.Year ||
                 dateTemp.Month != myFocusPost.PostDateTime.Month ||
@@ -97,6 +102,35 @@ namespace WebViewServer.Services
                 yield return GetPostViewModel(myFocusPost);
             }
         }
+        #endregion
+
+        public async IAsyncEnumerable<Task<Form>> GetUserPagePostsViewModels()
+        {
+
+	        var myPostList = await _userService.SelectPost(_user, selections => { });
+	        myPostList.ToList().Sort((post_1, post_2) => DateTime.Compare(post_2.PostDateTime, post_1.PostDateTime));
+	        DateTime dateTemp = default;
+
+	        foreach (var myPost in myPostList)
+	        {
+		        if (dateTemp.Year != myPost.PostDateTime.Year ||
+		            dateTemp.Month != myPost.PostDateTime.Month ||
+		            dateTemp.Day != myPost.PostDateTime.Day)
+		        {
+			        yield return Task.Run(() => new Form()
+			        {
+				        {"Time", myPost.PostDateTime.ToString("D",CultureInfo.CreateSpecificCulture("zh-CN"))}
+			        });
+			        dateTemp = myPost.PostDateTime;
+		        }
+		        yield return GetPostViewModel(myPost);
+	        }
+        }
+
+        #endregion
+
+        
+        #region Models
 
         public async Task<Form> GetSearchResultViewModel(string searchString)
         {
@@ -170,5 +204,9 @@ namespace WebViewServer.Services
                 {"CommentCount", likeCollectCommentCount["CommentCount"]}
             };
         }
+
+        #endregion
+
+        
     }
 }

@@ -39,7 +39,9 @@ async function InitUserInfoView(services, formedUserInfos) {
 		return SearchUserInfo.SetItemTemplate(viewType);
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
 
-		SearchUserInfo.SetTemplateViewToModelBinder(view, model, viewType);
+		SearchUserInfo.SetTemplateViewToModelBinder(view, model, viewType, view => {
+			MatchKeyWords(view);
+		});
 
 	}).ShowAsync();
 }
@@ -60,13 +62,15 @@ async function InitPostView(services, formedPosts) {
 		return Post.SetItemTemplate(viewType);
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
 
-		Post.SetTemplateViewToModelBinder(view, model, viewType);
+		Post.SetTemplateViewToModelBinder(view, model, viewType, view => {
+			MatchKeyWords(view);
+		});
 
 	}).ShowAsync();
 }
 
-function MatchKeyWords(){
-	searchResult = document.querySelector("#search-result").innerHTML;
+function MatchKeyWords(view){
+	searchResult = view.innerHTML;
 	searchString = decodeURI(window.location.href.split('searchString=')[1]);
 	document.querySelector("input#search").value = searchString;
 	splitedSearchStrings = searchString.split(" ");
@@ -77,7 +81,7 @@ function MatchKeyWords(){
 	let spanMatchStrings = searchResult.match(/<span.*>.*<\/span>/g);
 	if(spanMatchStrings != undefined) spanMatchStrings.forEach(matchString => 
 		splitedSearchStrings.forEach(splitedSearchString => HignlightReplace(matchString,splitedSearchString)));
-	document.querySelector("#search-result").innerHTML = searchResult;
+	view.innerHTML = searchResult;
 }
 
 function HignlightReplace(matchString,searchString)

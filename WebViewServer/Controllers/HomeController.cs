@@ -135,6 +135,18 @@ namespace WebViewServer.Controllers
 
 
 		#endregion
+		
+		[HttpPost]
+		[Route("UserPagePostModel")]
+		public async Task<string> UserPagePostModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetUserPagePostsViewModels())
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
+		}
 
 
 		#region PrivateChat
