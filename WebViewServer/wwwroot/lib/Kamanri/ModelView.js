@@ -43,8 +43,8 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 
 		this.DeleteAt = (index, deleteCount) => {
 			for(let indexCount = index; indexCount < index + deleteCount; indexCount++) {
-				this._modelArray.splice(indexCount, 1);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyDeletedAt(indexCount);
+				this._modelArray.splice(index, 1);
+				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyDeletedAt(index);
 			}
 		}
 

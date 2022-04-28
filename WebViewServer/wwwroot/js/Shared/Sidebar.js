@@ -6,11 +6,11 @@ function Init(services) {
 
     btn.onclick = () => {
         if (aside.clientWidth <= 40) {
-            body.className = "";
+            body.classList.remove("minibody");
             mainContainer.classList.add("left-moved");
         } else if (aside.clientWidth > 40) {
             console.log("side")
-            body.className = "minibody";
+            body.classList.add("minibody");
             mainContainer.classList.remove("left-moved");
         }
 

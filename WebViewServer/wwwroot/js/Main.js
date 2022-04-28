@@ -9,6 +9,7 @@ import { Api, Configuration, MyWebSocket, AddScript } from './My.js';
 
 await AddScript(document.body, "/lib/bootstrap/dist/js/bootstrap.min.js");
 await AddScript(document.body, "/lib/ckeditor5-build-classic/ckeditor.js");
+await AddScript(document.body, "/lib/moment.js");
 
 const wsuri = await Configuration("WebSocketUri");
 

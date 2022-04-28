@@ -1,4 +1,5 @@
-import { Animate } from "../My.js";
+import {Animate, ShowLoad, Sleep} from "../My.js";
+import {InitUserInfoView} from "./Match.js";
 
 
 class Experience {
@@ -237,22 +238,32 @@ class Experience {
     //     this.renderer.setSize( this.innerWidth, this.innerHeight )
   }}
 
-function MatchButtonClick(){
-
-  document.querySelector(".L_transform .trans_bg").style.display = '';
-  setTimeout(function(){
-    document.querySelector(".L_transform .trans_bg").style.display = 'none';
-  },3000);
+async function MatchButtonClick() {
+  const loadHTML =
+      `<div class="trans_bg" >
+            <div class="bg_shade"></div>
+            <div class="heart_box">
+                <div class="heart"></div>
+                <div class="shan" style="transform: rotate(274deg);"></div>
+            </div>           
+        </div>`;
+  await ShowLoad(document.querySelector(".match-mount"), "", async(fragment) => {
+    await InitUserInfoView(_services, mountElement);
+    // await Sleep(100000);
+  }, loadHTML);
 
 }
-  
-  function Init(services)
-  {
-    const container = document.querySelector('.home');  
-    let experience = new Experience(container, 400, 300);
-  }
 
-  export default{
-    Init
-  }
+let mountElement;
+let _services;
+function Init(services) {
+  _services = services;
+  mountElement = document.querySelector(".match-user");
+  const container = document.querySelector('.home');
+  let experience = new Experience(container, 400, 300);
+}
+
+export default {
+  Init
+}
 

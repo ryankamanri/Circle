@@ -51,6 +51,19 @@ namespace WebViewServer.Services
 			});
 		}
 
+		public async Task<Tag> FindAncestorTag(Tag childTag)
+		{
+			var tempUpTag = await FindParentTag(childTag);
+			var tempDownTag = childTag;
+			while (tempUpTag.ID != -1)
+			{
+				tempDownTag = tempUpTag;
+				tempUpTag = await FindParentTag(tempUpTag);
+			}
+
+			return tempDownTag;
+		}
+
 
 	}
 }

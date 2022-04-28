@@ -132,7 +132,17 @@ namespace MLServer.Services
 			
 			// fitting the model
 			_logger.LogDebug("Start To Fitting Model...");
-			_model = dataPipeline.Fit(data);
+			try
+			{
+				_model = dataPipeline.Fit(data);
+			}
+			catch (Exception e)
+			{
+				_logger.LogError("Failed To Fit The Training Data.");
+				Console.WriteLine(e);
+				_logger.LogWarning("You Could Check Out The Vector Length Of `Features` In Class `ClusterFeaturesDataItem`");
+				throw;
+			}
 
 			_clusterResult = _mlContext.Data.CreateEnumerable<ClusterResultDataItem>(_model.Transform(data), false);
 			

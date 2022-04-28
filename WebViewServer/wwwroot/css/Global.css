@@ -8,10 +8,12 @@
 
 
 .show-load-window {
-    position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
-    background: #aaaaaa;
+    min-width: 100px;
+    min-height: 100px;
+    background: #ffffff88;
     opacity: 0.5;
 }
 

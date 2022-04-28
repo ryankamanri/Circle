@@ -46,13 +46,16 @@ async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
     const focusLabel = view.querySelector(".feed-hd-info a");
     focusLabel.setAttribute("ID", model.AuthorID);
     focusLabel.setAttribute("isfocus", model.AuthorIsFocus);
+	
+	const postDateTime = view.querySelector(".post-datetime");
+	postDateTime.innerText = moment(model.PostDateTime).fromNow();
 
     const title = view.querySelector(".feed-title span");
     title.innerText = model.Title;
     const focus = view.querySelector(".feed-cont span.focus");
     focus.innerText = `#${model.Focus}#`;
     const summary = view.querySelector(".feed-cont span.summary");
-    summary.innerHTML = model.Summary;
+    summary.innerText = model.Summary.replaceAll("\n", "\t") + "...";
     const postContent = view.querySelector(".post-content input");
     postContent.setAttribute("postid", model.ID);
 

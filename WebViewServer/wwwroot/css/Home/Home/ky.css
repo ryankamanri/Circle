@@ -17,6 +17,8 @@ html {
 }
 .content-mount{
 	padding-right: 15px;
+	min-width: 50vw;
+	min-height: 80vh;
 }
 .ky-container{
 	position: relative;

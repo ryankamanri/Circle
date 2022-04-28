@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,8 @@ namespace WebViewServer.Controllers
 	[Route("Home")]
 	public class HomeController : Controller
 	{
+
+		private Api _api;
 		private User _user;
 
 		private ViewModelService _vmService;
@@ -30,10 +33,11 @@ namespace WebViewServer.Controllers
 		private PostService _postService;
 
 
-		public HomeController(ICookie cookie, User user, ViewModelService vmService, UserService userService, TagService tagService, PostService postService)
+		public HomeController(ICookie cookie, User user, Api api, ViewModelService vmService, UserService userService, TagService tagService, PostService postService)
 		{
 			_cookie = cookie;
 			_user = user;
+			_api = api;
 			_vmService = vmService;
 			_userService = userService;
 			_tagService = tagService;
@@ -68,13 +72,34 @@ namespace WebViewServer.Controllers
 		{
 			return View("Home/Posts");
 		}
-
+		
 		[HttpPost]
 		[Route("Home/PostsModel")]
 		public async Task<string> PostsModel()
 		{
 			var modelList = new List<Form>();
-			await foreach (var model in _vmService.GetHomePostsViewModels())
+			await foreach (var model in _vmService.GetHomePostsViewModels(new PostService.CircleType()
+			               {
+				               Postgraduate = true,
+				               Employment = true
+			               }))
+			{
+				modelList.Add(await model);
+			}
+
+			return modelList.ToJson();
+		}
+		
+		[HttpPost]
+		[Route("Home/PostsExtraModel")]
+		public async Task<string> PostsExtraModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetExtraPostsViewModels(new PostService.CircleType()
+			               {
+				               Postgraduate = true,
+				               Employment = true
+			               }))
 			{
 				modelList.Add(await model);
 			}
@@ -82,11 +107,65 @@ namespace WebViewServer.Controllers
 		}
 
 		[HttpPost]
-		[Route("Home/PostsExtraModel")]
-		public async Task<string> PostsExtraModel()
+		[Route("Home/PostgraduatePostsModel")]
+		public async Task<string> PostgraduatePostsModel()
 		{
 			var modelList = new List<Form>();
-			await foreach (var model in _vmService.GetExtraPostsViewModels())
+			await foreach (var model in _vmService.GetHomePostsViewModels(new PostService.CircleType()
+			               {
+				               Postgraduate = true,
+				               Employment = false
+			               }))
+			{
+				modelList.Add(await model);
+			}
+
+			return modelList.ToJson();
+		}
+		
+		[HttpPost]
+		[Route("Home/EmploymentPostsModel")]
+		public async Task<string> EmploymentPostsModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetHomePostsViewModels(new PostService.CircleType()
+			               {
+				               Employment = true,
+				               Postgraduate = false
+			               }))
+			{
+				modelList.Add(await model);
+			}
+
+			return modelList.ToJson();
+		}
+
+		[HttpPost]
+		[Route("Home/PostgraduatePostsExtraModel")]
+		public async Task<string> PostgraduatePostsExtraModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetExtraPostsViewModels(new PostService.CircleType()
+			               {
+				               Postgraduate = true,
+				               Employment = false
+			               }))
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
+		}
+		
+		[HttpPost]
+		[Route("Home/EmploymentPostsExtraModel")]
+		public async Task<string> EmploymentPostsExtraModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetExtraPostsViewModels(new PostService.CircleType()
+			               {
+				               Employment = true,
+				               Postgraduate = false
+			               }))
 			{
 				modelList.Add(await model);
 			}
@@ -239,6 +318,17 @@ namespace WebViewServer.Controllers
 		{
 			if (searchString == null) return "NO Search String".ToJson();
 			return (await _vmService.GetSearchResultViewModel(searchString)).ToJson();
+		}
+
+		#endregion
+
+		#region Match
+
+		[HttpGet]
+		[Route("MatchModel")]
+		public async Task<string> MatchModel()
+		{
+			return (await _vmService.GetMatchModel()).ToJson();
 		}
 
 		#endregion

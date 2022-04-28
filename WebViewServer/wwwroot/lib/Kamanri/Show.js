@@ -5,29 +5,39 @@ function Show()
 	
 }
 
-async function ShowLoad(mountElement, loadText, LoadedCallback) {
+async function ShowLoad(mountElement, loadText, LoadedCallback, loadHTML = "") {
 
 
 	let showLoadWindow = `
 		<div class="show-load-window" >
             <div class="show-load" >
-                <h5 class="show-load-text">Loading...</h5>
+                <h5 class="show-load-text">${loadText}</h5>
                 <div class="progress show-load-progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                          style="width:100%"></div>
                 </div>
             </div>
         </div>`;
+	if(loadHTML !== "") showLoadWindow = loadHTML;
 	let childElementFragment = document.createDocumentFragment();
-	childElementFragment.innerHTML = mountElement.innerHTML;
+
+	let childCount = mountElement.childNodes.length;
+	for (let i = 0; i < childCount; i++) {
+		childElementFragment.appendChild(mountElement.childNodes[0]);
+	}
 	mountElement.innerHTML = showLoadWindow;
-	let showLoadTextElement = mountElement.querySelector(".show-load-window .show-load-text");
-	showLoadTextElement.innerText = loadText;
+
 	await Animate(mountElement, { opacity: 1 });
 	await LoadedCallback(childElementFragment);
 	await Animate(mountElement, { opacity: 0 });
-	mountElement.innerHTML = childElementFragment.innerHTML;
-	await Animate(mountElement, { opacity: 1 });
+	mountElement.innerHTML = '';
+
+	for (let i = 0; i < childCount; i++) {
+		mountElement.appendChild(childElementFragment.childNodes[0]);
+	}
+	mountElement.style.top = '100px';
+	mountElement.style.position = 'relative';
+	await Animate(mountElement, { opacity: 1, top: 0 });
 }
 
 async function ShowAlert(bootstrapClass, emphasis, message, alertTime=1500)

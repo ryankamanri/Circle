@@ -49,7 +49,7 @@
     top: -39px;
 }
 .L_transform .trans_bg .circles{
-    position: absolute;
+    position: relative;
     }
 
 .trans_bg .topcircle{left:119px;top:-15px;}
@@ -67,8 +67,8 @@
 .trans_bg .pos span{color: #999fb1;font-size: 14px;}
 .trans_bg .circles.active .trio i{width:18px;height:18px;background: url(/StaticFiles/images/quan_active.png) no-repeat;display: inline-block;position: absolute;top: 43px;left: 35px;}
 .trans_bg .heart_box{display: inline-block;}
-.trans_bg .heart_box .heart{position:absolute;width:88px;height:88px;background: url(/StaticFiles/images/quan_circle.png) no-repeat;left: 165px;top: 62px;}
-.trans_bg .heart_box .shan{width: 211px;height: 129px;background: url(/StaticFiles/images/quan_rotate.png) no-repeat;top: -20px;left: 99px;position: absolute;
+.trans_bg .heart_box .heart{position:relative;width:88px;height:88px;background: url(/StaticFiles/images/quan_circle.png) no-repeat;left: 29%;}
+.trans_bg .heart_box .shan{width: 211px;height: 129px;background: url(/StaticFiles/images/quan_rotate.png) no-repeat;top: -165px;position: relative;
     -webkit-transform-origin: 107px 124px;
     transform-origin: 108px 124px;
     transform: rotate(0deg);

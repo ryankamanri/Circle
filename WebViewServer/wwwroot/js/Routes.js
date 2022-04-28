@@ -11,11 +11,19 @@ import UserPage from "./Home/UserPage.js"
 import Match from "./Home/Match.js"
 import MatchButton from "./Home/MatchButton.js";
 
-const baseTitle = document.title;
 const mainMount = document.querySelector(".main-container main");
 
+// set title
+let _baseTitle = "圈";
+let _subtitle = "";
+
 function SetSubtitle(subtitle) {
-    document.title = `${subtitle} ${baseTitle}`;
+    _subtitle = subtitle;
+    document.title = `${_subtitle} - ${_baseTitle}`;
+}
+function SetBaseTitle(baseTitle) {
+    _baseTitle = baseTitle;
+    document.title = `${_subtitle} - ${_baseTitle}`;
 }
 
 
@@ -123,7 +131,9 @@ async function InitBase(services){
 	});
 }
 
-
+export {
+    SetBaseTitle, SetSubtitle
+}
 
 export default {
     Init

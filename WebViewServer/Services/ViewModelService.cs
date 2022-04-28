@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Kamanri.Extensions;
 using Kamanri.Http;
+using Newtonsoft.Json.Linq;
 using WebViewServer.Models;
 using WebViewServer.Models.Post;
 using WebViewServer.Models.User;
@@ -13,13 +14,15 @@ namespace WebViewServer.Services
 {
     public class ViewModelService
     {
+	    private Api _api;
         private readonly PostService _postService;
         private readonly UserService _userService;
         private readonly SearchService _searchService;
 
         private readonly User _user;
-        public ViewModelService(SearchService searchService, PostService postService, UserService userService, User user)
+        public ViewModelService(SearchService searchService, Api api, PostService postService, UserService userService, User user)
         {
+	        _api = api;
 	        _searchService = searchService;
             _postService = postService;
             _userService = userService;
@@ -34,14 +37,17 @@ namespace WebViewServer.Services
 
         
 
-        public async IAsyncEnumerable<Task<Form>> GetHomePostsViewModels()
+        public async IAsyncEnumerable<Task<Form>> GetHomePostsViewModels(PostService.CircleType type)
         {
             var myInterestedPosts = await _userService.MappingPostsByTag(_user, selection => selection.Type = new List<string>() { "Interested" });
             var allPosts = await _postService.GetAllPost();
             var myPosts = myInterestedPosts.Union(allPosts, new Post());
-			var count = 0;
+            var count = 0;
             foreach (var myPost in myPosts)
             {
+	            var myPostType = await _postService.GetCircleType(myPost);
+	            if(!type.Employment && myPostType.Employment) continue;
+	            if(!type.Postgraduate && myPostType.Postgraduate) continue;
 				if(count < 20) 
 				{
 					count++;
@@ -52,7 +58,7 @@ namespace WebViewServer.Services
             }
         }
 
-		public async IAsyncEnumerable<Task<Form>> GetExtraPostsViewModels()
+		public async IAsyncEnumerable<Task<Form>> GetExtraPostsViewModels(PostService.CircleType type)
 		{
 			var myInterestedPosts = (await _userService.MappingPostsByTag(_user, selection => selection.Type = new List<string>() { "Interested" })).ToList();
             var allPosts = (await _postService.GetAllPost()).ToList();
@@ -60,12 +66,21 @@ namespace WebViewServer.Services
 				var rand = new Random().Next();
 				if (rand % 3 == 0)
 				{
-					if(myInterestedPosts.Count != 0)
-						yield return GetPostViewModel(myInterestedPosts[rand%myInterestedPosts.Count]);
+					if (myInterestedPosts.Count == 0) continue;
+					var myPost = myInterestedPosts[rand % myInterestedPosts.Count];
+					var myPostType = await _postService.GetCircleType(myPost);
+					if (!type.Employment && myPostType.Employment) continue;
+					if (!type.Postgraduate && myPostType.Postgraduate) continue;
+					yield return GetPostViewModel(myPost);
 				} 
-				else{
-					if(allPosts.Count != 0)
-						yield return GetPostViewModel(allPosts[rand%allPosts.Count]);
+				else
+				{
+					if (allPosts.Count == 0) continue;
+					var myPost = allPosts[rand % allPosts.Count];
+					var myPostType = await _postService.GetCircleType(myPost);
+					if(!type.Employment && myPostType.Employment) continue;
+					if(!type.Postgraduate && myPostType.Postgraduate) continue;
+					yield return GetPostViewModel(myPost);
 				} 
 			}
 			
@@ -127,6 +142,21 @@ namespace WebViewServer.Services
 	        }
         }
 
+        public async Task<Form> GetMatchModel()
+        {
+	        var matchUserInfo_Tag = await _api.Get<Form>($"/Match/Match?userID={_user.ID}");
+	        var matchUserInfoModelList = new List<Form>();
+	        foreach (var userInfoToken in (JArray)matchUserInfo_Tag["MatchUserInfoList"])
+	        {
+		        var userInfo = userInfoToken.ToJson().ToObject<UserInfo>();
+		        var tags = await _userService.SelectTag(new User(userInfo.ID),
+			        selection => selection.Type = new List<string>() { "Self" });
+		        matchUserInfoModelList.Add(await GetSearchUserInfoViewModel(new KeyValuePair<UserInfo, IList<Tag>>(userInfo, tags)));
+	        }
+	        matchUserInfo_Tag["MatchUserInfoList"] = matchUserInfoModelList;
+	        return matchUserInfo_Tag;
+        }
+
         #endregion
 
         
@@ -158,7 +188,6 @@ namespace WebViewServer.Services
         {
 	        IList<Tag> userTags = await _userService.SelectTag(new User(userInfo_tagList.Key.ID),relation => relation.Type = new List<string>{"Self"});
 	        IEnumerable<Tag> showTags = userInfo_tagList.Value.Union(userTags,new Tag()).Take(Math.Min(4, userTags.Count));
-	        int count = 0;
 	        bool isFocus = await _userService.IsUserRelationExist(_user,new User(userInfo_tagList.Key.ID),"Type","Focus");
 	        double similarity = await _userService.CarculateSimilarityFix(_user,new User(userInfo_tagList.Key.ID),selection => selection.Type = new List<string>(){"Self"});
 	        double interesty = await _userService.CarculateSimilarityFix(_user,new User(userInfo_tagList.Key.ID),selection => selection.Type = new List<string>(){"Interested"});
@@ -201,7 +230,8 @@ namespace WebViewServer.Services
                 {"LikeCount", likeCollectCommentCount["LikeCount"]},
                 {"IsCollect", isLikeOrCollect["IsCollect"]},
                 {"CollectCount", likeCollectCommentCount["CollectCount"]},
-                {"CommentCount", likeCollectCommentCount["CommentCount"]}
+                {"CommentCount", likeCollectCommentCount["CommentCount"]},
+                {"PostDateTime", post.PostDateTime}
             };
         }
 

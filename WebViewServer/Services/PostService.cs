@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Kamanri.Database.Models.Relation;
 using Kamanri.Extensions;
@@ -13,12 +14,14 @@ namespace WebViewServer.Services
 	{
 
 		private Api _api;
+		private readonly TagService _tagService;
 
 
 
-		public PostService(Api api)
+		public PostService(Api api, TagService tagService)
 		{
 			_api = api;
+			_tagService = tagService;
 		}
 
 		#region Get
@@ -94,6 +97,37 @@ namespace WebViewServer.Services
 
 		}
 
+
+		#endregion
+
+		#region Judge
+		
+		public struct CircleType
+		{
+			public bool Postgraduate { get; set; }
+			public bool Employment { get; set; }
+		}
+
+		public async Task<CircleType> GetCircleType(Post post)
+		{
+			var tags = await SelectTags(post);
+			var postgraduateTag = (await _tagService.TagIndex("考研")).FirstOrDefault();
+			var employmentTag = (await _tagService.TagIndex("就业")).FirstOrDefault();
+			var result = new CircleType()
+			{
+				Employment = false,
+				Postgraduate = false
+			};
+			foreach (var tag in tags)
+			{
+				if ((await _tagService.FindAncestorTag(tag)).ID == postgraduateTag.ID)
+					result.Postgraduate = true;
+				if ((await _tagService.FindAncestorTag(tag)).ID == employmentTag.ID)
+					result.Employment = true;
+			}
+
+			return result;
+		}
 
 		#endregion
 

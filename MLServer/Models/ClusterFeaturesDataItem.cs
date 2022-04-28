@@ -9,7 +9,7 @@ namespace MLServer.Models
 {
     public class ClusterFeaturesDataItem
     {
-        public const int TAG_COUNT = 57;
+        public const int TAG_COUNT = 58;
         public string UserID { get; set; }
 
         [ColumnName("Features")]
