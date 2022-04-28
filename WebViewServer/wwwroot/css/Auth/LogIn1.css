@@ -134,6 +134,11 @@ body {
     margin-bottom: 25px;
 }
 
+.fs-forget{
+    color: #8be3ac;
+
+}
+
 /*progressbar*/
 #progressbar {
     margin-bottom: 30px;

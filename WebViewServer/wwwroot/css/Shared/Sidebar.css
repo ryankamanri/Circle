@@ -109,3 +109,15 @@ aside .btn {
 .sidebar-container {
     margin-top: 8vh;
 }
+.head-image{
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+    border: 5px solid rgba(0, 0, 0, 0.4);
+    width: 200px;
+    height: 200px;
+    background-clip: padding-box;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+    border-radius: 50%;
+    -moz-border-radius:100px;
+}

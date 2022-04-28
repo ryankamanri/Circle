@@ -15,10 +15,10 @@ function LogIn()
 					password
 				]
 			}
-		}).done(async data => {
+		}).done(data => {
 			if(data == "登录成功") 
 			{   
-				await ShowAlert("alert alert-success","😀",data);
+				ShowAlert("alert alert-success","😀",data);
 				window.location.href = "/SelectCircle";
 			}
 			else{
