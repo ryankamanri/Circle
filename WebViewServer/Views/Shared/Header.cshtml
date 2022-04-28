@@ -34,10 +34,18 @@
 						<img src="@Model.HeadImage" alt="user" class="drop"
 							 style="border-radius: 100px; height: 40px;width: 40px;float: right;">
 						<ul class="self-dropdown-block" style="position:fixed;float: right;transform:translate(25%, 0); top:48px;right:3rem">
-							<li class="self-dropdown-item">@Model.NickName</li>
-							<li class="self-dropdown-item">个人信息</li>
-							<li class="self-dropdown-item">设置</li>
-							<li class="self-dropdown-item" id="logout">注销</li>
+							<li class="self-dropdown-item">
+								@Model.NickName
+							</li>
+							<li class="self-dropdown-item">
+								<a href="/Home#UserPage">个人信息</a>
+							</li>
+							<li class="self-dropdown-item">
+								<a href="/Home#Setting">设置</a>
+							</li>
+							<li class="self-dropdown-item" id="logout">
+								退出登录
+							</li>
 						</ul>
 					</a>
 				</div>

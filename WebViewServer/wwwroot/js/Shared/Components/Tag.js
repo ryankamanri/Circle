@@ -84,7 +84,11 @@ function FlushDropEvent(view) {
 		tagbox.ondrop = event => {
 			id = event.dataTransfer.getData("id");
 			let tag = document.getElementById(id);
-			if (tag != null) tagbox.appendChild(tag);
+			
+			if (tag != null){
+				tag.style.display = '';
+				tagbox.appendChild(tag);
+			}
 			else tagbox.appendChild(document.querySelector("iframe.tag-tree").contentDocument.getElementById(id));
 			isDroppedTag = true;
 		};

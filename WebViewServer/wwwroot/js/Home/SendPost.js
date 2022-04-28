@@ -1,4 +1,6 @@
 import { Site, ShowAlert } from '../My.js';
+import Tag from "../Shared/Components/Tag.js";
+import TagTree from "./TagTree.js";
 
 let btn,title,focus,tagIDs,summary,contentDocument;
 let tagCollection;
@@ -9,6 +11,11 @@ async function Init(services)
 	_services = services;
 
 	await AddCKEditor();
+	await TagTree.Init(services);
+
+	const myTags = document.querySelector(".sendpost-tag");
+	Tag.FlushDrugEvent(myTags);
+	Tag.FlushDropEvent(myTags);
 
 	btn = document.querySelector("input#submit");
 	

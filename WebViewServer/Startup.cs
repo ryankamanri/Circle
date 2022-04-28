@@ -79,6 +79,8 @@ namespace WebViewServer
 
 			services.AddSingleton<PostService>();
 
+			services.AddSingleton<UploadService>();
+
 
 		}
 

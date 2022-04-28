@@ -10,6 +10,8 @@ async function Init(services)
 	FlushTagTree();
 
 	tagRoot = document.querySelector("#tagRoot");
+	Tag.FlushDropEvent(tagRoot);
+	Tag.FlushDrugEvent(tagRoot);
 	tagRoot.onmousewheel = event => {
 		event.preventDefault();
 		event.stopPropagation();
@@ -55,8 +57,8 @@ function FindChildTags(parentTag, tagTreeNode) {
 		AppendChildTree(parentTag, JSON.parse(resData));
 		//FlushTagTree(parentTag);
 		parentTag.ondblclick = undefined;
-		Tag.FlushDrugEvent(document.querySelector(".tagRoot"));
-		Tag.FlushDropEvent(document.querySelector(".tagRoot"));
+		Tag.FlushDrugEvent(document.querySelector("#tagRoot"));
+		Tag.FlushDropEvent(document.querySelector("#tagRoot"));
 	});
 }
 
