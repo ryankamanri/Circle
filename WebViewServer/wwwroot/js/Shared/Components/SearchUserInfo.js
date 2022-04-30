@@ -73,7 +73,7 @@ async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
 
 function JudgeFocus(btn)
 {
-    if(btn.getAttribute("isFocus") == "False"){
+    if(btn.getAttribute("isFocus") == "false"){
         btn.onclick = async event => await AppendFocus(event);
     }else{
         btn.onclick = async event => await RemoveFocus(event);

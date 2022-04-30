@@ -1,3 +1,4 @@
+<!--
 <html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
@@ -36,3 +37,63 @@
 </script>
 
 </html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>登录-圈</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/Auth/LogIn1.css">
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+
+
+
+</head>
+<body>
+
+<!-- MultiStep Form -->
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <form id="msform">
+      <!-- progressbar -->
+      <ul id="progressbar_1">
+		
+        <li class="active"></li>
+        
+       
+        
+
+      </ul>
+      <!-- fieldsets -->
+      <fieldset>
+        <h2 class="fs-title">LogIn</h2>
+        <h3 class="fs-subtitle">Please write your information</h3>
+	
+        <input type="text" id="account" name="" required="" placeholder="用户名（邮箱）">
+        <input type="password" id="password" name="" required="" placeholder="密码">
+		<h6 class="fs-forget">忘记密码</h6>
+		<input class="action-button" type="button" id="login" name="" value="提交">
+		
+       
+      </fieldset>
+      
+    </form>
+    
+  </div>
+</div>
+</body>
+<!-- /.MultiStep Form --> 
+<script type="module">
+	import LogIn from '/js/Auth/LogIn.js'
+	LogIn.LogIn();
+</script>
+
+</html>
+
+
+
+

@@ -23,14 +23,20 @@ function Api() {
 		
 	}
 
-	this.Post = (url, reqData) => {
+	this.Post = (url, reqData, isProcessData=true) => {
+		const formObject = isProcessData ? {
+			url: url,
+			type: "POST",
+			data: reqData
+		} : {
+			url: url,
+			type: "POST",
+			data: reqData,
+			processData: isProcessData,
+			contentType: isProcessData
+		}
 		return new Promise((resolve, reject) => {
-			$.ajax({
-				url: url,
-				type: "POST",
-				data: reqData
-
-			}).done(data => {
+			$.ajax(formObject).done(data => {
 				resolve(data);
 
 			}).fail((action, state, event) => {

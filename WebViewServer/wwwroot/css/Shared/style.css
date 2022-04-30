@@ -4746,8 +4746,10 @@ textarea.form-control-lg {
 }
 
 .btn-outline-info {
-  color: #2754e6;
-  border-color: #2754e6;
+  color: #96cdcd;
+  border-color: #96cdcd;
+  margin-top: 15px;
+  border-radius: 10px;
 }
 .btn-outline-info:hover {
   color: #fff;
@@ -8942,8 +8944,8 @@ textarea.form-control-lg {
 }
 
 .rounded-3 {
-  border-top-left-radius: 15px !important;
-    border-top-right-radius: 15px;
+  /* border-top-left-radius: 15px !important; */
+    /* border-top-right-radius: 15px; */
 }
 
 .rounded-circle {

@@ -75,7 +75,7 @@ function FlushDropEvent(view) {
 			
 			id = event.dataTransfer.getData("id");
 			moveTag = document.getElementById(id);
-			await Sleep(1000);
+			await Sleep(100);
 			moveTag.style.display = "none";
 		}
 		tagbox.ondragover = event => {

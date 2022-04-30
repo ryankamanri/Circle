@@ -10,6 +10,8 @@ import Zone from "./Home/Zone.js";
 import UserPage from "./Home/UserPage.js"
 import Match from "./Home/Match.js"
 import MatchButton from "./Home/MatchButton.js";
+import AccountInfo from "./Home/AccountInfo.js";
+import Setting from "./Home/Setting.js";
 
 const mainMount = document.querySelector(".main-container main");
 
@@ -39,55 +41,57 @@ async function Init(services) {
         SetSubtitle("发帖");
         await InitView(services);
         await InitBase(services);
-        SendPost.Init(services);
-        TagTree.Init(services);
+        await SendPost.Init(services);
+        await TagTree.Init(services);
 
     }).AddRoute("Home/Zone", async() => {
         SetSubtitle("动态");
         await InitView(services);
-        Zone.Init(services);
+        await Zone.Init(services);
         await InitBase(services);
 
     }).AddRoute("Match", async() => {
         SetSubtitle("匹配");
         await InitView(services);
         await InitBase(services);
-        Match.Init(services);
+        await Match.Init(services);
         MatchButton.Init(services);
 
     }).AddRoute("PrivateChat", async() => {
         SetSubtitle("私聊");
         await InitView(services);
         await InitBase(services);
-        PrivateChat.Init(services);
+        await PrivateChat.Init(services);
 
     }).AddRoute("SearchResult", async() => {
         SetSubtitle("搜索结果");
         await InitView(services);
         await InitBase(services);
-        SearchResult.Init(services);
+        await SearchResult.Init(services);
 
     }).AddRoute("TagTree", async() => {
         SetSubtitle("标签树");
         await InitView(services);
         await InitBase(services);
-        TagTree.Init(services);
+        await TagTree.Init(services);
 
     }).AddRoute("UserPage", async() => {
         SetSubtitle("用户主页");
         await InitView(services);
         await InitBase(services);
-        UserPage.Init(services);
+        await UserPage.Init(services);
 
     }).AddRoute("Setting", async() => {
         SetSubtitle("设置");
         await InitView(services);
         await InitBase(services);
+        Setting.Init(services);
 
     }).AddRoute("AccountInfo", async() => {
         SetSubtitle("账号信息");
         await InitView(services);
         await InitBase(services);
+        await AccountInfo.Init(services);
         
     }).AddRoute("Password", async() => {
         SetSubtitle("Password");

@@ -143,6 +143,14 @@ namespace WebViewServer.Services
 				{"User",user}
 			});
 		}
+
+		public async Task<string> InsertOrUpdateUserInfo(UserInfo userInfo)
+		{
+			return await _api.Post<string>("/User/InsertOrUpdateUserInfo", new Form()
+			{
+				{"UserInfo", userInfo}
+			});
+		}
 		#endregion
 
 		#region JudgeRelation

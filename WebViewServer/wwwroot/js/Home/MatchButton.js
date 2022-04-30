@@ -1,5 +1,5 @@
-import {Animate, ShowLoad, Sleep} from "../My.js";
-import {InitUserInfoView} from "./Match.js";
+import {Animate, ShowAlert, ShowLoad, Sleep} from "../My.js";
+import Match from "./Match.js";
 
 
 class Experience {
@@ -239,6 +239,7 @@ class Experience {
   }}
 
 async function MatchButtonClick() {
+  await Match.Init(_services);
   const loadHTML =
       `<div class="trans_bg" >
             <div class="bg_shade"></div>
@@ -248,17 +249,21 @@ async function MatchButtonClick() {
             </div>           
         </div>`;
   await ShowLoad(document.querySelector(".match-mount"), "", async(fragment) => {
-    await InitUserInfoView(_services, mountElement);
+    await Match.InitUserInfoView(_services, postMount);
+    await Match.InitTagView(_services, tagMount);
+    await ShowAlert("alert alert-success", "😀", `匹配了你可能感兴趣的${Match.GetMatchTags().length}个标签, ${Match.GetMatchUserInfos().length}个用户`)
     // await Sleep(100000);
   }, loadHTML);
 
 }
 
-let mountElement;
+let postMount;
+let tagMount;
 let _services;
 function Init(services) {
   _services = services;
-  mountElement = document.querySelector(".match-user");
+  postMount = document.querySelector(".match-user");
+  tagMount = document.querySelector(".match-tag");
   const container = document.querySelector('.home');
   let experience = new Experience(container, 400, 300);
 }

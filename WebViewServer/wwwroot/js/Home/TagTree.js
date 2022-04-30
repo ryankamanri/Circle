@@ -22,7 +22,7 @@ async function Init(services)
 function FlushTagTree() {
 	let tagTreeNodes = document.querySelectorAll("#tagRoot .ceiledTagNode");
 	tagTreeNodes.forEach(tagTreeNode => {
-		tagTreeNode.ondblclick = event => {
+		tagTreeNode.onclick = event => {
 			event.preventDefault();
 			event.stopPropagation();
 			FindChildTags(event.target.parentElement.parentElement, tagTreeNode);
@@ -37,7 +37,7 @@ function AppendChildTree(parentTag, childTags) {
 		resultItem.innerHTML = childTag;
 		resultItem.setAttribute("class", "ceiledTagNode");
 		parentTag.append(resultItem);
-		resultItem.ondblclick = event => {
+		resultItem.onclick = event => {
 			event.preventDefault();
 			event.stopPropagation();
 			FindChildTags(event.target.parentElement.parentElement, resultItem);
@@ -56,7 +56,7 @@ function FindChildTags(parentTag, tagTreeNode) {
 	}).done(resData => {
 		AppendChildTree(parentTag, JSON.parse(resData));
 		//FlushTagTree(parentTag);
-		parentTag.ondblclick = undefined;
+		parentTag.onclick = undefined;
 		Tag.FlushDrugEvent(document.querySelector("#tagRoot"));
 		Tag.FlushDropEvent(document.querySelector("#tagRoot"));
 	});

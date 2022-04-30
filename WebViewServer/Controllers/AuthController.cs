@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Kamanri.Http;
 using Kamanri.Utils;
+using Kamanri.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Primitives;
 using WebViewServer.Models.User;
 using WebViewServer.Services;
 using WebViewServer.Services.Cookie;
+using Newtonsoft.Json;
 
 namespace WebViewServer.Controllers
 {
@@ -29,12 +31,12 @@ namespace WebViewServer.Controllers
 		private Dictionary<string, string> account_authCode;
 
 		private readonly ILogger<AuthController> _logger;
-		public AuthController(Api api, UserService userService, ICookie cookie, Dictionary<string, string> account_authCode, ILoggerFactory loggerFactory)
+		public AuthController(User user, Api api, UserService userService, ICookie cookie, Dictionary<string, string> account_authCode, ILoggerFactory loggerFactory)
 		{
+			_user = user;
 			_api = api;
 			_cookie = cookie;
 			_userService = userService;
-			_user = new User();
 			this.account_authCode = account_authCode;
 			_logger = loggerFactory.CreateLogger<AuthController>();
 		}
@@ -183,8 +185,43 @@ namespace WebViewServer.Controllers
 
 			await HttpContext.SignInAsync(claimsPrincipal);
 
+			System.Console.WriteLine("注册成功");
+
 			return new JsonResult("注册成功");
 		}
+
+
+		[HttpPost]
+		[Route("Information_Summit")]
+
+		public async Task<string> Information_Summit(){
+			if (HttpContext.Request.Form.TryGetValue("UserInfo[]", out var authInfo) == false) return "错误的请求".ToJson();
+
+			string nickname = authInfo[0];
+			string realname = authInfo[1];
+			string university = authInfo[2];
+			string school = authInfo[3];
+			string speciality = authInfo[4];
+			string schoolyear = authInfo[5];
+
+			
+			var result = (await _api.Post<string>("/Auth/InfoSummit", new Form()
+			{
+				{"userID", _user.ID},
+				{"nickname", nickname},
+				{"realname", realname},
+				{"university", university},
+				{"school", school},
+				{"speciality", speciality},
+				{"schoolyear", schoolyear}
+
+			}));
+
+			_logger.LogDebug(result);
+			return result;
+
+		}
+
 
 		#endregion
 

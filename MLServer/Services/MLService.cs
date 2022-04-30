@@ -80,7 +80,7 @@ namespace MLServer.Services
 				{
 					await RunMLServiceOnce();
 					IsReady = true;
-					Thread.Sleep(10 * 60 * 1000);
+					Thread.Sleep(1 * 60 * 1000);
 				}
 				
 			});

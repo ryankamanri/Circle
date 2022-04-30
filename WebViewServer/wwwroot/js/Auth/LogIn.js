@@ -15,7 +15,7 @@ function LogIn()
 					password
 				]
 			}
-		}).done(async data => {
+		}).done(async(data) => {
 			if(data == "登录成功") 
 			{   
 				await ShowAlert("alert alert-success","😀",data);

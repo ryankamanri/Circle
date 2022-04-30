@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Kamanri.Http;
 using Kamanri.Extensions;
+using Microsoft.Extensions.Logging;
 using WebViewServer.Models;
 using WebViewServer.Models.User;
 using WebViewServer.Services;
@@ -32,8 +33,12 @@ namespace WebViewServer.Controllers
 
 		private PostService _postService;
 
+		private UploadService _uploadService;
 
-		public HomeController(ICookie cookie, User user, Api api, ViewModelService vmService, UserService userService, TagService tagService, PostService postService)
+		private ILogger<HomeController> _logger;
+
+
+		public HomeController(ICookie cookie, User user, Api api, ViewModelService vmService, UserService userService, TagService tagService, PostService postService, UploadService uploadService, ILoggerFactory loggerFactory)
 		{
 			_cookie = cookie;
 			_user = user;
@@ -42,6 +47,8 @@ namespace WebViewServer.Controllers
 			_userService = userService;
 			_tagService = tagService;
 			_postService = postService;
+			_uploadService = uploadService;
+			_logger = loggerFactory.CreateLogger<HomeController>();
 		}
 
 		[HttpGet]
@@ -245,6 +252,8 @@ namespace WebViewServer.Controllers
 		{
 			return View("TagTree");
 		}
+		
+		#endregion
 
 		[HttpGet]
 		[Route("Match")]
@@ -252,6 +261,8 @@ namespace WebViewServer.Controllers
 		{
 			return View("Match");
 		}
+
+		#region UserPage
 
 		[HttpGet]
 		[Route("Userpage")]
@@ -261,6 +272,42 @@ namespace WebViewServer.Controllers
 			return View("UserPage",userInfo);
 		}
 
+		[HttpPost]
+		[Route("SelectPostModel")]
+		public async Task<string> SelectPostModel()
+		{
+			if (!HttpContext.Request.Form.TryGetValue("Type[]", out var type))
+			{
+				return new Form()
+				{
+					{"Status","Failure"},
+					{"Info","Bad Request"}
+				}.ToJson();
+			}
+			
+			
+
+			var posts = (await _userService.SelectPost(_user, 
+				selection => selection.Type = type.ToList()));
+			var result = new List<Form>();
+
+			foreach (var post in posts)
+			{
+				result.Add(await _vmService.GetPostViewModel(post));
+			}
+
+			return result.ToJson();
+		}
+
+		#endregion
+
+		
+
+		#region Setting
+
+		
+
+		
 		[HttpGet]
 		[Route("Setting")]
 		public IActionResult Setting()
@@ -268,19 +315,81 @@ namespace WebViewServer.Controllers
 			return View("Setting");
 		}
 
+		#region AccountInfo
+
+		
+
+		
+
 		[HttpGet]
 		[Route("AccountInfo")]
-		public IActionResult AccountInfo()
+		public async Task<IActionResult> AccountInfo()
 		{
-			return View("AccountInfo");
+			var userInfo = await _userService.GetUserInfo(_user);
+			return View("AccountInfo", userInfo);
+		}
+
+		[HttpPost]
+		[Route("AccountInfoSubmit")]
+		public async Task<string> AccountInfoSubmit()
+		{
+			if (!HttpContext.Request.Form.TryGetValue("NickName", out var nickName)
+				|| (!HttpContext.Request.Form.TryGetValue("RealName", out var realName))
+				|| (!HttpContext.Request.Form.TryGetValue("University", out var university))
+				|| (!HttpContext.Request.Form.TryGetValue("School", out var school))
+				|| (!HttpContext.Request.Form.TryGetValue("Speciality", out var speciality))
+				|| (!HttpContext.Request.Form.TryGetValue("SchoolYear", out var schoolYear))
+				|| (!HttpContext.Request.Form.TryGetValue("Introduction", out var introduction)))
+			{
+				return new Form()
+				{
+					{"Status","Failure"},
+					{"Info","Bad Request"}
+				}.ToJson();
+			}
+
+			var imageUrl = (await _userService.GetUserInfo(_user)).HeadImage;
+
+			if (HttpContext.Request.Form.Files.Count != 0)
+			{
+				var imageFile = HttpContext.Request.Form.Files[0];
+				var uploadInfo = (await _uploadService.UploadFile(
+					imageFile, 
+					UploadService.UploadFileType.IMAGE, 
+					UploadService.ImageType.HEAD_IMAGE));
+
+				if (uploadInfo["Status"] as string != "Success")
+				{
+					return uploadInfo.ToJson();
+				}
+
+				imageUrl = uploadInfo["Info"] as string;
+				_logger.LogDebug($"New Image Url: {imageUrl}");
+				
+			}
+				
+			_logger.LogDebug($"Image Url: {imageUrl}");
+			
+			var userInfo = new UserInfo(_user.ID, nickName, realName, university, school, speciality, Convert.ToDateTime(schoolYear),
+				introduction, imageUrl);
+			var successInfo = await _userService.InsertOrUpdateUserInfo(userInfo);
+			return new Form()
+			{
+				{ "Status", "Success" },
+				{ "Info", successInfo }
+			}.ToJson();
 		}
 		
+		#endregion
+
 		[HttpGet]
 		[Route("Password")]
 		public IActionResult Password()
 		{
 			return View("Password");
 		}
+		
+		#endregion
 
 		[HttpPost]
 		[Route("FindChildTags")]
@@ -300,7 +409,7 @@ namespace WebViewServer.Controllers
 			return new JsonResult(resultJSON.ToJson());
 		}
 
-		#endregion
+		
 
 
 		#region SearchResult
