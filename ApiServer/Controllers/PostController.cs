@@ -37,6 +37,13 @@ namespace ApiServer.Controllers
 			return (await _postService.GetAllPost()).ToJson();
 		}
 
+		[HttpGet]
+		[Route("GetPost")]
+		public async Task<string> GetPost(string postID)
+		{
+			return (await _postService.GetPost(postID)).ToJson();
+		}
+
 
 		[HttpPost]
 		[Route("GetPostInfo")]
@@ -93,10 +100,19 @@ namespace ApiServer.Controllers
 		}
 
 		[HttpPost]
+		[Route("SelectAFormedCommentAndUser")]
+		public async Task<string> SelectAFormedCommentAndUser()
+		{
+			var comment = HttpContext.Request.Form["Comment"].ToObject<Comment>();
+			var user = HttpContext.Request.Form["User"].ToObject<User>();
+			return (await _postService.SelectAFormedCommentAndUser(comment, user)).ToJson();
+		}
+
+		[HttpPost]
 		[Route("SelectFormedCommentsAndUser")]
 		public async Task<string> SelectFormedCommentsAndUser()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			var user = HttpContext.Request.Form["User"].ToObject<User>();
 			return (await _postService.SelectFormedCommentsAndUser(post, user)).ToJson();
 		}

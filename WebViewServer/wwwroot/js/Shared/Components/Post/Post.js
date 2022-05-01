@@ -105,8 +105,8 @@ async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
 function InitEvents(view, model) {
 
 	// add events
-	Tag.FlushDropEvent(view, model);
-	Tag.FlushDrugEvent(view, model);
+	Tag.FlushDropEvent(view);
+	Tag.FlushDrugEvent(view);
 	
     const contentItem = view.querySelector(".post-content>input");
     const focusLabel = view.querySelector("p>a.tag-label");
@@ -118,14 +118,14 @@ function InitEvents(view, model) {
     contentItem.onclick = async event => {
         event.preventDefault();
         event.stopPropagation();
-        await ShowContent(view, model);
+		await ShowContent(view, model);
     }
     // 给a标签同样添加点击事件
     let a = view.querySelector("a.a");
     a.onclick = async event => {
         event.preventDefault();
         event.stopPropagation();
-        await ShowContent(view, model);
+		window.location.hash = `#PostItem?PostID=${model.ID}`;
     }
 
 
@@ -351,7 +351,7 @@ function HideContent(view, model) {
 		event.preventDefault();
 		event.stopPropagation();
 		let contentItemElement = event.currentTarget.parentElement.children[1].children[0];
-		ShowContent(view, model);
+		window.location.hash = `#PostItem?PostID=${model.ID}`;
 	}
 	node.value = "查看全文";
 	console.log("hide content");
@@ -360,7 +360,9 @@ function HideContent(view, model) {
 
 
 export default {
-	Init, SetItemViewType, SetItemTemplate, SetTemplateViewToModelBinder
+	Init, 
+	SetItemViewType, SetItemTemplate, SetTemplateViewToModelBinder,
+	ShowContent
 }
 
 export {

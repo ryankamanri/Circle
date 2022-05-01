@@ -79,6 +79,17 @@ namespace WebViewServer.Services
 			});
 		}
 
+		public async Task<IList<Comment>> SelectComment(User user, Action<dynamic> SetSelections)
+		{
+			dynamic selections = new ExpandoObject();
+			SetSelections(selections);
+			return await _api.Post<IList<Comment>>("/User/SelectComment", new Form()
+			{
+				{"User", user},
+				{"Selections", selections}
+			});
+		}
+
 		/// <summary>
 		/// 选择你主动去采取行为的用户.例如关注,拉黑
 		/// </summary>

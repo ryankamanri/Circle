@@ -11,6 +11,7 @@ using Kamanri.Http;
 using ApiServer.Models.User;
 using ApiServer.Models;
 using ApiServer.Models.Post;
+using Microsoft.Extensions.Logging;
 
 namespace ApiServer.Services
 {
@@ -23,10 +24,13 @@ namespace ApiServer.Services
 		private const string TYPE_POST = "Post";
 
 		private const string TYPE_COMMENT = "Comment";
-        public PostService(DatabaseContext dbc, UserService userService)
+
+		private readonly ILogger<PostService> _logger;
+        public PostService(DatabaseContext dbc, UserService userService, ILoggerFactory loggerFactory)
 		{
 			_dbc = dbc;
 			_userService = userService;
+			_logger = loggerFactory.CreateLogger<PostService>();
 		}
 
 		#region Get
@@ -34,6 +38,14 @@ namespace ApiServer.Services
 		public async Task<IList<Post>> GetAllPost()
 		{
 			return await _dbc.SelectAll<Post>();
+		}
+
+		public async Task<Post> GetPost(string postID)
+		{
+			long id;
+			id = Convert.ToInt64(postID);
+			_logger.LogDebug($"Post ID : {id}");
+			return await _dbc.Select(new Post(id));
 		}
 
 		public async Task<PostInfo> GetPostInfo(Post post)
@@ -135,6 +147,42 @@ namespace ApiServer.Services
 		{
 			var replyComment = (await _dbc.SelectCustom<Comment>($"ID = {comment.CommentID}")).FirstOrDefault();
 			return await SelectCommentOwnerInfo(replyComment);
+		}
+
+		public async Task<KeyValuePair<Comment, Form>> SelectAFormedCommentAndUser(Comment comment, User user)
+		{
+			if (comment.CommentID == -1)
+			{
+				// first level comment
+				var ownedUserInfo = await SelectCommentOwnerInfo(comment);
+				var likeCount = (await SelectCommentLikeCount(comment))["LikeCount"];
+				var replyCount = "?";
+				var isLike = await _userService.IsEntityRelationExist(user, TYPE_COMMENT, comment.ID, "Type", "Like");
+
+				var comment_info = new KeyValuePair<Comment, Form>(comment, new Form()
+				{
+					{ "OwnerHeadImage", ownedUserInfo.HeadImage },
+					{ "OwnerNickName", ownedUserInfo.NickName },
+					{ "LikeCount",  likeCount },
+					{ "ReplyCount",  replyCount },
+					{ "IsLike", isLike.ToString() }
+				});
+
+				return comment_info;
+			}
+			
+			// second level comment
+			var slOwnerInfo = await SelectCommentOwnerInfo(comment);
+			var slReplyUserInfo = await SelectCommentReplyUserInfo(comment);
+			var slComment_info = new KeyValuePair<Comment, Form>(comment, new Form()
+			{
+				{ "OwnerHeadImage", slOwnerInfo.HeadImage },
+				{ "OwnerNickName", slOwnerInfo.NickName },
+				{ "ReplyUserHeadImage", slReplyUserInfo.HeadImage },
+				{ "ReplyUserNickName", slReplyUserInfo.NickName }
+			});
+
+			return slComment_info;
 		}
 
 		public async Task<Key_ListValue_Pairs<KeyValuePair<Comment, Form>, KeyValuePair<Comment, Form>>> SelectFormedCommentsAndUser(Post post, User user)

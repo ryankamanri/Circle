@@ -63,6 +63,9 @@ async function InitTagView(services, tagMount) {
 		console.error(model);
 		throw error;
 	}
+
+	Tag.FlushDropEvent(tagMount);
+	Tag.FlushDrugEvent(tagMount);
 }
 
 async function Init(services){

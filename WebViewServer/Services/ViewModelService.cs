@@ -41,6 +41,7 @@ namespace WebViewServer.Services
         {
             var myInterestedPosts = await _userService.MappingPostsByTag(_user, selection => selection.Type = new List<string>() { "Interested" });
             var allPosts = await _postService.GetAllPost();
+            allPosts.Remove(allPosts.FirstOrDefault(post => post.ID == -1));
             var myPosts = myInterestedPosts.Union(allPosts, new Post());
             var count = 0;
             foreach (var myPost in myPosts)
@@ -62,6 +63,7 @@ namespace WebViewServer.Services
 		{
 			var myInterestedPosts = (await _userService.MappingPostsByTag(_user, selection => selection.Type = new List<string>() { "Interested" })).ToList();
             var allPosts = (await _postService.GetAllPost()).ToList();
+            allPosts.Remove(allPosts.FirstOrDefault(post => post.ID == -1));
 			for(var count = 0; count < 20; count++) {
 				var rand = new Random().Next();
 				if (rand % 3 == 0)
@@ -204,6 +206,11 @@ namespace WebViewServer.Services
 		        { "ID", userInfo_tagList.Key.ID },
 		        { "IsFocus", isFocus }
 	        };
+        }
+
+        public async Task<KeyValuePair<Comment, Form>> GetCommentViewModel(Comment comment)
+        {
+	        return await _postService.SelectAFormedCommentAndUser(comment, _user);
         }
 
         public async Task<Form> GetPostViewModel(Post post)

@@ -31,13 +31,16 @@ async function ShowLoad(mountElement, loadText, LoadedCallback, loadHTML = "") {
 	await LoadedCallback(childElementFragment);
 	await Animate(mountElement, { opacity: 0 });
 	mountElement.innerHTML = '';
-
-	for (let i = 0; i < childCount; i++) {
+	
+	const childFragmentCount = childElementFragment.childNodes.length;
+	for (let i = 0; i < childFragmentCount; i++) {
 		mountElement.appendChild(childElementFragment.childNodes[0]);
 	}
 	mountElement.style.top = '100px';
+	const position = mountElement.style.position;
 	mountElement.style.position = 'relative';
 	await Animate(mountElement, { opacity: 1, top: 0 });
+	mountElement.style.position = position;
 }
 
 async function ShowAlert(bootstrapClass, emphasis, message, alertTime=1500)

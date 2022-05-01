@@ -1,4 +1,4 @@
-import { Router, Api, AddScript, Sleep, MyWebSocket } from "./My.js";
+import {Router, Api, AddScript, Sleep, MyWebSocket, ShowLoad} from "./My.js";
 import Header from './Shared/Header.js';
 import Tag from "./Shared/Components/Tag.js";
 import Home from "./Home/Home.js";
@@ -12,6 +12,7 @@ import Match from "./Home/Match.js"
 import MatchButton from "./Home/MatchButton.js";
 import AccountInfo from "./Home/AccountInfo.js";
 import Setting from "./Home/Setting.js";
+import PostItem from "./Home/PostItem.js";
 
 const mainMount = document.querySelector(".main-container main");
 
@@ -97,13 +98,23 @@ async function Init(services) {
         SetSubtitle("Password");
         await InitView(services);
         await InitBase(services);
+    }).AddRoute("PostItem", async() => {
+        SetSubtitle("帖子页");
+        await InitView(services);
+        await InitBase(services);
+        await PostItem.Init(services);
     })
     .Execute();
 }
 
 async function InitView(services) {
     const viewStr = await services.Api.Get(`/Home/${window.location.hash.replace("#", "")}`);
-    mainMount.innerHTML = viewStr;
+    mainMount.innerHTML = "";
+    await ShowLoad(mainMount, "页面加载中...", fragment => {
+        const div = document.createElement("div");
+        div.innerHTML = viewStr;
+        fragment.appendChild(div);
+    });
 }
 
 async function InitBase(services){

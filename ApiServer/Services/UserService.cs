@@ -89,6 +89,11 @@ namespace ApiServer.Services
 			return await _dbc.MappingSelect<User, Post>(user, ID_IDList.OutPutType.Value, SetSelections);
 		}
 
+		public async Task<IList<Comment>> SelectComment(User user, Action<dynamic> SetSelections)
+		{
+			return await _dbc.MappingSelect<User, Comment>(user, ID_IDList.OutPutType.Value, SetSelections);
+		}
+
 		/// <summary>
 		/// 选择你主动去采取行为的用户.例如关注,拉黑
 		/// </summary>

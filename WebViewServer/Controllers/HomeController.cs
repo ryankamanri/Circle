@@ -8,6 +8,7 @@ using Kamanri.Http;
 using Kamanri.Extensions;
 using Microsoft.Extensions.Logging;
 using WebViewServer.Models;
+using WebViewServer.Models.Post;
 using WebViewServer.Models.User;
 using WebViewServer.Services;
 using WebViewServer.Services.Cookie;
@@ -221,18 +222,26 @@ namespace WebViewServer.Controllers
 
 
 		#endregion
-		
-		[HttpPost]
-		[Route("UserPagePostModel")]
-		public async Task<string> UserPagePostModel()
+
+		#region PostItem
+
+		[HttpGet]
+		[Route("PostItem")]
+		public IActionResult PostItem()
 		{
-			var modelList = new List<Form>();
-			await foreach (var model in _vmService.GetUserPagePostsViewModels())
-			{
-				modelList.Add(await model);
-			}
-			return modelList.ToJson();
+			return View("PostItem");
 		}
+
+		[HttpGet]
+		[Route("PostItemModel")]
+		public async Task<string> PostItemModel(string postID)
+		{
+			var post = await _postService.GetPost(postID);
+			return (await _vmService.GetPostViewModel(post)).ToJson();
+
+		}
+
+		#endregion
 
 
 		#region PrivateChat
@@ -255,12 +264,7 @@ namespace WebViewServer.Controllers
 		
 		#endregion
 
-		[HttpGet]
-		[Route("Match")]
-		public IActionResult Match()
-		{
-			return View("Match");
-		}
+		
 
 		#region UserPage
 
@@ -270,6 +274,18 @@ namespace WebViewServer.Controllers
 		{
 			var userInfo = await _userService.GetUserInfo(_user);
 			return View("UserPage",userInfo);
+		}
+		
+		[HttpPost]
+		[Route("UserPagePostModel")]
+		public async Task<string> UserPagePostModel()
+		{
+			var modelList = new List<Form>();
+			await foreach (var model in _vmService.GetUserPagePostsViewModels())
+			{
+				modelList.Add(await model);
+			}
+			return modelList.ToJson();
 		}
 
 		[HttpPost]
@@ -299,6 +315,29 @@ namespace WebViewServer.Controllers
 			return result.ToJson();
 		}
 
+		[HttpPost]
+		[Route("SelectCommentModel")]
+		public async Task<string> SelectCommentModel()
+		{
+			if (!HttpContext.Request.Form.TryGetValue("Type[]", out var type))
+			{
+				return new Form()
+				{
+					{"Status","Failure"},
+					{"Info","Bad Request"}
+				}.ToJson();
+			}
+			var comments = (await _userService.SelectComment(_user, 
+				selection => selection.Type = type.ToList()));
+			var result = new List<KeyValuePair<Comment, Form>>();
+
+			foreach (var comment in comments)
+			{
+				result.Add(await _vmService.GetCommentViewModel(comment));
+			}
+
+			return result.ToJson();
+		}
 		#endregion
 
 		
@@ -432,6 +471,13 @@ namespace WebViewServer.Controllers
 		#endregion
 
 		#region Match
+		
+		[HttpGet]
+		[Route("Match")]
+		public IActionResult Match()
+		{
+			return View("Match");
+		}
 
 		[HttpGet]
 		[Route("MatchModel")]

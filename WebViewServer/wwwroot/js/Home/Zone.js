@@ -18,7 +18,7 @@ async function InitPostView(services, mountElement) {
 
 	await Post.Init(services);
 
-	postModelView.SetItemViewType(model => {
+	await postModelView.SetItemViewType(model => {
 
 		return Post.SetItemViewType(model);
 	}).SetItemTemplate(viewType => {
@@ -28,7 +28,7 @@ async function InitPostView(services, mountElement) {
 
 		Post.SetTemplateViewToModelBinder(view, model, viewType);
 
-	}).Show();
+	}).ShowAsync();
 }
 
 export {

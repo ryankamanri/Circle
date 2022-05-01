@@ -1,13 +1,12 @@
 
 	// Kits
 
-import { GetType, CopyElement, GenerateIDString } from './Utils.js';
-	
+	import {CopyElement, GenerateIDString, GetType} from './Utils.js';
 
 
 	function ModelList(modelArray) {
 		// Type Check
-		if (GetType(modelArray) != GetType(Array())) {
+		if (GetType(modelArray) !== GetType(Array())) {
 			console.error(`Expected ${GetType(Array())} As The Type Of Parameter 'modelArray' But Ordered ${GetType(modelArray)}`);
 			return;
 		}
@@ -27,7 +26,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			let indexCount = this._modelArray.length;
 			for(let item of items) {
 				this._modelArray.push(item);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyInsertedAt(indexCount, item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyInsertedAt(indexCount, item);
 				indexCount++;
 			}
 		}
@@ -36,7 +35,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			let indexCount = index;
 			for(let item of items) {
 				this._modelArray.splice(indexCount, 0, item);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyInsertedAt(indexCount, item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyInsertedAt(indexCount, item);
 				indexCount++;
 			}
 		}
@@ -44,7 +43,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		this.DeleteAt = (index, deleteCount) => {
 			for(let indexCount = index; indexCount < index + deleteCount; indexCount++) {
 				this._modelArray.splice(index, 1);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyDeletedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyDeletedAt(index);
 			}
 		}
 
@@ -52,11 +51,11 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			try {
 				let model = this._modelArray[index];
 				ChangeDelegate(model);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyChangedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyChangedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Change Caused By : \n ${error.stack}`);
 				console.warn(`Expected Delegate Function 'ChangeDelegage' Which Type : \n (model : object) => void`);
-				return;
+				
 			}
 		}
 
@@ -64,11 +63,11 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			try {
 				let model = this._modelArray[index];
 				let replacedModel = ReplaceDelegate(model);
-				if(this._modelView != undefined && this._modelView.GetModelList() == this) this._modelView.NotifyReplacedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyReplacedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Replace Caused By : \n ${error.stack}`);
 				console.warn(`Expected Delegate Function 'ReplaceDelegage' Which Type : \n (model : object) => replacedModel : object`);
-				return;
+				
 			}
 			
 		}
@@ -82,11 +81,11 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 	function ModelView(modelList, mountDivElement) {
 
 		// Type Check
-		if (GetType(modelList) != GetType(new ModelList([]))) {
+		if (GetType(modelList) !== GetType(new ModelList([]))) {
 			console.error(`Expected ${GetType(new ModelList([]))} As The Type Of Parameter 'modelList' But Ordered ${GetType(modelList)}`);
 			return;
 		}
-		if (GetType(mountDivElement) != GetType(document.createElement('div'))) {
+		if (GetType(mountDivElement) !== GetType(document.createElement('div'))) {
 			console.error(`Expected ${GetType(document.createElement('div'))} As The Type Of Parameter 'mountDivElement' But Ordered ${GetType(mountDivElement)}`);
 			return;
 		}
@@ -96,7 +95,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 				console.error("Invalid Template : Property 'viewTemplate' May Not A Template");
 				return false;
 			}
-			if (viewTemplate.content.childElementCount != 1) {
+			if (viewTemplate.content.childElementCount !== 1) {
 				console.error("Invalid Template : Template Can And Only Can Have 1 Root Element");
 				return false;
 			}
@@ -110,7 +109,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		this._modelList._SetModelView(this);
 
 		this.RebindModelList = (bindModelList) => {
-			if (GetType(bindModelList) != GetType(new ModelList([]))) {
+			if (GetType(bindModelList) !== GetType(new ModelList([]))) {
 				console.error(`Expected ${GetType(new ModelList([]))} As The Type Of Parameter 'modelList' But Ordered ${GetType(modelList)}`);
 				return;
 			}
@@ -128,6 +127,7 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		this._ItemTemplate = viewType => document.createElement("template"); // (viewType : int) -> Template
 		this._TemplateViewToModelBinder = (view, modelItem, viewType) => { }; // (Template, modelItem, viewType) -> void
 		this._ModelToTemplateViewBinder = (modelItem, view, viewType) => { };
+		this._Finally = (view, modelItem) => {};
 
 		// User Set Callback Function Setters Public
 		this.SetItemViewType = setter => {
@@ -147,6 +147,11 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		}
 		this.SetModelToTemplateViewBinder = setter => {
 			this._ModelToTemplateViewBinder = setter;
+			return this;
+		}
+		
+		this.Finally = setter => {
+			this._Finally = setter;
 			return this;
 		}
 
@@ -189,6 +194,45 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 			return viewItem;
 		}
 
+		this._GenerateAViewItemAsync = async(modelItem) => {
+			let viewType;
+			let template;
+			let view;
+			let viewItem;
+
+			try {
+				viewType = await this._ItemViewType(modelItem);
+				template = CopyElement(await this._ItemTemplate(viewType));
+				if (!this._CheckTemplateIsValid(template)) {
+					console.error("Invalid Template");
+					return;
+				}
+				view = template.content;
+			} catch (error) {
+				console.error(`Failed To Execute SetItemViewType Or SetItemTemplate Caused By : \n ${error.stack}`);
+				console.warn(`Function 'SetItemViewType' Expected A Delegate Function Which Type : \n (modelItem : object) => viewType : int`);
+				console.warn(`Function 'SetItemTemplate' Expected A Delegate Function Which Type : \n (viewType : int) => template : HTMLTemplateElement`);
+				return;
+			}
+
+			// Set Item Key
+			viewItem = view.firstElementChild;
+
+			try {
+				await this._TemplateViewToModelBinder(viewItem, modelItem, viewType);
+			} catch (error) {
+				console.error(`Failed To Execute SetTemplateViewToModelBinder Caused By : \n ${error.stack}`);
+				console.warn(`Expected A Delegate Function Which Type : \n (view : HTMLDivElement, modelItem : object, viewType : int) => void`);
+				return;
+			}
+
+
+
+			viewItem.setAttribute("item_key", modelItem.itemKey);
+
+			return viewItem;
+		}
+
 		this._CoverTemplateElement = (view) => {
 			// let copyView = CopyElement(view);
 			let template = document.createElement('template');
@@ -199,33 +243,32 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		this.Show = () => {
 			this._modelList.GetModelArray().forEach(modelItem => {
 
-				let itemKey = GenerateIDString();
-				modelItem.itemKey = itemKey;
+				modelItem.itemKey = GenerateIDString();
 				let viewItem = this._GenerateAViewItem(modelItem);
 				
 				//Append To MountElement
 				this._mountElement.append(viewItem);
-
+				this._Finally(viewItem, modelItem);
 			});
 		}
 
 		this.ShowAsync = () => {
-			return new Promise(resolve => {
+			return new Promise(async(resolve) => {
 				let modelCount = 0;
 				if(this._modelList.GetLength() === 0) resolve(modelCount);
-				this._modelList.GetModelArray().forEach(modelItem => {
+				for (const modelItem of this._modelList.GetModelArray()) {
 
-					let itemKey = GenerateIDString();
-					modelItem.itemKey = itemKey;
-					let viewItem = this._GenerateAViewItem(modelItem);
+					modelItem.itemKey = GenerateIDString();
+					let viewItem = await this._GenerateAViewItemAsync(modelItem);
 					
 					//Append To MountElement
 					this._mountElement.append(viewItem);
+					await this._Finally(viewItem, modelItem);
 					modelCount++;
 					if(modelCount === this._modelList.GetLength()) {
 						resolve(modelCount);
 					}
-				});
+				}
 			});
 		}
 
@@ -235,12 +278,11 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 
 		this.NotifyInsertedAt = (index, modelItem) => {
 
-			if(this._mountElement.children[index] != undefined && 
-				this._modelList.GetModelArray()[index].itemKey == this._mountElement.children[index].getAttribute("item_key")) return;
-			let itemKey = GenerateIDString();
-			modelItem.itemKey = itemKey;
+			if(this._mountElement.children[index] !== undefined && 
+				this._modelList.GetModelArray()[index].itemKey === this._mountElement.children[index].getAttribute("item_key")) return;
+			modelItem.itemKey = GenerateIDString();
 			let viewItem = this._GenerateAViewItem(modelItem);
-			if (this._mountElement.children.length == 0)
+			if (this._mountElement.children.length === 0)
 				this._mountElement.appendChild(viewItem);
 			else this._mountElement.insertBefore(
 				viewItem,
@@ -249,8 +291,8 @@ import { GetType, CopyElement, GenerateIDString } from './Utils.js';
 		}
 
 		this.NotifyDeletedAt = (index) => {
-			if(this._modelList.GetModelArray()[index] != undefined && 
-				this._modelList.GetModelArray()[index].itemKey == this._mountElement.children[index].getAttribute("item_key")) return;
+			if(this._modelList.GetModelArray()[index] !== undefined && 
+				this._modelList.GetModelArray()[index].itemKey === this._mountElement.children[index].getAttribute("item_key")) return;
 			this._mountElement.children[index].remove();
 		}
 

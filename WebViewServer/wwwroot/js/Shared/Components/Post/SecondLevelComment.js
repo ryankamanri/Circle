@@ -14,6 +14,8 @@ function SetItemTemplate(viewType) {
 }
 
 function SetTemplateViewToModelBinder(view, model, viewType) {
+    view.setAttribute("comment-id", model.Key.ID);
+    
     let headImage = view.querySelectorAll(".head-image>img")[0];
     headImage.setAttribute("src", model.Value.OwnerHeadImage);
     let nickName = view.querySelectorAll(".nickname")[0];
@@ -31,8 +33,17 @@ function SetTemplateViewToModelBinder(view, model, viewType) {
     commentLabel.setAttribute("postid", model.Key.PostID);
     commentLabel.setAttribute("owner-name", model.Value.OwnerNickName);
     commentLabel.setAttribute("comment-id", model.Key.ID);
+    
+    InitEvents(view, model);
 
     view.style.display = "inherit";
+}
+
+function InitEvents(view, model) {
+    const content = view.querySelector(".comment-content");
+    content.onclick = () => {
+        window.location.hash = `#PostItem?PostID=${model.Key.PostID}&CommentID=${model.Key.ID}`;
+    }
 }
 
 export default{

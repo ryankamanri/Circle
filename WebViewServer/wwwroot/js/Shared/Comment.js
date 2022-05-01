@@ -41,7 +41,7 @@ function Clean(commentLabel) {
 }
 
 
-async function BuildAndShowModelView(commentLabel) {
+async function BuildAndShowModelView(commentLabel, isShowSLComment=false) {
 
 	
 	let resData = await api.Post("/Shared/SelectFormedCommentsAndUser", {
@@ -56,24 +56,28 @@ async function BuildAndShowModelView(commentLabel) {
 
 	commentLabel.onclick = event => Clean(event.currentTarget, commentModelView);
 
-	commentModelView.SetItemTemplate(viewType => {
+	await commentModelView.SetItemTemplate(viewType => {
 		return FirstLevelComment.SetItemTemplate(viewType);
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
 		
-		FirstLevelComment.SetTemplateViewToModelBinder(view, model, viewType);
+		FirstLevelComment.SetTemplateViewToModelBinder(view, model.Key, viewType);
 
 		JudgeLike(event, model, view);
 
 		let commentLabel = view.querySelector(".comment");
+		
+		if(isShowSLComment) {
+			ShowSecondLevelComment(event.currentTarget, model, view);
+		}
 
 		commentLabel.onclick = event => {
 			let commentLabel = event.currentTarget;
-			ShowSecondLevelComment(event, model, view);
+			ShowSecondLevelComment(event.currentTarget, model, view);
 			ShowInputWindow(commentLabel);
 		}
 
 		
-	}).Show();
+	}).ShowAsync();
 }
 
 function ShowInputWindow(commentLabel) {
@@ -167,17 +171,16 @@ async function RemoveLike(event, model) {
 	ShowAlert("alert alert-info", "已取消点赞", "");
 }
 
-async function ShowSecondLevelComment(event, flCommentModel, flCommentView) {
-
-	let commentLabel = event.currentTarget;
+async function ShowSecondLevelComment(commentLabel, flCommentModel, flCommentView) {
+	
 
 	let slCommentModelList = new ModelView.ModelList(flCommentModel.Value);
 	let slCommentMountElement = flCommentView.querySelector(".second-comment-mount");
 	let slCommentModelView = new ModelView.ModelView(slCommentModelList, slCommentMountElement);
 
-	commentLabel.onclick = event => Clean(event.currentTarget, slCommentModelView);
+	commentLabel.onclick = event => Clean(commentLabel, slCommentModelView);
 
-	slCommentModelView.SetItemTemplate(viewType => {
+	await slCommentModelView.SetItemTemplate(viewType => {
 		return SecondLevelComment.SetItemTemplate(viewType);
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
 		
@@ -185,10 +188,10 @@ async function ShowSecondLevelComment(event, flCommentModel, flCommentView) {
 
 		let commentLabel = view.querySelector(".comment");
 		commentLabel.addEventListener("click", event => {
-			ShowInputWindow(event.currentTarget);
+			ShowInputWindow(commentLabel);
 		});
 		
-	}).Show();
+	}).ShowAsync();
 
 	
 }

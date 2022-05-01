@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Kamanri.Database.Models.Relation;
 using Kamanri.Extensions;
 using Kamanri.Http;
+using Microsoft.Extensions.Logging;
 using WebViewServer.Models;
 using WebViewServer.Models.Post;
 using WebViewServer.Models.User;
@@ -15,13 +16,14 @@ namespace WebViewServer.Services
 
 		private Api _api;
 		private readonly TagService _tagService;
+		private readonly ILogger<PostService> _logger;
 
 
-
-		public PostService(Api api, TagService tagService)
+		public PostService(Api api, TagService tagService, ILoggerFactory loggerFactory)
 		{
 			_api = api;
 			_tagService = tagService;
+			_logger = loggerFactory.CreateLogger<PostService>();
 		}
 
 		#region Get
@@ -29,6 +31,12 @@ namespace WebViewServer.Services
 		public async Task<IList<Post>> GetAllPost()
 		{
 			return await _api.Get<IList<Post>>("/Post/GetAllPost");
+		}
+
+		public async Task<Post> GetPost(string postID)
+		{
+			_logger.LogDebug($"Post ID = {postID}");
+			return await _api.Get<Post>($"/Post/GetPost?postID={postID}");
 		}
 
 		public async Task<PostInfo> GetPostInfo(Post post)
@@ -86,6 +94,15 @@ namespace WebViewServer.Services
 			});
 
         }
+
+		public async Task<KeyValuePair<Comment, Form>> SelectAFormedCommentAndUser(Comment comment, User user)
+		{
+			return await _api.Post<KeyValuePair<Comment, Form>>("/Post/SelectAFormedCommentAndUser", new Form()
+			{
+				{"Comment", comment},
+				{"User", user}
+			});
+		}
 
 		public async Task<Key_ListValue_Pairs<KeyValuePair<Comment, Form>, KeyValuePair<Comment, Form>>> SelectFormedCommentsAndUser(Post post, User user)
 		{

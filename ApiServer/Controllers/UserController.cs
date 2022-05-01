@@ -62,12 +62,24 @@ namespace ApiServer.Controllers
 		[Route("SelectPost")]
 		public async Task<string> SelectPost()
 		{
-			User user = HttpContext.Request.Form["User"].ToObject<User>();
+			var user = HttpContext.Request.Form["User"].ToObject<User>();
 			var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string, object>>();
 			return (await _userService.SelectPost(user, selections =>
 			 {
 				 Dynamic.Cover(options, selections);
 			 })).ToJson();
+		}
+
+		[HttpPost]
+		[Route("SelectComment")]
+		public async Task<string> SelectComment()
+		{
+			var user = HttpContext.Request.Form["User"].ToObject<User>();
+			var options = HttpContext.Request.Form["Selections"].ToObject<Dictionary<string, object>>();
+			return (await _userService.SelectComment(user, selections =>
+			{
+				Dynamic.Cover(options, selections);
+			})).ToJson();
 		}
 
 		[HttpPost]
