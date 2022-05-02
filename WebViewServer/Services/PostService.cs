@@ -95,6 +95,14 @@ namespace WebViewServer.Services
 
         }
 
+		public async Task<IList<Comment>> SelectReplyComments(Comment comment)
+		{
+			return await _api.Post<IList<Comment>>("/Post/SelectReplyComments", new Form()
+			{
+				{ "Comment", comment }
+			});
+		}
+
 		public async Task<KeyValuePair<Comment, Form>> SelectAFormedCommentAndUser(Comment comment, User user)
 		{
 			return await _api.Post<KeyValuePair<Comment, Form>>("/Post/SelectAFormedCommentAndUser", new Form()

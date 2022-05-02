@@ -119,6 +119,40 @@ namespace WebViewServer.Services
                 yield return GetPostViewModel(myFocusPost);
             }
         }
+
+        public async Task<IList<KeyValuePair<Comment, Form>>> GetNoticeViewModels()
+        {
+	        var result = new List<KeyValuePair<Comment, Form>>();
+	        // Get My Post Comment
+	        var myPosts =
+		        await _userService.SelectPost(_user, selection => selection.Type = new List<string>() { "Owned" });
+	        foreach (var myPost in myPosts)
+	        {
+		        var comments = await _postService.SelectComments(myPost);
+		        foreach (var comment in comments)
+		        {
+			        var commentModel = await GetCommentViewModel(comment);
+			        result.Add(commentModel);
+		        }
+	        }
+
+	        // Get Reply My Comment
+	        var myComments =
+		        await _userService.SelectComment(_user, selection => selection.Type = new List<string>() { "Owned" });
+	        foreach (var myComment in myComments)
+	        {
+		        var replyComments = await _postService.SelectReplyComments(myComment);
+		        foreach (var replyComment in replyComments)
+		        {
+			        var commentModel = await GetCommentViewModel(replyComment);
+			        result.Add(commentModel);
+		        }
+	        }
+	        
+	        result.Sort((comment_1, comment_2) => DateTime.Compare(comment_2.Key.CommentDateTime, comment_1.Key.CommentDateTime));
+
+	        return result;
+        }
         #endregion
 
         public async IAsyncEnumerable<Task<Form>> GetUserPagePostsViewModels()
@@ -144,7 +178,7 @@ namespace WebViewServer.Services
 	        }
         }
 
-        public async Task<Form> GetMatchModel()
+        public async Task<Form> GetMatchModels()
         {
 	        var matchUserInfo_Tag = await _api.Get<Form>($"/Match/Match?userID={_user.ID}");
 	        var matchUserInfoModelList = new List<Form>();

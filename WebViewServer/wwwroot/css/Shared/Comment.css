@@ -1,5 +1,12 @@
-﻿.fl-comment {
+﻿.fl-comment-item, .sl-comment-item {
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 3px 20px rgb(12 62 56 / 46%) !important;
+}
+
+.fl-comment {
     background: #ffffff;
+    border-radius: 15px;
 }
 
 .fl-comment .head-image {
@@ -73,6 +80,7 @@
 
 .sl-comment {
     background: #eeeeee;
+    border-radius: 15px;
 }
 
 .sl-comment hr {

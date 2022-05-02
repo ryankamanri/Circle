@@ -13,6 +13,7 @@ import MatchButton from "./Home/MatchButton.js";
 import AccountInfo from "./Home/AccountInfo.js";
 import Setting from "./Home/Setting.js";
 import PostItem from "./Home/PostItem.js";
+import Notice from "./Home/Notice.js";
 
 const mainMount = document.querySelector(".main-container main");
 
@@ -51,6 +52,11 @@ async function Init(services) {
         await Zone.Init(services);
         await InitBase(services);
 
+    }).AddRoute("Home/Notice", async() => {
+        SetSubtitle("通知");
+        await InitView(services);
+        await InitBase(services);
+        await Notice.Init(services);
     }).AddRoute("Match", async() => {
         SetSubtitle("匹配");
         await InitView(services);
@@ -103,8 +109,7 @@ async function Init(services) {
         await InitView(services);
         await InitBase(services);
         await PostItem.Init(services);
-    })
-    .Execute();
+    }).Execute();
 }
 
 async function InitView(services) {

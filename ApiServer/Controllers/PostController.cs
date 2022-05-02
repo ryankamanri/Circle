@@ -49,7 +49,7 @@ namespace ApiServer.Controllers
 		[Route("GetPostInfo")]
 		public async Task<string> GetPostInfo()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			return (await _postService.GetPostInfo(post)).ToJson();
 		}
 
@@ -61,7 +61,7 @@ namespace ApiServer.Controllers
 		[Route("SelectAuthorInfo")]
 		public async Task<string> SelectAuthorInfo()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			return (await _postService.SelectAuthorInfo(post)).ToJson();
 		}
 
@@ -70,7 +70,7 @@ namespace ApiServer.Controllers
 		[Route("SelectTags")]
 		public async Task<string> SelectTags()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			return (await _postService.SelectTags(post)).ToJson();
 		}
 
@@ -78,7 +78,7 @@ namespace ApiServer.Controllers
 		[Route("SelectLikeCollectCommentCount")]
 		public async Task<string> SelectLikeCollectCommentCount()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			return (await _postService.SelectLikeCollectCommentCount(post)).ToJson();
 		}
 
@@ -86,7 +86,7 @@ namespace ApiServer.Controllers
 		[Route("SelectIsLikeOrCollect")]
 		public async Task<string> SelectIsLikeOrCollect()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			var user = HttpContext.Request.Form["User"].ToObject<User>();
 			return (await _postService.SelectIsLikeOrCollect(post, user)).ToJson();
 		}
@@ -95,9 +95,18 @@ namespace ApiServer.Controllers
 		[Route("SelectComments")]
 		public async Task<string> SelectComments()
 		{
-			Post post = HttpContext.Request.Form["Post"].ToObject<Post>();
+			var post = HttpContext.Request.Form["Post"].ToObject<Post>();
 			return (await _postService.SelectComments(post)).ToJson();
 		}
+		
+		[HttpPost]
+		[Route("SelectReplyComments")]
+		public async Task<string> SelectReplyComments()
+		{
+			var comment = HttpContext.Request.Form["Comment"].ToObject<Comment>();
+			return (await _postService.SelectReplyComments(comment)).ToJson();
+		}
+		
 
 		[HttpPost]
 		[Route("SelectAFormedCommentAndUser")]

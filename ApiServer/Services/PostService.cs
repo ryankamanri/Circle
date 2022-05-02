@@ -133,6 +133,11 @@ namespace ApiServer.Services
 			return await _dbc.SelectCustom<Comment>($"PostID = {post.ID}");
         }
 
+		public async Task<IList<Comment>> SelectReplyComments(Comment comment)
+		{
+			return await _dbc.SelectCustom<Comment>($"CommentID = {comment.ID}");
+		}
+
 		public async Task<UserInfo> SelectCommentOwnerInfo(Comment comment)
 		{
 			var user = (await _dbc.MappingSelect<Comment, User>(comment, ID_IDList.OutPutType.Key,

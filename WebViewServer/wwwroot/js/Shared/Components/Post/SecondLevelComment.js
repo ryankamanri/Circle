@@ -7,10 +7,24 @@ function Init(services) {
     
 }
 
+const ViewType = {
+    SingleItem: "SingleItem",
+    Default: "Default"
+}
+
 function SetItemTemplate(viewType) {
     const template = document.createElement("template");
-    template.innerHTML = slCommentTemplateStr;
-    return template;
+    switch (viewType){
+        case ViewType.SingleItem:
+            const div = document.createElement("div");
+            div.className="sl-comment-item";
+            div.innerHTML = slCommentTemplateStr;
+            template.content.appendChild(div);
+            return template;
+        default:
+            template.innerHTML = slCommentTemplateStr;
+            return template;
+    }
 }
 
 function SetTemplateViewToModelBinder(view, model, viewType) {
@@ -47,5 +61,5 @@ function InitEvents(view, model) {
 }
 
 export default{
-    Init, SetItemTemplate, SetTemplateViewToModelBinder
+    Init, SetItemTemplate, SetTemplateViewToModelBinder, ViewType
 }

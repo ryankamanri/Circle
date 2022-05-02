@@ -26,7 +26,18 @@
 			let indexCount = this._modelArray.length;
 			for(let item of items) {
 				this._modelArray.push(item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyInsertedAt(indexCount, item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+					this._modelView.NotifyInsertedAt(indexCount, item);
+				indexCount++;
+			}
+		}
+
+		this.AppendAsync = async(...items) => {
+			let indexCount = this._modelArray.length;
+			for(let item of items) {
+				this._modelArray.push(item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+					await this._modelView.NotifyInsertedAtAsync(indexCount, item);
 				indexCount++;
 			}
 		}
@@ -35,15 +46,28 @@
 			let indexCount = index;
 			for(let item of items) {
 				this._modelArray.splice(indexCount, 0, item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyInsertedAt(indexCount, item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+					this._modelView.NotifyInsertedAt(indexCount, item);
 				indexCount++;
 			}
 		}
 
+		this.InsertAtAsync = async(index, ...items) => {
+			let indexCount = index;
+			for(let item of items) {
+				this._modelArray.splice(indexCount, 0, item);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+					await this._modelView.NotifyInsertedAtAsync(indexCount, item);
+				indexCount++;
+			}
+		}
+		
+
 		this.DeleteAt = (index, deleteCount) => {
 			for(let indexCount = index; indexCount < index + deleteCount; indexCount++) {
 				this._modelArray.splice(index, 1);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyDeletedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+					this._modelView.NotifyDeletedAt(index);
 			}
 		}
 
@@ -51,7 +75,8 @@
 			try {
 				let model = this._modelArray[index];
 				ChangeDelegate(model);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyChangedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+					this._modelView.NotifyChangedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Change Caused By : \n ${error.stack}`);
 				console.warn(`Expected Delegate Function 'ChangeDelegage' Which Type : \n (model : object) => void`);
@@ -63,13 +88,28 @@
 			try {
 				let model = this._modelArray[index];
 				let replacedModel = ReplaceDelegate(model);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) this._modelView.NotifyReplacedAt(index);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+					this._modelView.NotifyReplacedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Replace Caused By : \n ${error.stack}`);
 				console.warn(`Expected Delegate Function 'ReplaceDelegage' Which Type : \n (model : object) => replacedModel : object`);
 				
 			}
 			
+		}
+
+		this.ReplaceAsync = async(index, ReplaceDelegate) => {
+			try {
+				let model = this._modelArray[index];
+				let replacedModel = ReplaceDelegate(model);
+				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+					await this._modelView.NotifyReplacedAtAsync(index);
+			} catch (error) {
+				console.error(`Failed To Execute Replace Caused By : \n ${error.stack}`);
+				console.warn(`Expected Delegate Function 'ReplaceDelegage' Which Type : \n (model : object) => replacedModel : object`);
+
+			}
+
 		}
 
 		this.ForEach = ForEachElementDelegate => {
@@ -290,6 +330,20 @@
 			);
 		}
 
+		this.NotifyInsertedAtAsync = async (index, modelItem) => {
+
+			if (this._mountElement.children[index] !== undefined &&
+				this._modelList.GetModelArray()[index].itemKey === this._mountElement.children[index].getAttribute("item_key")) return;
+			modelItem.itemKey = GenerateIDString();
+			let viewItem = await this._GenerateAViewItemAsync(modelItem);
+			if (this._mountElement.children.length === 0)
+				this._mountElement.appendChild(viewItem);
+			else this._mountElement.insertBefore(
+				viewItem,
+				this._mountElement.children[index]
+			);
+		}
+
 		this.NotifyDeletedAt = (index) => {
 			if(this._modelList.GetModelArray()[index] !== undefined && 
 				this._modelList.GetModelArray()[index].itemKey === this._mountElement.children[index].getAttribute("item_key")) return;
@@ -311,6 +365,18 @@
 			this._mountElement.children[index].remove();
 			this._mountElement.insertBefore(
 				viewItem, 
+				this._mountElement.children[index]
+			);
+		}
+
+		this.NotifyReplacedAtAsync = async (index) => {
+			let modelItem = this._modelList.GetModelArray()[index];
+			let viewItem = await this._GenerateAViewItemAsync(modelItem);
+			let viewType = this._ItemViewType(modelItem);
+			this._TemplateViewToModelBinder(viewItem, modelItem, viewType);
+			this._mountElement.children[index].remove();
+			this._mountElement.insertBefore(
+				viewItem,
 				this._mountElement.children[index]
 			);
 		}

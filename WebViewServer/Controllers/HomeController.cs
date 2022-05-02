@@ -180,6 +180,8 @@ namespace WebViewServer.Controllers
 			return modelList.ToJson();
 		}
 
+		#region Zone
+
 		[HttpGet]
 		[Route("Home/Zone")]
 		public IActionResult Zone()
@@ -197,6 +199,24 @@ namespace WebViewServer.Controllers
 				modelList.Add(await model);
 			}
 			return modelList.ToJson();
+		}
+
+
+		#endregion
+
+
+		[HttpGet]
+		[Route("Home/Notice")]
+		public IActionResult Notice()
+		{
+			return View("Home/Notice");
+		}
+
+		[HttpPost]
+		[Route("Home/NoticeModel")]
+		public async Task<string> NoticeModel()
+		{
+			return (await _vmService.GetNoticeViewModels()).ToJson(dateTimeFormatString: "yyyy-MM-dd HH:mm");
 		}
 
 		[HttpGet]
@@ -483,7 +503,7 @@ namespace WebViewServer.Controllers
 		[Route("MatchModel")]
 		public async Task<string> MatchModel()
 		{
-			return (await _vmService.GetMatchModel()).ToJson();
+			return (await _vmService.GetMatchModels()).ToJson();
 		}
 
 		#endregion

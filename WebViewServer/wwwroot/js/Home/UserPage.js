@@ -2,13 +2,15 @@ import {ShowAlert, ModelView, Sleep, ShowLoad} from '../My.js';
 import Post from "../Shared/Components/Post/Post.js";
 import FirstLevelComment from "../Shared/Components/Post/FirstLevelComment.js";
 import SecondLevelComment from "../Shared/Components/Post/SecondLevelComment.js";
+import {ShowInputWindow} from "../Shared/Comment.js";
 
 let modelList, modelView;
 
 const ModelType = {
 	Post: 1,
-	FirstLevelComment: 2,
-	SecondLevelComment: 3
+	PostTime: 2,
+	FirstLevelComment: 3,
+	SecondLevelComment: 4
 }
 
 let modelType = ModelType.Post;
@@ -17,6 +19,7 @@ let type = ["Owned"];
 async function Init(services){
 	const mountElement = document.querySelector(".userpost-mount");
 	await ShowLoad(document.querySelector(".show-mount"), "加载中...", async(fragment) => {
+		modelType = ModelType.Post;
 		await InitView(services, mountElement);
 	});
 	const myPostBtn = document.querySelector(".card-body .my-post");
@@ -78,23 +81,32 @@ async function InitView(services, mountElement) {
 	}).SetItemTemplate(viewType => {
 		switch (viewType) {
 			case ModelType.Post:
+			case ModelType.PostTime:
 				return Post.SetItemTemplate(viewType);
 			case ModelType.FirstLevelComment:
-				return FirstLevelComment.SetItemTemplate(viewType);
+				return FirstLevelComment.SetItemTemplate(FirstLevelComment.ViewType.SingleItem);
 			case ModelType.SecondLevelComment:
-				return SecondLevelComment.SetItemTemplate(viewType);
+				return SecondLevelComment.SetItemTemplate(SecondLevelComment.ViewType.SingleItem);
 		}
 		
 	}).SetTemplateViewToModelBinder((view, model, viewType) => {
+		let commentLabel = view.querySelector(".comment");
 		switch (viewType) {
 			case ModelType.Post:
+			case ModelType.PostTime:
 				Post.SetTemplateViewToModelBinder(view, model, viewType);
 				break;
 			case ModelType.FirstLevelComment:
 				FirstLevelComment.SetTemplateViewToModelBinder(view, model, viewType);
+				commentLabel.addEventListener("click", event => {
+					ShowInputWindow(commentLabel);
+				});
 				break;
 			case ModelType.SecondLevelComment:
 				SecondLevelComment.SetTemplateViewToModelBinder(view, model, viewType);
+				commentLabel.addEventListener("click", event => {
+					ShowInputWindow(commentLabel);
+				});
 				break;
 		}
 
@@ -109,7 +121,7 @@ async function ReloadView(services, models=null) {
 		}));
 		if (models != null) formedModels = models;
 		modelList.DeleteAt(0, modelList.GetLength());
-		formedModels.forEach(model => modelList.Append(model));
+		formedModels.forEach(model => modelList.AppendAsync(model));
 		modelView.Clean();
 		await modelView.ShowAsync();
 	});
