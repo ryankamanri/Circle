@@ -1,12 +1,15 @@
 ﻿import Tag from "./Tag.js";
 import {ModelView, ShowAlert} from "../../My.js";
 import {PostChangeRelation} from "../MyInterestedTags.js";
+import PrivateChat from "../../Home/PrivateChat.js";
 let template = document.createElement('template');
+
+let _services;
 
 async function Init(services) {
     await Tag.Init(services);
     template.innerHTML = await services.Api.Get("/Shared/Components/SearchUserInfo");
-
+    _services = services;
 }
 
 function SetItemViewType(model) {
@@ -67,13 +70,17 @@ async function SetTemplateViewToModelBinder(view, model, viewType, CallBack) {
     
     // set events
     JudgeFocus(view.querySelector(".attention"));
+    view.querySelector(".private-chat").onclick = async() => {
+        await PrivateChat.ChatWithAUser(_services, model.ID);
+        window.location.hash = "#PrivateChat";
+    }
     Tag.FlushDropEvent(view, model);
     Tag.FlushDrugEvent(view, model);
 }
 
 function JudgeFocus(btn)
 {
-    if(btn.getAttribute("isFocus") == "false"){
+    if(btn.getAttribute("isFocus") === "false"){
         btn.onclick = async event => await AppendFocus(event);
     }else{
         btn.onclick = async event => await RemoveFocus(event);

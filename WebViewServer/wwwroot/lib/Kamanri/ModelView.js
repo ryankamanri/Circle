@@ -26,7 +26,7 @@
 			let indexCount = this._modelArray.length;
 			for(let item of items) {
 				this._modelArray.push(item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this) 
 					this._modelView.NotifyInsertedAt(indexCount, item);
 				indexCount++;
 			}
@@ -36,7 +36,7 @@
 			let indexCount = this._modelArray.length;
 			for(let item of items) {
 				this._modelArray.push(item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this)
 					await this._modelView.NotifyInsertedAtAsync(indexCount, item);
 				indexCount++;
 			}
@@ -46,7 +46,7 @@
 			let indexCount = index;
 			for(let item of items) {
 				this._modelArray.splice(indexCount, 0, item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this) 
 					this._modelView.NotifyInsertedAt(indexCount, item);
 				indexCount++;
 			}
@@ -56,7 +56,7 @@
 			let indexCount = index;
 			for(let item of items) {
 				this._modelArray.splice(indexCount, 0, item);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this)
 					await this._modelView.NotifyInsertedAtAsync(indexCount, item);
 				indexCount++;
 			}
@@ -66,7 +66,7 @@
 		this.DeleteAt = (index, deleteCount) => {
 			for(let indexCount = index; indexCount < index + deleteCount; indexCount++) {
 				this._modelArray.splice(index, 1);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this) 
 					this._modelView.NotifyDeletedAt(index);
 			}
 		}
@@ -75,7 +75,7 @@
 			try {
 				let model = this._modelArray[index];
 				ChangeDelegate(model);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this) 
 					this._modelView.NotifyChangedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Change Caused By : \n ${error.stack}`);
@@ -88,7 +88,7 @@
 			try {
 				let model = this._modelArray[index];
 				let replacedModel = ReplaceDelegate(model);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this) 
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this) 
 					this._modelView.NotifyReplacedAt(index);
 			} catch (error) {
 				console.error(`Failed To Execute Replace Caused By : \n ${error.stack}`);
@@ -102,7 +102,7 @@
 			try {
 				let model = this._modelArray[index];
 				let replacedModel = ReplaceDelegate(model);
-				if(this._modelView !== undefined && this._modelView.GetModelList() === this)
+				if(this._modelView !== undefined && this._modelView !== null && this._modelView.GetModelList() === this)
 					await this._modelView.NotifyReplacedAtAsync(index);
 			} catch (error) {
 				console.error(`Failed To Execute Replace Caused By : \n ${error.stack}`);
@@ -163,10 +163,20 @@
 		this._SetMountElement = value => this._mountElement = value;
 
 		// User Set Callback Functions Private
-		this._ItemViewType = modelItem => 0; // (modelItem) -> viewType : int
-		this._ItemTemplate = viewType => document.createElement("template"); // (viewType : int) -> Template
-		this._TemplateViewToModelBinder = (view, modelItem, viewType) => { }; // (Template, modelItem, viewType) -> void
-		this._ModelToTemplateViewBinder = (modelItem, view, viewType) => { };
+		this._ItemViewType = modelItem => {
+			console.warn("You Never Call The Function `ModelView.SetItemViewType`, It Will Invoke The Default Function And May Cause Error");
+			return 0;
+		} // (modelItem) -> viewType : int
+		this._ItemTemplate = viewType => {
+			console.warn("You Never Call The Function `ModelView.SetItemTemplate`, It Will Invoke The Default Function And May Cause Error");
+			document.createElement("template");
+		} // (viewType : int) -> Template
+		this._TemplateViewToModelBinder = (view, modelItem, viewType) => {
+			console.warn("You Never Call The Function `ModelView.SetTemplateViewToModelBinder`, It Will Invoke The Default Function And May Cause Error");
+		}; // (Template, modelItem, viewType) -> void
+		this._ModelToTemplateViewBinder = (modelItem, view, viewType) => {
+			console.warn("You Never Call The Function `ModelView.SetModelToTemplateViewBinder`, It Will Invoke The Default Function And May Cause Error");
+		};
 		this._Finally = (view, modelItem) => {};
 
 		// User Set Callback Function Setters Public

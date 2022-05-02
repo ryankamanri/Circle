@@ -20,9 +20,9 @@ function SetTemplateViewToModelBinder(view, modelItem, viewType) {
     let lastMessage = view.querySelector(".last-message");
     headImage.setAttribute("src", modelItem.HeadImage);
     nickName.innerText = modelItem.NickName;
-    if (modelItem.Time != undefined)
+    if (modelItem.Time !== undefined)
         time.innerText = modelItem.Time;
-    if (modelItem.LastMessage != undefined)
+    if (modelItem.LastMessage !== undefined)
         lastMessage.innerText = modelItem.LastMessage;
 }
 

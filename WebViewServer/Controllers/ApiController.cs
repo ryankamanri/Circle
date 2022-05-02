@@ -48,7 +48,7 @@ namespace WebViewServer.Controllers
 		public async Task<string> GetUserInfo()
 		{
 			if (!HttpContext.Request.Form.ContainsKey("User")) return BAD_REQUEST;
-			var user = HttpContext.Request.Form["User"];
+			var user = HttpContext.Request.Form["User"].ToObject<User>();
 			var userInfo = await _api.Post<UserInfo>("/User/GetUserInfo", new Form()
 			{
 				{ "User", user }

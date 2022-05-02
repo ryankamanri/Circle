@@ -1,4 +1,4 @@
-import { MyWebSocket, ModelView, Api, Storage, Configuration } from "../My.js";
+import { MyWebSocket, ModelView, Api, Storage, Configuration, ShowAlert } from "../My.js";
 import UserInfo from "../Shared/Components/PrivateChat/UserInfo.js";
 import MessageItem from "../Shared/Components/PrivateChat/MessageItem.js";
 
@@ -50,7 +50,7 @@ async function InitSelfInfo(services) {
 	userInfo = services.UserInfo;
 
 	storage.SelfInfo = userInfo;
-	if (storage[`${userInfo.ID}_objectID_MessageArray`] != undefined) {
+	if (storage[`${userInfo.ID}_objectID_MessageArray`] !== undefined) {
 		objectID_MessageDict = storage[`${userInfo.ID}_objectID_MessageArray`];
 
 		for (let i in objectID_MessageDict) {
@@ -63,18 +63,25 @@ async function InitSelfInfo(services) {
 async function InitFocusUserList() {
 	let focusUserList;
 	let userInfoListMount = document.querySelector("#userinfolist-mount");
-	let resData = await api.Post(
-		"/Api/User/SelectUserInfoInitiative",
-		{
-			Selections: JSON.stringify({
-				Type: ["Focus"]
-			})
-		});
-	if (resData == "Bad Request") {
-		console.error("Bad Request");
-		return;
+	// init userlist
+	if(storage[`${userInfo.ID}_focusUserInfoList`] !== undefined) {
+		focusUserList = storage[`${userInfo.ID}_focusUserInfoList`];
+	} else {
+		let resData = await api.Post(
+			"/Api/User/SelectUserInfoInitiative",
+			{
+				Selections: JSON.stringify({
+					Type: ["Focus"]
+				})
+			});
+		if (resData === "Bad Request") {
+			console.error("Bad Request");
+			return;
+		}
+		focusUserList = JSON.parse(resData);
+		storage[`${userInfo.ID}_focusUserInfoList`] = focusUserList;
 	}
-	focusUserList = JSON.parse(resData);
+	
 	focusUserModelList = new ModelView.ModelList(focusUserList);
 	focusUserModelListView = new ModelView.ModelView(focusUserModelList, userInfoListMount);
 	focusUserModelListView.Clean();
@@ -111,6 +118,7 @@ function ShowMessageViewList(modelItem) {
 	messageViewList_ContentView.RebindModelList(messageViewModelList);
 	InitMessageContentView(messageViewModelList);
 	console.log(`Chat With ${objectUserInfo.NickName}`);
+	ShowAlert("alert alert-info", "私聊: ", `与 ${objectUserInfo.NickName} 聊天`, 800);
 }
 
 function InitMessageContentView(messageViewModelList) {
@@ -149,38 +157,105 @@ function InitReceiveMessage(services) {
 	}).AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerTempMessage, async (wsMessage) => {
 		console.log(`\n${JSON.stringify(wsMessage)}`);
 		var resMessages = wsMessage.ToMessages();
-		resMessages.forEach(resMessage => {
-			AddTimeMessage(resMessage, resMessage.SendUserID);
-			objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
-
-			storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
+		for (const resMessage of resMessages) {
+			
+			let isInList = false;
 			focusUserModelList.ForEach((modelItem, index) => {
-				if (modelItem.ID == resMessage.SendUserID)
+				if (modelItem.ID === resMessage.SendUserID) {
 					focusUserModelList.Change(index, focusUserModel => {
 						focusUserModel.LastMessage = resMessage.Content;
 						focusUserModel.Time = Get_MMSS_String(new Date(resMessage.Time));
 					});
+					isInList = true;
+				}
 			});
+			if(isInList) {
+				AddTimeMessage(resMessage, resMessage.SendUserID);
+				objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
+				storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
+				continue;
+			}
+			// not in userlist, request the user into list
+			const sendUserInfo = await RequestUserInfo(services, resMessage.SendUserID);
+			sendUserInfo.LastMessage = resMessage.Content;
+			sendUserInfo.Time = Get_MMSS_String(new Date(resMessage.Time));
+			focusUserModelList.InsertAt(0, sendUserInfo);
 
-		});
+			objectID_MessageDict[`${resMessage.SendUserID}k`] = [];
+			objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`] = new ModelView.ModelList(objectID_MessageDict[`${resMessage.SendUserID}k`]);
+			AddTimeMessage(resMessage, resMessage.SendUserID);
+			objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
+			storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
+			
+		}
 	}).AddEventHandler(MyWebSocket.WebSocketMessageEvent.OnServerMessage, async (wsMessage) => {
 		console.log(`\n${JSON.stringify(wsMessage)}`);
 		var resMessage = wsMessage.ToMessages()[0];
-		AddTimeMessage(resMessage, resMessage.SendUserID);
-		objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
-		SetStackFromEnd();
-
-		storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
+		
+		let isInList = false;
 		focusUserModelList.ForEach((modelItem, index) => {
-			if (modelItem.ID == resMessage.SendUserID)
+			if (modelItem.ID === resMessage.SendUserID) {
 				focusUserModelList.Change(index, focusUserModel => {
 					focusUserModel.LastMessage = resMessage.Content;
 					focusUserModel.Time = Get_MMSS_String(new Date(resMessage.Time));
 				});
+				isInList = true;
+			}
+				
 		});
+		if(isInList) {
+			AddTimeMessage(resMessage, resMessage.SendUserID);
+			objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
+			storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
+			SetStackFromEnd();
+			return;
+		}
+		// not in userlist, request the user into list
+		const sendUserInfo = await RequestUserInfo(services, resMessage.SendUserID);
+		sendUserInfo.LastMessage = resMessage.Content;
+		sendUserInfo.Time = Get_MMSS_String(new Date(resMessage.Time));
+		focusUserModelList.InsertAt(0, sendUserInfo);
+
+		objectID_MessageDict[`${resMessage.SendUserID}k`] = [];
+		objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`] = new ModelView.ModelList(objectID_MessageDict[`${resMessage.SendUserID}k`]);
+		AddTimeMessage(resMessage, resMessage.SendUserID);
+		objectID_MessageViewModelList_Pairs[`${resMessage.SendUserID}k`].Append(resMessage);
+		storage[`${services.UserInfo.ID}_objectID_MessageArray`] = objectID_MessageDict;
 
 	});
 
+}
+
+async function ChatWithAUser(services, userID) {
+	const myID = services.UserInfo.ID;
+	const focusUserList = storage[`${myID}_focusUserInfoList`];
+	let isInList = false;
+	focusUserList.forEach((modelItem, index) => {
+		if (modelItem.ID === userID) {
+			isInList = true;
+		}
+	});
+	if(isInList) return;
+	
+	const sendUserInfo = await RequestUserInfo(services, userID);
+	focusUserList.push(sendUserInfo);
+	storage[`${myID}_focusUserInfoList`] = focusUserList;
+	
+}
+
+async function RequestUserInfo(services, userID) {
+	let resData = await services.Api.Post(
+		"/Api/User/GetUserInfo",
+		{
+			User: JSON.stringify({
+				ID: userID
+			})
+		});
+	if (resData === "null") {
+		console.error("Response Data Is Null");
+		return;
+	}
+	return JSON.parse(resData);
 }
 
 function InitSendMessage() {
@@ -323,5 +398,5 @@ export {
 
 
 export default {
-	Init, InitBase
+	Init, InitBase, ChatWithAUser
 }
