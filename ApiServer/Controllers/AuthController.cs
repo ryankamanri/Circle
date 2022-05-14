@@ -67,8 +67,15 @@ namespace ApiServer.Controllers
 			if (!HttpContext.Request.Form.TryGetValue("schoolyear", out var schoolyearJson)) return "-2".ToJson();
 
 
-			UserInfo userInfo = new UserInfo(Convert.ToInt64(userIDJson), nicknameJson, realnameJson, universityJson,
-				schoolJson, specialityJson, JsonConvert.DeserializeObject<DateTime>(schoolyearJson), "", "/StaticFiles/Images/HeadImage/syt5.com.1638601045.jpg");
+			UserInfo userInfo = new UserInfo(userIDJson.ToObject<long>(), 
+				nicknameJson.ToObject<string>(), 
+				realnameJson.ToObject<string>(), 
+				universityJson.ToObject<string>(),
+				schoolJson.ToObject<string>(),
+				specialityJson.ToObject<string>(),
+				schoolyearJson.ToObject<DateTime>(), 
+				"", 
+				"/StaticFiles/Images/HeadImage/syt5.com.1638601045.jpg");
 			var id = Convert.ToInt64(userIDJson);
 			_logger.LogInformation($"Insert {userInfo.ToJson()}");
 			if((await _dbc.Select(new UserInfo(id))) == null)

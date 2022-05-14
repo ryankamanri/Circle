@@ -1,7 +1,7 @@
 
 	// Kits
 
-	import {CopyElement, GenerateIDString, GetType} from './Utils.js';
+	import {CopyElement, GenerateIDString, GetType, RenderView} from './Utils.js';
 
 
 	function ModelList(modelArray) {
@@ -179,6 +179,10 @@
 		};
 		this._Finally = (view, modelItem) => {};
 
+		// only used in render view
+		this._isUseRenderView = false;
+		this._modelName = 'model';
+
 		// User Set Callback Function Setters Public
 		this.SetItemViewType = setter => {
 			this._ItemViewType = setter;
@@ -205,6 +209,12 @@
 			return this;
 		}
 
+		this.UseRenderView = (modelName='model') => {
+			this._modelName = modelName;
+			this._isUseRenderView = true;
+			return this;
+		}
+
 		this._GenerateAViewItem = (modelItem) => {
 			let viewType;
 			let template;
@@ -218,14 +228,23 @@
 					console.error("Invalid Template");
 					return;
 				}
-				view = template.content;
+				
 			} catch (error) {
 				console.error(`Failed To Execute SetItemViewType Or SetItemTemplate Caused By : \n ${error.stack}`);
 				console.warn(`Function 'SetItemViewType' Expected A Delegate Function Which Type : \n (modelItem : object) => viewType : int`);
 				console.warn(`Function 'SetItemTemplate' Expected A Delegate Function Which Type : \n (viewType : int) => template : HTMLTemplateElement`);
 				return;
 			}
+			try {
+				if(this._isUseRenderView) {
+					template.innerHTML = RenderView(template.innerHTML, modelItem, this._modelName);
+				}
+			} catch (error) {
+				console.error(`Failed To Execute RenderView Caused By : \n ${error.stack}`);
+				console.warn('Please Check Whether Your Template Is In Valid Format.');
+			}
 			
+			view = template.content;
 			// Set Item Key
 			viewItem = view.firstElementChild;
 
@@ -257,14 +276,22 @@
 					console.error("Invalid Template");
 					return;
 				}
-				view = template.content;
+				
 			} catch (error) {
 				console.error(`Failed To Execute SetItemViewType Or SetItemTemplate Caused By : \n ${error.stack}`);
 				console.warn(`Function 'SetItemViewType' Expected A Delegate Function Which Type : \n (modelItem : object) => viewType : int`);
 				console.warn(`Function 'SetItemTemplate' Expected A Delegate Function Which Type : \n (viewType : int) => template : HTMLTemplateElement`);
 				return;
 			}
-
+			try {
+				if(this._isUseRenderView) {
+					template.innerHTML = RenderView(template.innerHTML, modelItem, this._modelName);
+				}
+			} catch (error) {
+				console.error(`Failed To Execute RenderView Caused By : \n ${error.stack}`);
+				console.warn('Please Check Whether Your Template Is In Valid Format.');
+			}
+			view = template.content;
 			// Set Item Key
 			viewItem = view.firstElementChild;
 

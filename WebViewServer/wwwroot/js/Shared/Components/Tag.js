@@ -102,11 +102,11 @@ function FlushDropEvent(view) {
 			id = event.dataTransfer.getData("id");
 			moveTag = document.getElementById(id);
 			originTag = CopyElement(moveTag);
-			originTag.id++;
+			originTag.id = GenerateIDString();
 			isDroppedTag = false;
 			do{
 				await Sleep(100);
-				if (tagNode.children[0] === undefined)//标签已被取走
+				if (tagNode.children[0] === undefined || !tagNode.children[0].classList.contains("tag"))//标签已被取走
 					tagNode.insertBefore(originTag, tagNode.children[0]);
 				originTag.addEventListener("dragstart", event => {
 					event.dataTransfer.setData("id", event.target.id);

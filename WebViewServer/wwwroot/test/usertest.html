@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-	<link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
 	<style>
 		.user{
 			display: inline-block;
@@ -31,26 +31,44 @@
 	</style>
 </head>
 <body>
-	<div class="user">
-		<div class="headimage col-md-12">
-			<img src="./Images/HeadImage/20210714185547.jpg" alt="">
-		</div>
-		<div class="nickname col-md-12 text-center">RyanKamanri</div>
-		<div class="sm-font col-md-12 text-center">
-			2019 级 计算机科学与技术
-		</div>
-		<div class="tags col-md-12 pt-1 pb-1">
-
-		</div>
-		<div class="buttons col-md-12 text-center">
-			<input class="btn btn-outline-primary sm-font" type="button" value="关注">
-			<input class="btn btn-primary sm-font" type="button" value="私聊">
-		</div>
+	<template>
+		<div class="user">
+			<div class="headimage col-md-12">
+				<img src="${model.HeadImage}" alt="">
+			</div>
+			<div class="nickname col-md-12 text-center">${model.NickName}</div>
+			<div class="sm-font col-md-12 text-center">
+				${model.OtherInfo}` `````
+			</div>
+			<div class="tags col-md-12 pt-1 pb-1">
+	
+			</div>
+			<div class="buttons col-md-12 text-center">
+				<input class="btn btn-outline-primary sm-font" type="button" value="关注">
+				<input class="btn btn-primary sm-font" type="button" value="私聊">
+			</div>
+				
 			
-		
-		
-	</div>
+			
+		</div>
+	</template>
+	<div id="mount"></div>
+	
 </body>
 
 </html>
+<script type="module">
+	import {ModelView} from '../js/My.js';
+	const dataList = [{
+		HeadImage: '../StaticFiles/Images/HeadImage/20210714185547.jpg',
+		NickName: 'RyanKamanri',
+		OtherInfo: '2019 级 计算机科学与技术'
+	}]
+	const modelList = new ModelView.ModelList(dataList);
+	const modelView = new ModelView.ModelView(modelList, document.querySelector('#mount'));
+
+	modelView.SetItemTemplate(() => document.querySelector('template')).UseRenderView().Show();
+	
+	
+</script>
 

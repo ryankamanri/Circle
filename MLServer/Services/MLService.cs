@@ -78,7 +78,17 @@ namespace MLServer.Services
 			{
 				while (true)
 				{
-					await RunMLServiceOnce();
+					try
+					{
+						await RunMLServiceOnce();
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e);
+						_logger.LogError($"Failed To Execute RunMLServiceOnce. Caused By : {e.Message}");
+						return;
+					}
+					
 					IsReady = true;
 					Thread.Sleep(1 * 60 * 1000);
 				}

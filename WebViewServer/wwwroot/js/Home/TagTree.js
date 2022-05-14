@@ -45,6 +45,18 @@ function AppendChildTree(parentTag, childTags) {
 	});
 }
 
+function RemoveChildTree(parentTag) {
+	let removeCount = 0;
+	const length = parentTag.children.length;
+	for (let i = 0; i < length;i ++) {
+		const childTag = parentTag.children[i - removeCount];
+		if(childTag.classList.contains("ceiledTagNode")) {
+			childTag.remove();
+			removeCount++;
+		}
+	}
+}
+
 function FindChildTags(parentTag, tagTreeNode) {
 	let tagID = tagTreeNode.querySelector(".ID").innerText;
 	$.ajax({
@@ -56,7 +68,16 @@ function FindChildTags(parentTag, tagTreeNode) {
 	}).done(resData => {
 		AppendChildTree(parentTag, JSON.parse(resData));
 		//FlushTagTree(parentTag);
-		parentTag.onclick = undefined;
+		parentTag.onclick = () => {
+			event.preventDefault();
+			event.stopPropagation();
+			RemoveChildTree(parentTag);
+			parentTag.onclick = event => {
+				event.preventDefault();
+				event.stopPropagation();
+				FindChildTags(event.target.parentElement.parentElement, tagTreeNode);
+			}
+		};
 		Tag.FlushDrugEvent(document.querySelector("#tagRoot"));
 		Tag.FlushDropEvent(document.querySelector("#tagRoot"));
 	});

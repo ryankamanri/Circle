@@ -32,6 +32,9 @@
 .last-message {
 	margin-left: 1em;
 	font-size: small;
+	max-height: 20px;
+	max-width: 100px;
+	overflow: hidden;
 }
 
 /* user message */

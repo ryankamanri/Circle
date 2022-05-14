@@ -103,6 +103,16 @@ function AddScript(mountElement, src=null, statement=null, isModule=false) {
 	
 }
 
+const _RenderViewString = modelName => `(view, ${modelName}) => eval(\`\\\`\${view}\\\`\`)`;
+
+function RenderView(viewString, model, modelName='model') {
+	if (GetType(viewString) !== GetType('')) {
+		console.error(`Expected ${GetType('')} As The Type Of Parameter 'viewString' But Ordered ${GetType(viewString)}`);
+		return;
+	}
+	return eval(_RenderViewString(modelName))(viewString.replaceAll("`","\\`"), model);
+} 
+
 export {
-	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString, AddScript
+	Site, Sleep, ParseElement, Stringlify, ParseFunc, StrIncrement, Animate, GetType, CopyElement, GenerateIDString, AddScript, RenderView
 }
